@@ -4,7 +4,7 @@
 
 A responsive, multi-country and multi-currency personal finance dashboard built for digital nomads. Track international accounts, currencies, budgets, investments, and travel spending from one secure dashboard.
 
-🔗 **[Live Demo](https://YOUR-VERCEL-LINK.vercel.app)** *(replace after deploy)*
+🔗 **[Live Demo]([https://YOUR-VERCEL-LINK.vercel.app](https://nomad-wealth-peach.vercel.app/#))** *(replace after deploy)*
 
 ![Nomad Wealth login screen](screenshot.png)
 
