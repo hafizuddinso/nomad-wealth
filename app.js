@@ -47,6 +47,58 @@ function setSignupStep(step){
   const lines=document.querySelectorAll(".step-indicator i");
   lines.forEach((line,index)=>line.classList.toggle("complete",index+1<step));
 }
+
+function countryName(code,locale=currentLanguage){
+  const normalized=normalizeCountryCode(code);
+  try{return new Intl.DisplayNames([locale],{type:"region"}).of(normalized)||countryByCode.get(normalized)?.name||code}catch{return countryByCode.get(normalized)?.name||code}
+}
+function normalizeCountryCode(value){
+  if(!value)return "US";
+  const upper=String(value).toUpperCase();
+  if(countryByCode.has(upper))return upper;
+  const found=countryData.find(c=>c.name.toLowerCase()===String(value).toLowerCase());
+  return found?.code||upper.slice(0,2);
+}
+function populateCountrySelect(select,selected){
+  if(!select)return;
+  const display=new Intl.DisplayNames([currentLanguage],{type:"region"});
+  const options=countryData.map(c=>({code:c.code,label:display.of(c.code)||c.name})).sort((a,b)=>a.label.localeCompare(b.label,currentLanguage));
+  select.innerHTML=options.map(c=>`<option value="${c.code}">${esc(c.label)}</option>`).join("");
+  if(selected)select.value=normalizeCountryCode(selected);
+}
+function populateCurrencySelect(select,selected){
+  if(!select)return;
+  let dn;try{dn=new Intl.DisplayNames([currentLanguage],{type:"currency"})}catch{}
+  select.innerHTML=currencies.map(code=>`<option value="${code}">${code}${dn?` — ${esc(dn.of(code)||code)}`:""}</option>`).join("");
+  if(selected&&currencies.includes(selected))select.value=selected;
+}
+function applyTheme(theme=currentTheme){
+  currentTheme=theme;
+  localStorage.setItem("nomad_theme",theme);
+  const resolved=theme==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):theme;
+  document.documentElement.dataset.theme=resolved;
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolved==="dark"?"#07111f":"#0f766e";
+  const toggle=document.querySelector("#theme-toggle");if(toggle){toggle.textContent=resolved==="dark"?"☀":"◐";toggle.title=resolved==="dark"?"Use light mode":"Use dark mode"}
+}
+function applyLanguage(lang=currentLanguage){
+  if(!window.NOMAD_WEALTH_I18N?.[lang])lang="en";
+  currentLanguage=lang;localStorage.setItem("nomad_language",lang);
+  document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  const dict=window.NOMAD_WEALTH_I18N[lang];
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const text=dict[el.dataset.i18n];if(text)el.textContent=text});
+  if(state)render();
+  populateAllCountryCurrencyControls();
+}
+function populateAllCountryCurrencyControls(){
+  populateCountrySelect(document.querySelector("#signup-country"),document.querySelector("#signup-country")?.value||"AL");
+  populateCountrySelect(document.querySelector("#profile-country"),state?.currentCountry||currentUser?.user_metadata?.country||"AL");
+  populateCountrySelect(document.querySelector("#onboarding-country"),currentUser?.user_metadata?.country||"AL");
+  populateCountrySelect(document.querySelector("#account-country"),state?.currentCountry||"AL");
+  populateCurrencySelect(document.querySelector("#signup-currency"),document.querySelector("#signup-currency")?.value||state?.mainCurrency||"EUR");
+  populateCurrencySelect(document.querySelector("#profile-currency"),state?.mainCurrency||"EUR");
+  populateCurrencySelect(document.querySelector("#onboarding-currency"),state?.mainCurrency||"EUR");
+}
+
 function userDisplayName(user){
   return user?.user_metadata?.full_name ||
     user?.user_metadata?.name ||
@@ -67,8 +119,15 @@ function updateUserInterface(user){
   const pn=document.querySelector("#profile-name");if(pn)pn.textContent=name;
   const pe=document.querySelector("#profile-email");if(pe)pe.textContent=email;
   const metadata=user?.user_metadata||{};
-  if(metadata.country)state.currentCountry=metadata.country;
+  if(metadata.country)state.currentCountry=normalizeCountryCode(metadata.country);
   if(metadata.main_currency&&currencies.includes(metadata.main_currency))state.mainCurrency=metadata.main_currency;
+  if(metadata.language)currentLanguage=metadata.language;
+  if(metadata.theme)currentTheme=metadata.theme;
+  const pName=document.querySelector("#profile-name-input");if(pName)pName.value=name;
+  const pDisplay=document.querySelector("#profile-display-name");if(pDisplay)pDisplay.textContent=name;
+  const pEmail=document.querySelector("#profile-display-email");if(pEmail)pEmail.textContent=email;
+  const pAvatar=document.querySelector("#profile-avatar");if(pAvatar)pAvatar.textContent=initial;
+  applyTheme(currentTheme);applyLanguage(currentLanguage);
 }
 function showApp(user){
   currentUser=user;
@@ -79,6 +138,11 @@ function showApp(user){
   appRoot.classList.remove("hidden");
   initializeFinanceApp();
   render();
+  const metadata=user?.user_metadata||{};
+  if(!metadata.onboarding_complete){
+    const form=document.querySelector("#onboarding-form");
+    if(form){form.elements.name.value=userDisplayName(user);populateCountrySelect(form.elements.country,metadata.country||"AL");populateCurrencySelect(form.elements.currency,metadata.main_currency||"EUR");document.querySelector("#onboarding-dialog").showModal();}
+  }
 }
 function showAuth(){
   currentUser=null;
@@ -114,7 +178,7 @@ document.querySelector("#signup-form").addEventListener("submit",async event=>{
   }
   const payload={
     name:form.elements.name.value.trim(),
-    country:form.elements.country.value.trim(),
+    country:normalizeCountryCode(form.elements.country.value),
     currency:form.elements.currency.value,
     userType:form.elements.user_type.value,
     email:form.elements.email.value.trim().toLowerCase(),
@@ -131,9 +195,11 @@ document.querySelector("#signup-form").addEventListener("submit",async event=>{
         country:payload.country,
         main_currency:payload.currency,
         user_type:payload.userType,
+        language:currentLanguage,
+        theme:currentTheme,
         onboarding_complete:true
       },
-      emailRedirectTo:window.location.origin
+      emailRedirectTo:window.location.origin+window.location.pathname
     }
   });
   submit.disabled=false;submit.textContent="Send verification code";
@@ -189,7 +255,7 @@ document.querySelector("#google-login").addEventListener("click",async()=>{
   if(!requireConfigured())return;
   const {error}=await supabase.auth.signInWithOAuth({
     provider:"google",
-    options:{redirectTo:window.location.origin}
+    options:{redirectTo:window.location.origin+window.location.pathname}
   });
   if(error)authToast(error.message,true);
 });
@@ -198,7 +264,7 @@ document.querySelector("#forgot-form").addEventListener("submit",async event=>{
   event.preventDefault();
   if(!requireConfigured())return;
   const email=event.currentTarget.elements.email.value.trim().toLowerCase();
-  const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+  const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
   if(error)authToast(error.message,true);
   else{authToast("Password reset email sent.");setAuthView("login-view")}
 });
@@ -234,17 +300,22 @@ async function initializeAuthentication(){
 
 
 
-const currencies=["EUR","USD","GBP","RUB","BDT"];
+const currencies=window.NOMAD_WEALTH_CURRENCIES||["EUR","USD","GBP","RUB","BDT"];
+const countryData=window.NOMAD_WEALTH_COUNTRIES||[];
+const countryByCode=new Map(countryData.map(c=>[c.code,c]));
+let currentLanguage=localStorage.getItem("nomad_language")||navigator.language?.slice(0,2)||"en";
+if(!window.NOMAD_WEALTH_I18N?.[currentLanguage])currentLanguage="en";
+let currentTheme=localStorage.getItem("nomad_theme")||"system";
 const demo={
   mainCurrency:"EUR",
-  currentCountry:"Albania",
+  currentCountry:"AL",
   rates:{EUR:1,USD:1.09,GBP:.85,RUB:96,BDT:128},
   accounts:[
-    {id:crypto.randomUUID(),name:"Main Bank",institution:"T-Bank",country:"Russia",currency:"RUB",type:"Bank",openingBalance:120000},
-    {id:crypto.randomUUID(),name:"BRAC Savings",institution:"BRAC Bank",country:"Bangladesh",currency:"BDT",type:"Savings",openingBalance:250000},
-    {id:crypto.randomUUID(),name:"Wise EUR",institution:"Wise",country:"Europe",currency:"EUR",type:"Bank",openingBalance:1200},
-    {id:crypto.randomUUID(),name:"Freelance USD",institution:"Payoneer",country:"United States",currency:"USD",type:"Wallet",openingBalance:800},
-    {id:crypto.randomUUID(),name:"Personal Loan",institution:"Local Bank",country:"Russia",currency:"EUR",type:"Debt",openingBalance:1200}
+    {id:crypto.randomUUID(),name:"Main Bank",institution:"T-Bank",country:"RU",currency:"RUB",type:"Bank",openingBalance:120000},
+    {id:crypto.randomUUID(),name:"BRAC Savings",institution:"BRAC Bank",country:"BD",currency:"BDT",type:"Savings",openingBalance:250000},
+    {id:crypto.randomUUID(),name:"Wise EUR",institution:"Wise",country:"DE",currency:"EUR",type:"Bank",openingBalance:1200},
+    {id:crypto.randomUUID(),name:"Freelance USD",institution:"Payoneer",country:"US",currency:"USD",type:"Wallet",openingBalance:800},
+    {id:crypto.randomUUID(),name:"Personal Loan",institution:"Local Bank",country:"RU",currency:"EUR",type:"Debt",openingBalance:1200}
   ],
   transactions:[],
   budgets:[
@@ -262,10 +333,10 @@ const demo={
 function seed(s){
   const now=new Date(),iso=d=>d.toISOString().slice(0,10);
   s.transactions=[
-    {id:crypto.randomUUID(),type:"income",amount:200,currency:"USD",category:"Freelance",country:"United States",accountId:s.accounts[3].id,date:iso(now),note:"Client payment"},
-    {id:crypto.randomUUID(),type:"expense",amount:400,currency:"EUR",category:"Housing",country:"Albania",accountId:s.accounts[2].id,date:iso(now),note:"Rent"},
-    {id:crypto.randomUUID(),type:"expense",amount:45.2,currency:"EUR",category:"Food",country:"Albania",accountId:s.accounts[2].id,date:iso(new Date(now-86400000)),note:"Groceries"},
-    {id:crypto.randomUUID(),type:"expense",amount:1200,currency:"RUB",category:"Transport",country:"Russia",accountId:s.accounts[0].id,date:iso(new Date(now-172800000)),note:"Transit"}
+    {id:crypto.randomUUID(),type:"income",amount:200,currency:"USD",category:"Freelance",country:"US",accountId:s.accounts[3].id,date:iso(now),note:"Client payment"},
+    {id:crypto.randomUUID(),type:"expense",amount:400,currency:"EUR",category:"Housing",country:"AL",accountId:s.accounts[2].id,date:iso(now),note:"Rent"},
+    {id:crypto.randomUUID(),type:"expense",amount:45.2,currency:"EUR",category:"Food",country:"AL",accountId:s.accounts[2].id,date:iso(new Date(now-86400000)),note:"Groceries"},
+    {id:crypto.randomUUID(),type:"expense",amount:1200,currency:"RUB",category:"Transport",country:"RU",accountId:s.accounts[0].id,date:iso(new Date(now-172800000)),note:"Transit"}
   ];
   return s;
 }
@@ -343,11 +414,11 @@ function renderAccounts(){
   document.querySelector("#country-accounts").innerHTML=Object.entries(groups).map(([country,items])=>{
     const original=items.map(a=>`${money(accountBalance(a),a.currency)} ${a.currency}`).join(" · ");
     const converted=items.reduce((s,a)=>s+inMain(accountBalance(a),a.currency),0);
-    return `<div class="country-row"><div><strong>${esc(country)}</strong><small>${items.length} account${items.length>1?"s":""}</small></div><div>${esc(original)}</div><div><strong>${money(converted)}</strong></div></div>`;
+    return `<div class="country-row"><div><strong>${esc(countryName(country))}</strong><small>${items.length} account${items.length>1?"s":""}</small></div><div>${esc(original)}</div><div><strong>${money(converted)}</strong></div></div>`;
   }).join("")||empty();
   document.querySelector("#account-list").innerHTML=state.accounts.map(a=>`
     <article class="mini-card">
-      <small>${esc(a.country)} · ${esc(a.type)}</small>
+      <small>${esc(countryName(a.country))} · ${esc(a.type)}</small>
       <strong>${money(accountBalance(a),a.currency)}</strong>
       <span>${esc(a.name)}</span>
       <div class="row-subtitle">${esc(a.institution)} · ${money(inMain(accountBalance(a),a.currency))}</div>
@@ -366,7 +437,7 @@ function transactionHTML(items,deletable=false){
   if(!items.length)return empty("No matching transactions.");
   return items.map(t=>{
     const a=state.accounts.find(x=>x.id===t.accountId);
-    return `<div class="row"><div><div class="row-title">${esc(t.category)}${t.frequency&&t.frequency!=="once"?` <span class="recurring-badge">↻ ${esc(t.frequency)}</span>`:""}</div><div class="row-subtitle">${esc(t.country)} · ${esc(a?.name||"Unknown")} · ${esc(t.date)}${t.note?` · ${esc(t.note)}`:""}</div></div><div><span class="amount ${t.type}">${t.type==="income"?"+":"-"}${money(t.amount,t.currency)}</span><div class="row-subtitle">${money(inMain(t.amount,t.currency))}</div>${deletable?`<button class="icon-button delete-tx" data-id="${t.id}" aria-label="Delete transaction">×</button>`:""}</div></div>`;
+    return `<div class="row"><div><div class="row-title">${esc(t.category)}${t.frequency&&t.frequency!=="once"?` <span class="recurring-badge">↻ ${esc(t.frequency)}</span>`:""}</div><div class="row-subtitle">${esc(countryName(t.country))} · ${esc(a?.name||"Unknown")} · ${esc(t.date)}${t.note?` · ${esc(t.note)}`:""}</div></div><div><span class="amount ${t.type}">${t.type==="income"?"+":"-"}${money(t.amount,t.currency)}</span><div class="row-subtitle">${money(inMain(t.amount,t.currency))}</div>${deletable?`<button class="icon-button delete-tx" data-id="${t.id}" aria-label="Delete transaction">×</button>`:""}</div></div>`;
   }).join("");
 }
 function renderTransactions(){
@@ -394,11 +465,12 @@ function renderRates(){
   document.querySelector("#rate-settings").innerHTML=currencies.map(c=>`<div class="rate-row"><strong>${c}</strong><input class="rate-input" data-currency="${c}" type="number" step="0.0001" value="${state.rates[c]}"></div>`).join("");
 }
 function populateSelects(){
-  const opts=currencies.map(c=>`<option>${c}</option>`).join("");
-  document.querySelector("#main-currency").innerHTML=opts;
-  ["transaction-currency","account-currency","investment-currency"].forEach(id=>document.querySelector("#"+id).innerHTML=opts);
-  document.querySelector("#transaction-account").innerHTML=state.accounts.filter(a=>a.type!=="Debt").map(a=>`<option value="${a.id}">${esc(a.name)} (${a.currency})</option>`).join("");
+  ["main-currency","transaction-currency","account-currency","investment-currency"].forEach(id=>populateCurrencySelect(document.querySelector("#"+id),id==="main-currency"?state.mainCurrency:undefined));
   document.querySelector("#main-currency").value=state.mainCurrency;
+  document.querySelector("#transaction-account").innerHTML=state.accounts.filter(a=>a.type!=="Debt").map(a=>`<option value="${a.id}">${esc(a.name)} (${a.currency})</option>`).join("");
+  populateAllCountryCurrencyControls();
+  const lang=document.querySelector("#language-select");if(lang)lang.value=currentLanguage;
+  const theme=document.querySelector("#theme-select");if(theme)theme.value=currentTheme;
 }
 
 function showPage(id){
@@ -426,34 +498,30 @@ function openDialog(id){
 }
 function populateCountryBankSelects(){
   const countrySel=document.querySelector("#account-country");
-  const bankSel=document.querySelector("#account-institution");
-  if(!countrySel||!bankSel||!window.NOMAD_WEALTH_COUNTRIES)return;
-  countrySel.innerHTML=window.NOMAD_WEALTH_COUNTRIES.map(c=>`<option value="${c}">${c}</option>`).join("");
-  const preferred=state.currentCountry&&window.NOMAD_WEALTH_BANKS[state.currentCountry]?state.currentCountry:window.NOMAD_WEALTH_COUNTRIES[0];
-  countrySel.value=preferred;
-  updateBankOptions(preferred);
+  if(!countrySel)return;
+  populateCountrySelect(countrySel,state?.currentCountry||"AL");
+  updateBankOptions(countrySel.value);
+  const currency=countryByCode.get(countrySel.value)?.currency;
+  if(currency&&currencies.includes(currency))document.querySelector("#account-currency").value=currency;
 }
 function updateBankOptions(country){
-  const bankSel=document.querySelector("#account-institution");
-  const banks=(window.NOMAD_WEALTH_BANKS[country]||window.NOMAD_WEALTH_BANKS["Other"]||[]);
-  bankSel.innerHTML=banks.map(b=>`<option value="${b}">${b}</option>`).join("");
+  const list=document.querySelector("#bank-options");
+  if(!list)return;
+  const code=normalizeCountryCode(country);
+  const banks=[...(window.NOMAD_WEALTH_BANKS?.[code]||[]),...(window.NOMAD_WEALTH_UNIVERSAL_BANKS||[])];
+  list.innerHTML=[...new Set(banks)].map(b=>`<option value="${esc(b)}"></option>`).join("");
 }
 document.addEventListener("change",e=>{
-  if(e.target&&e.target.id==="account-country"){updateBankOptions(e.target.value);}
+  if(e.target&&e.target.id==="account-country"){
+    updateBankOptions(e.target.value);
+    const currency=countryByCode.get(e.target.value)?.currency;
+    if(currency&&currencies.includes(currency))document.querySelector("#account-currency").value=currency;
+  }
   if(e.target&&e.target.id==="language-select"){
-    localStorage.setItem("nomad_language",e.target.value);
-    authToast&&authToast("Language preference saved.");
+    applyLanguage(e.target.value);authToast("Language updated.");
   }
 });
-(function initLanguage(){
-  const saved=localStorage.getItem("nomad_language")||"en";
-  document.addEventListener("DOMContentLoaded",()=>{
-    const sel=document.querySelector("#language-select");
-    if(sel)sel.value=saved;
-  });
-  const sel=document.querySelector("#language-select");
-  if(sel)sel.value=saved;
-})();
+
 function closeDialog(dialog){if(dialog?.open)dialog.close()}
 
 document.querySelector("#today-label").textContent=new Intl.DateTimeFormat(undefined,{dateStyle:"full"}).format(new Date());
@@ -493,7 +561,7 @@ document.querySelector("#transaction-form").addEventListener("submit",e=>{
 });
 document.querySelector("#account-form").addEventListener("submit",e=>{
   e.preventDefault();const f=new FormData(e.target);
-  state.accounts.push({id:crypto.randomUUID(),name:f.get("name").trim(),institution:f.get("institution").trim(),country:f.get("country").trim(),currency:f.get("currency"),type:f.get("type"),openingBalance:+f.get("balance")});
+  state.accounts.push({id:crypto.randomUUID(),name:f.get("name").trim(),institution:f.get("institution").trim(),country:normalizeCountryCode(f.get("country")),currency:f.get("currency"),type:f.get("type"),openingBalance:+f.get("balance")});
   e.target.reset();closeDialog(document.querySelector("#account-dialog"));save("Account added");
 });
 document.querySelector("#budget-form").addEventListener("submit",e=>{
@@ -541,6 +609,43 @@ document.querySelector("#travel-form").addEventListener("submit",e=>{
   setResult("#travel-result",`${country} travel plan`,money(left),[["Trip budget",money(budget)],["Spent",money(spent)],["Days remaining",days],["Safe daily spending",money(left/days)]]);
 });
 
+
+document.querySelector("#theme-toggle")?.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+document.querySelector("#theme-select")?.addEventListener("change",e=>applyTheme(e.target.value));
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>{if(currentTheme==="system")applyTheme("system")});
+
+document.querySelector("#profile-form")?.addEventListener("submit",async event=>{
+  event.preventDefault();
+  const form=event.currentTarget;
+  const updates={
+    full_name:form.elements.name.value.trim(),
+    country:normalizeCountryCode(form.elements.country.value),
+    main_currency:form.elements.currency.value,
+    language:form.elements.language.value,
+    theme:form.elements.theme.value,
+    onboarding_complete:true
+  };
+  if(!supabase){authToast("Supabase is not configured.",true);return}
+  const {data,error}=await supabase.auth.updateUser({data:updates});
+  if(error){authToast(error.message,true);return}
+  currentUser=data.user;state.currentCountry=updates.country;state.mainCurrency=updates.main_currency;
+  currentLanguage=updates.language;currentTheme=updates.theme;
+  updateUserInterface(data.user);save("Profile updated");
+});
+document.querySelector("#profile-password-reset")?.addEventListener("click",async()=>{
+  if(!supabase||!currentUser?.email)return;
+  const {error}=await supabase.auth.resetPasswordForEmail(currentUser.email,{redirectTo:window.location.origin+window.location.pathname});
+  if(error)authToast(error.message,true);else authToast("Password reset email sent.");
+});
+document.querySelector("#onboarding-form")?.addEventListener("submit",async event=>{
+  event.preventDefault();const f=new FormData(event.currentTarget);
+  const updates={full_name:f.get("name").trim(),country:normalizeCountryCode(f.get("country")),main_currency:f.get("currency"),user_type:f.get("user_type"),language:currentLanguage,theme:currentTheme,onboarding_complete:true};
+  const {data,error}=await supabase.auth.updateUser({data:updates});
+  if(error){authToast(error.message,true);return}
+  currentUser=data.user;state.currentCountry=updates.country;state.mainCurrency=updates.main_currency;
+  document.querySelector("#onboarding-dialog").close();updateUserInterface(data.user);save("Profile setup complete");
+});
+
 document.querySelector("#export-data").addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");
   a.href=URL.createObjectURL(blob);a.download="nomad-wealth-backup.json";a.click();URL.revokeObjectURL(a.href);
@@ -562,4 +667,4 @@ function initializeFinanceApp(){
 }
 if("serviceWorker" in navigator)navigator.serviceWorker.register("service-worker.js").catch(()=>{});
 
-initializeAuthentication();
+applyTheme(currentTheme);applyLanguage(currentLanguage);initializeAuthentication();

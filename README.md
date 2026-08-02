@@ -1,40 +1,44 @@
-# Nomad Wealth 🧭
+# Nomad Wealth Global v4
 
-> One clear view of your money across every country.
+Developed by **Hafizuddin**.
 
-A responsive, multi-country and multi-currency personal finance dashboard built for digital nomads. Track international accounts, currencies, budgets, investments, and travel spending from one secure dashboard.
+## Major fixes
 
-🔗 **[Live Demo]([https://YOUR-VERCEL-LINK.vercel.app](https://nomad-wealth-peach.vercel.app/#))** *(replace after deploy)*
+- `app.js` is now loaded with `type="module"`, which is required because it imports Supabase.
+- Complete ISO country selector with localized country names.
+- Automatic default currency by country.
+- Curated major-bank suggestions for common countries.
+- Users can always type a custom bank name.
+- Working profile editor connected to Supabase user metadata.
+- Light, dark and system appearance modes.
+- Core interface translation for English, Bengali, Russian, Spanish, French, German, Arabic and Portuguese.
+- RTL layout for Arabic.
+- Google users receive an onboarding dialog when profile details are missing.
+- Updated service worker with network-first refresh and a new cache version.
 
-![Nomad Wealth login screen](screenshot.png)
+## Supabase
 
-## Features
+The included `config.js` uses your current Supabase project URL and browser-safe anon key.
 
-- 🔐 Full authentication — email/password, Google OAuth, OTP verification, password reset
-- 🌍 Multi-country & multi-currency account tracking
-- 💰 Simple budgeting — see what's safe to spend today
-- 📊 Financial calculators for loans and investment returns
-- 👤 Personalized onboarding (country, currency, user type)
-- 📱 Responsive design + PWA (installable, offline-ready)
+In Supabase Authentication settings, verify:
 
-## Tech Stack
+1. **Site URL** is your exact Vercel production URL.
+2. **Redirect URLs** include your exact Vercel URL and `http://localhost:8080/**`.
+3. Google provider is enabled and its Google Cloud callback URL matches the callback displayed by Supabase.
+4. Email confirmation is enabled.
+5. The Confirm signup template uses `{{ .Token }}` if you want users to enter a six-digit OTP.
 
-- **Frontend:** HTML, CSS, JavaScript
-- **Auth:** Supabase Auth
-- **Storage:** localStorage (Supabase PostgreSQL migration planned)
-- **PWA:** Service Worker + Web Manifest
-- **Deployment:** GitHub + Vercel
+## Bank coverage
 
-## Roadmap
+There is no single complete, free and reliable public list of every bank in every country. This project provides curated suggestions for major countries plus Wise, Revolut, PayPal, Payoneer, Cash and **Other / Custom bank**. Users can type any institution name.
 
-- [ ] Move finance data from localStorage to Supabase PostgreSQL with Row Level Security
-- [ ] Real-time currency conversion via exchange rate API
-- [ ] Data export (CSV / PDF)
+## Deploy
 
-## Setup
+Upload all files to the root of your GitHub repository. Vercel:
 
-See **[SETUP.md](SETUP.md)** for Supabase configuration and deployment steps.
+- Framework: Other
+- Root directory: `./`
+- Build command: empty
+- Output directory: empty
 
-## About
-
-Designed and developed by **Hafizuddin** as a portfolio project demonstrating full-stack web development, authentication, and PWA implementation.
+After deployment, hard-refresh once or test in a private window because previous service-worker versions may remain cached.
