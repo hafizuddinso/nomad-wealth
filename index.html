@@ -233,6 +233,16 @@
           <article class="metric-card highlight"><span>Safe to spend today</span><strong id="safe-today">€0</strong><small>After bills and savings</small></article>
         </div>
 
+        <div class="page-chart-grid dashboard-charts">
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Income and expenses</h2><p>Last six months</p></div></div>
+            <div class="chart-box"><canvas id="dashboard-cashflow-chart"></canvas></div>
+          </article>
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Spending by category</h2><p>Current month</p></div></div>
+            <div class="chart-box"><canvas id="dashboard-category-chart"></canvas></div>
+          </article>
+        </div>
         <div class="dashboard-grid">
           <article class="panel span-2">
             <div class="panel-heading"><div><h2>Accounts by country</h2><p>Original balances and converted totals</p></div><button class="text-button" data-page="accounts">View all</button></div>
@@ -269,6 +279,16 @@
       </section>
 
       <section class="page" id="accounts">
+        <div class="page-chart-grid">
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Balances by account</h2><p>Converted to your main currency</p></div></div>
+            <div class="chart-box"><canvas id="accounts-balance-chart"></canvas></div>
+          </article>
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Currency exposure</h2><p>Where your accessible money is held</p></div></div>
+            <div class="chart-box"><canvas id="accounts-currency-chart"></canvas></div>
+          </article>
+        </div>
         <article class="panel">
           <div class="panel-heading"><div><h2>Your accounts</h2><p>Bank, cash, savings, wallets and debt</p></div><button class="secondary" data-open-dialog="account-dialog">+ Add account</button></div>
           <div id="account-list" class="card-list"></div>
@@ -276,6 +296,16 @@
       </section>
 
       <section class="page" id="transactions">
+        <div class="page-chart-grid">
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Expense categories</h2><p>Filtered transaction view</p></div></div>
+            <div class="chart-box"><canvas id="transactions-category-chart"></canvas></div>
+          </article>
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Daily spending</h2><p>Last 30 days</p></div></div>
+            <div class="chart-box"><canvas id="transactions-daily-chart"></canvas></div>
+          </article>
+        </div>
         <article class="panel">
           <div class="panel-heading"><div><h2>Transactions</h2><p>Income and expenses across countries</p></div><button class="secondary" data-open-dialog="transaction-dialog">+ Add transaction</button></div>
           <div class="advanced-filter-card">
@@ -306,6 +336,12 @@
       </section>
 
       <section class="page" id="budget">
+        <div class="page-chart-grid">
+          <article class="panel chart-card span-2">
+            <div class="panel-heading"><div><h2>Budget usage</h2><p>Used versus remaining for every category</p></div></div>
+            <div class="chart-box chart-box-tall"><canvas id="budget-progress-chart"></canvas></div>
+          </article>
+        </div>
         <div class="two-column">
           <article class="panel">
             <div class="panel-heading"><div><h2>Monthly budget</h2><p>Plan money in simple groups</p></div><button class="secondary" data-open-dialog="budget-dialog">+ Add budget</button></div>
@@ -387,6 +423,16 @@
       </section>
 
       <section class="page" id="investments">
+        <div class="page-chart-grid">
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Cost versus current value</h2><p>Performance of each holding</p></div></div>
+            <div class="chart-box"><canvas id="investments-performance-chart"></canvas></div>
+          </article>
+          <article class="panel chart-card">
+            <div class="panel-heading"><div><h2>Portfolio allocation</h2><p>Share of current investment value</p></div></div>
+            <div class="chart-box"><canvas id="investments-allocation-chart"></canvas></div>
+          </article>
+        </div>
         <article class="panel">
           <div class="panel-heading"><div><h2>Investments</h2><p>Manual holdings and performance</p></div><button class="secondary" data-open-dialog="investment-dialog">+ Add investment</button></div>
           <div id="investment-list" class="card-list"></div>
@@ -418,6 +464,12 @@
             <button type="button" class="secondary" id="export-pdf">Export PDF</button>
           </div>
         </div>
+        <div class="page-chart-grid">
+          <article class="panel chart-card span-2">
+            <div class="panel-heading"><div><h2>Monthly financial trend</h2><p>Income, expenses and net savings</p></div></div>
+            <div class="chart-box"><canvas id="insights-monthly-chart"></canvas></div>
+          </article>
+        </div>
         <div class="insights-grid">
           <article class="panel chart-panel">
             <div class="panel-heading"><div><h2>Spending by category</h2><p>Current month</p></div></div>
@@ -441,6 +493,12 @@
       </section>
 
       <section class="page" id="goals">
+        <div class="page-chart-grid">
+          <article class="panel chart-card span-2">
+            <div class="panel-heading"><div><h2>Savings goal progress</h2><p>Saved amount compared with each target</p></div></div>
+            <div class="chart-box chart-box-tall"><canvas id="goals-progress-chart"></canvas></div>
+          </article>
+        </div>
         <article class="panel">
           <div class="panel-heading"><div><h2>Savings goals</h2><p>Create targets and track your progress</p></div><button class="secondary" data-open-dialog="goal-dialog">+ Add goal</button></div>
           <div id="goals-list" class="goals-grid"></div>
@@ -717,8 +775,10 @@
   <script src="countries.js"></script>
   <script src="banks.js"></script>
   <script src="i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="app.js"></script>
   <script type="module" src="features.js"></script>
   <script type="module" src="cloud-sync.js"></script>
+  <script type="module" src="charts-v8.js"></script>
 </body>
 </html>
