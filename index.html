@@ -450,21 +450,46 @@
       <section class="page" id="shared">
         <div class="two-column">
           <article class="panel">
-            <div class="panel-heading"><div><h2>Your workspaces</h2><p>Personal, family or couple finances</p></div></div>
+            <div class="panel-heading"><div><h2>Shared finances</h2><p>Personal, family, couple or trusted-group tracking</p></div></div>
             <label>Current workspace<select id="workspace-select"></select></label>
             <div id="workspace-details" class="workspace-details"></div>
+
             <form id="create-workspace-form" class="stack-form">
               <h3>Create a shared workspace</h3>
               <label>Workspace name<input name="name" placeholder="Family budget" required></label>
               <button class="primary" type="submit">Create workspace</button>
             </form>
           </article>
+
           <article class="panel">
-            <div class="panel-heading"><div><h2>Join a workspace</h2><p>Enter an invite code from another member</p></div></div>
-            <form id="join-workspace-form" class="stack-form">
-              <label>Invite code<input name="code" placeholder="AB12CD34EF" required></label>
-              <button class="primary" type="submit">Join workspace</button>
+            <div class="panel-heading"><div><h2>Invite someone by email</h2><p>Choose who you are sharing with and what they can do</p></div></div>
+            <form id="email-invite-form" class="stack-form">
+              <label>Who do you want to share with?
+                <select name="relationship" required>
+                  <option value="">Choose one</option>
+                  <option>Spouse or partner</option>
+                  <option>Family member</option>
+                  <option>Friend</option>
+                  <option>Business partner</option>
+                  <option>Accountant or adviser</option>
+                  <option>Other trusted person</option>
+                </select>
+              </label>
+              <label>Their email address<input name="email" type="email" placeholder="person@example.com" required></label>
+              <label>Permission
+                <select name="role" required>
+                  <option value="editor">Editor — can add and change financial data</option>
+                  <option value="viewer">Viewer — can only view financial data</option>
+                </select>
+              </label>
+              <button class="primary" type="submit">Send invitation</button>
             </form>
+
+            <div class="pending-invites">
+              <h3>Invitations</h3>
+              <div id="workspace-invitations"></div>
+            </div>
+
             <div class="cloud-status-card">
               <span>Cloud synchronization</span>
               <strong id="cloud-sync-status">Checking setup…</strong>
@@ -675,6 +700,18 @@
   </dialog>
 
   </div>
+
+  <dialog id="cloud-migration-dialog">
+    <div class="migration-dialog-content">
+      <div class="dialog-heading"><div><span class="eyebrow">CLOUD SETUP</span><h2>Move this browser's data to your account?</h2></div></div>
+      <p>We found financial information saved only in this browser. Import it once so it follows you across Android, iPhone, iPad and Mac.</p>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" id="start-fresh-cloud">Start fresh</button>
+        <button type="button" class="primary" id="import-local-cloud">Import existing data</button>
+      </div>
+    </div>
+  </dialog>
+
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="config.js"></script>
   <script src="countries.js"></script>
