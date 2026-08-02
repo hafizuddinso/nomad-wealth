@@ -8,6 +8,7 @@ const isConfigured=
   !config.SUPABASE_ANON_KEY.includes("YOUR_");
 
 const supabase=isConfigured?createClient(config.SUPABASE_URL,config.SUPABASE_ANON_KEY):null;
+window.NomadSupabase=supabase;
 let currentUser=null;
 let pendingSignup=null;
 let KEY="nomad-wealth-guest";
@@ -351,6 +352,8 @@ function normalizeState(data){
   normalized.transactions=Array.isArray(normalized.transactions)?normalized.transactions:[];
   normalized.budgets=Array.isArray(normalized.budgets)?normalized.budgets:[];
   normalized.investments=Array.isArray(normalized.investments)?normalized.investments:[];
+  normalized.goals=Array.isArray(normalized.goals)?normalized.goals:[];
+  normalized.netWorthSnapshots=Array.isArray(normalized.netWorthSnapshots)?normalized.netWorthSnapshots:[];
   normalized.rates={...demo.rates,...(normalized.rates||{})};
   normalized.transactions=normalized.transactions.map((t,index)=>({
     ...t,
@@ -377,6 +380,7 @@ function load(){
 function save(message){
   localStorage.setItem(KEY,JSON.stringify(state));
   render();
+  window.dispatchEvent(new CustomEvent("nomad:state-saved",{detail:{state:structuredClone(state)}}));
   if(message)toast(message);
 }
 function toast(message){
@@ -401,7 +405,9 @@ function categorySpent(category){
   return state.transactions.filter(t=>t.type==="expense"&&isThisMonth(t.date)&&t.category.toLowerCase()===category.toLowerCase()).reduce((s,t)=>s+inMain(t.amount,t.currency),0);
 }
 function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-function empty(message="No data yet."){return `<div class="empty">${esc(message)}</div>`}
+function empty(message="No data yet.",action=""){
+  return `<div class="empty-state"><div class="empty-state-icon">◇</div><h3>${esc(message)}</h3><p>Add your first item to start building a useful financial overview.</p>${action?`<span>${esc(action)}</span>`:""}</div>`
+}
 
 function render(){
   document.querySelector("#main-currency").value=state.mainCurrency;
@@ -453,13 +459,39 @@ function renderAccounts(){
     </article>`).join("")||empty();
 }
 function filteredTransactions(){
-  const query=(document.querySelector("#transaction-search")?.value||"").toLowerCase();
-  const filter=document.querySelector("#transaction-filter")?.value||"all";
-  return [...state.transactions].filter(t=>{
-    const matchType=filter==="all"||t.type===filter;
-    const text=`${t.category} ${t.note} ${t.country}`.toLowerCase();
-    return matchType&&text.includes(query);
-  }).sort((a,b)=>new Date(b.createdAt||`${b.date}T00:00:00`)-new Date(a.createdAt||`${a.date}T00:00:00`));
+  const query=(document.querySelector("#transaction-search")?.value||"").trim().toLowerCase();
+  const type=document.querySelector("#transaction-filter")?.value||"all";
+  const category=document.querySelector("#transaction-category-filter")?.value||"all";
+  const country=document.querySelector("#transaction-country-filter")?.value||"all";
+  const dateFrom=document.querySelector("#transaction-date-from")?.value||"";
+  const dateTo=document.querySelector("#transaction-date-to")?.value||"";
+  const minRaw=document.querySelector("#transaction-min-amount")?.value;
+  const maxRaw=document.querySelector("#transaction-max-amount")?.value;
+  const min=minRaw===""||minRaw==null?null:Number(minRaw);
+  const max=maxRaw===""||maxRaw==null?null:Number(maxRaw);
+  const sort=document.querySelector("#transaction-sort")?.value||"newest";
+  const filtered=state.transactions.filter(t=>{
+    const account=state.accounts.find(a=>a.id===t.accountId);
+    const searchable=`${t.category} ${t.note||""} ${countryName(t.country)} ${account?.name||""}`.toLowerCase();
+    const mainAmount=Math.abs(inMain(t.amount,t.currency));
+    return (type==="all"||t.type===type) &&
+      (category==="all"||t.category===category) &&
+      (country==="all"||normalizeCountryCode(t.country)===country) &&
+      (!query||searchable.includes(query)) &&
+      (!dateFrom||t.date>=dateFrom) &&
+      (!dateTo||t.date<=dateTo) &&
+      (min===null||mainAmount>=min) &&
+      (max===null||mainAmount<=max);
+  });
+  return filtered.sort((a,b)=>{
+    const dateA=new Date(a.createdAt||`${a.date}T00:00:00`);
+    const dateB=new Date(b.createdAt||`${b.date}T00:00:00`);
+    if(sort==="oldest")return dateA-dateB;
+    if(sort==="largest")return Math.abs(inMain(b.amount,b.currency))-Math.abs(inMain(a.amount,a.currency));
+    if(sort==="smallest")return Math.abs(inMain(a.amount,a.currency))-Math.abs(inMain(b.amount,b.currency));
+    if(sort==="category")return a.category.localeCompare(b.category);
+    return dateB-dateA;
+  });
 }
 function transactionHTML(items,deletable=false){
   if(!items.length)return empty("No matching transactions.");
@@ -485,7 +517,11 @@ function transactionHTML(items,deletable=false){
 function renderTransactions(){
   const all=[...state.transactions].sort((a,b)=>new Date(b.createdAt||`${b.date}T00:00:00`)-new Date(a.createdAt||`${a.date}T00:00:00`));
   document.querySelector("#recent-transactions").innerHTML=transactionHTML(all.slice(0,5));
-  document.querySelector("#transaction-list").innerHTML=transactionHTML(filteredTransactions(),true);
+  const filtered=filteredTransactions();
+  document.querySelector("#transaction-list").innerHTML=transactionHTML(filtered,true);
+  const count=document.querySelector("#transaction-result-count");
+  if(count)count.textContent=`${filtered.length} transaction${filtered.length===1?"":"s"}`;
+  window.dispatchEvent(new CustomEvent("nomad:transactions-rendered"));
 }
 function renderBudgets(expenses,budgetTotal){
   const html=state.budgets.map(b=>{
@@ -537,7 +573,7 @@ function calculateCurrencyConversion(){
   result.innerHTML=`<span>${money(amount,from)}</span><strong>${money(converted,to)}</strong><small>1 ${from} ≈ ${Number(convert(1,from,to)).toLocaleString(undefined,{maximumFractionDigits:6})} ${to}</small>`;
 }
 function populateSelects(){
-  ["main-currency","transaction-currency","account-currency","investment-currency","budget-currency"].forEach(id=>populateCurrencySelect(document.querySelector("#"+id),id==="main-currency"?state.mainCurrency:undefined));
+  ["main-currency","transaction-currency","account-currency","investment-currency","budget-currency","goal-currency"].forEach(id=>populateCurrencySelect(document.querySelector("#"+id),id==="main-currency"?state.mainCurrency:undefined));
   document.querySelector("#main-currency").value=state.mainCurrency;
   document.querySelector("#transaction-account").innerHTML=state.accounts.filter(a=>a.type!=="Debt").map(a=>`<option value="${a.id}">${esc(a.name)} (${a.currency})</option>`).join("");
   populateAllCountryCurrencyControls();
@@ -633,8 +669,15 @@ document.querySelector("#transaction-account").addEventListener("change",e=>{
   }
 });
 document.querySelector("#main-currency").addEventListener("change",e=>{state.mainCurrency=e.target.value;save("Main currency updated")});
-document.querySelector("#transaction-search").addEventListener("input",renderTransactions);
-document.querySelector("#transaction-filter").addEventListener("change",renderTransactions);
+document.querySelectorAll(".transaction-filter-control").forEach(control=>{
+  control.addEventListener(control.type==="search"||control.type==="number"?"input":"change",renderTransactions);
+});
+document.querySelector("#clear-transaction-filters")?.addEventListener("click",()=>{
+  ["transaction-search","transaction-date-from","transaction-date-to","transaction-min-amount","transaction-max-amount"].forEach(id=>{const el=document.querySelector("#"+id);if(el)el.value=""});
+  ["transaction-filter","transaction-category-filter","transaction-country-filter"].forEach(id=>{const el=document.querySelector("#"+id);if(el)el.value="all"});
+  const sort=document.querySelector("#transaction-sort");if(sort)sort.value="newest";
+  renderTransactions();
+});
 
 document.querySelector("#transaction-form").addEventListener("submit",e=>{
   e.preventDefault();const f=new FormData(e.target);
@@ -779,5 +822,31 @@ function initializeFinanceApp(){
   document.querySelector("#travel-form").dispatchEvent(new Event("submit",{cancelable:true,bubbles:true}));
 }
 if("serviceWorker" in navigator)navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+
+
+window.NomadApp={
+  getState:()=>state,
+  getUser:()=>currentUser,
+  getSupabase:()=>supabase,
+  getMainCurrency:()=>state?.mainCurrency||"EUR",
+  money,
+  convert,
+  inMain,
+  countryName,
+  normalizeCountryCode,
+  populateCountrySelect,
+  populateCurrencySelect,
+  replaceState(next,{persist=true,message=""}={}){
+    state=normalizeState(next);
+    if(persist)localStorage.setItem(KEY,JSON.stringify(state));
+    render();
+    window.dispatchEvent(new CustomEvent("nomad:state-replaced",{detail:{state:structuredClone(state)}}));
+    if(message)toast(message);
+  },
+  save,
+  render,
+  renderTransactions,
+  toast
+};
 
 applyTheme(currentTheme);applyLanguage(currentLanguage);initializeAuthentication();

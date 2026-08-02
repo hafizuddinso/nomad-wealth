@@ -1,58 +1,47 @@
-# Nomad Wealth Global v5 — Correction Release
+# Nomad Wealth Global v6 Pro
 
-Developed by **Hafizuddin**.
+A responsive, multi-country personal finance application developed by **Hafizuddin**.
 
-## Major fixes
+## v6 features
 
-- `app.js` is now loaded with `type="module"`, which is required because it imports Supabase.
-- Complete ISO country selector with localized country names.
-- Automatic default currency by country.
-- Curated major-bank suggestions for common countries.
-- Users can always type a custom bank name.
-- Working profile editor connected to Supabase user metadata.
-- Light, dark and system appearance modes.
-- Core interface translation for English, Bengali, Russian, Spanish, French, German, Arabic and Portuguese.
-- RTL layout for Arabic.
-- Google users receive an onboarding dialog when profile details are missing.
-- Updated service worker with network-first refresh and a new cache version.
+- Advanced transaction search, date/category/country/amount filters and sorting
+- Friendly empty states
+- Currency converter
+- Spending-by-category pie chart
+- Net-worth trend line chart
+- Monthly comparison summary
+- Currency-aware budget progress
+- Automatic recurring transactions
+- CSV export
+- Printable PDF report export
+- Savings goals and contributions
+- Browser bill reminders
+- Real Supabase cloud synchronization
+- Multi-device data
+- Shared family/couple workspaces with invite codes
+- Realtime updates between connected devices
 
-## Supabase
+## Activate cloud sync
 
-The included `config.js` uses your current Supabase project URL and browser-safe anon key.
+Open Supabase Dashboard → SQL Editor and run the complete contents of:
 
-In Supabase Authentication settings, verify:
+`supabase-schema.sql`
 
-1. **Site URL** is your exact Vercel production URL.
-2. **Redirect URLs** include your exact Vercel URL and `http://localhost:8080/**`.
-3. Google provider is enabled and its Google Cloud callback URL matches the callback displayed by Supabase.
-4. Email confirmation is enabled.
-5. The Confirm signup template uses `{{ .Token }}` if you want users to enter a six-digit OTP.
+Refresh the app after the SQL finishes.
 
-## Bank coverage
+The app stores each workspace as a protected JSON document in Supabase. Row Level Security allows only workspace members to access it.
 
-There is no single complete, free and reliable public list of every bank in every country. This project provides curated suggestions for major countries plus Wise, Revolut, PayPal, Payoneer, Cash and **Other / Custom bank**. Users can type any institution name.
+## Security
 
-## Deploy
+- Uses authenticated Supabase users
+- Uses Row Level Security
+- Never put a secret or service-role key in `config.js`
+- Use a Supabase publishable browser key
 
-Upload all files to the root of your GitHub repository. Vercel:
+## PDF export
 
-- Framework: Other
-- Root directory: `./`
-- Build command: empty
-- Output directory: empty
+The PDF button opens a printable report. In the browser print dialog choose **Save as PDF**.
 
-After deployment, hard-refresh once or test in a private window because previous service-worker versions may remain cached.
+## Notifications
 
-
-## Global v5 corrections
-
-- Organized transaction alignment with a dedicated amount and delete column
-- High-contrast close and delete controls
-- Real country dropdowns in transaction, account, travel, budget and profile forms
-- New transactions sorted by creation time so the latest entry appears first
-- Currency and country stored per budget
-- Full supported currency list available for accounts, budgets and investments
-- Manual exchange-rate editor replaced by a two-currency converter
-- Optional online exchange-rate refresh with offline fallback
-- Dark-theme contrast fixes for budget and calculator panels
-- Existing browser data automatically migrated
+Browser notifications require user permission and browser/PWA support. They are generated from recurring entries due within three days.

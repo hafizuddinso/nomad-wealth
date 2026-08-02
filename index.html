@@ -219,6 +219,11 @@
         </article>
 
         <div id="health-banner" class="health-banner"></div>
+        <div class="summary-strip">
+          <article><span>This month</span><strong id="summary-this-month">—</strong><small id="summary-vs-last">Compared with last month</small></article>
+          <article><span>Top category</span><strong id="summary-top-category">—</strong><small id="summary-top-category-value">No spending yet</small></article>
+          <article><span>Recurring this month</span><strong id="summary-recurring">—</strong><small>Automatically generated entries</small></article>
+        </div>
 
         <div class="metric-grid">
           <article class="metric-card"><span>Total wealth</span><strong id="net-worth">€0</strong><small>Assets minus debts</small></article>
@@ -273,9 +278,28 @@
       <section class="page" id="transactions">
         <article class="panel">
           <div class="panel-heading"><div><h2>Transactions</h2><p>Income and expenses across countries</p></div><button class="secondary" data-open-dialog="transaction-dialog">+ Add transaction</button></div>
-          <div class="toolbar">
-            <input id="transaction-search" type="search" placeholder="Search category, note or country" />
-            <select id="transaction-filter"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select>
+          <div class="advanced-filter-card">
+            <div class="filter-grid">
+              <label>Search<input class="transaction-filter-control" id="transaction-search" type="search" placeholder="Category, note, account or country"></label>
+              <label>Type<select class="transaction-filter-control" id="transaction-filter"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select></label>
+              <label>Category<select class="transaction-filter-control" id="transaction-category-filter"><option value="all">All categories</option></select></label>
+              <label>Country<select class="transaction-filter-control" id="transaction-country-filter"><option value="all">All countries</option></select></label>
+              <label>From date<input class="transaction-filter-control" id="transaction-date-from" type="date"></label>
+              <label>To date<input class="transaction-filter-control" id="transaction-date-to" type="date"></label>
+              <label>Minimum amount<input class="transaction-filter-control" id="transaction-min-amount" type="number" min="0" step="0.01" placeholder="0"></label>
+              <label>Maximum amount<input class="transaction-filter-control" id="transaction-max-amount" type="number" min="0" step="0.01" placeholder="Any"></label>
+              <label>Sort by<select class="transaction-filter-control" id="transaction-sort">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="largest">Largest amount</option>
+                <option value="smallest">Smallest amount</option>
+                <option value="category">Category A–Z</option>
+              </select></label>
+            </div>
+            <div class="filter-actions">
+              <span id="transaction-result-count">0 transactions</span>
+              <button type="button" class="text-button" id="clear-transaction-filters">Clear filters</button>
+            </div>
           </div>
           <div id="transaction-list"></div>
         </article>
@@ -385,6 +409,71 @@
         </div>
       </section>
 
+
+      <section class="page" id="insights">
+        <div class="insights-header">
+          <div><span class="eyebrow">REPORTS & TRENDS</span><h2>Financial insights</h2><p>Understand where your money goes and how your wealth changes.</p></div>
+          <div class="export-actions">
+            <button type="button" class="secondary" id="export-csv">Export CSV</button>
+            <button type="button" class="secondary" id="export-pdf">Export PDF</button>
+          </div>
+        </div>
+        <div class="insights-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h2>Spending by category</h2><p>Current month</p></div></div>
+            <canvas id="category-chart" width="520" height="320"></canvas>
+            <div id="category-chart-legend" class="chart-legend"></div>
+          </article>
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h2>Net worth trend</h2><p>Saved monthly snapshots</p></div></div>
+            <canvas id="net-worth-chart" width="520" height="320"></canvas>
+            <div id="net-worth-trend-caption" class="chart-caption"></div>
+          </article>
+          <article class="panel span-2">
+            <div class="panel-heading"><div><h2>Monthly comparison</h2><p>This month versus last month</p></div></div>
+            <div id="monthly-comparison" class="comparison-grid"></div>
+          </article>
+          <article class="panel span-2">
+            <div class="panel-heading"><div><h2>Upcoming bills and recurring income</h2><p>Based on recurring transactions</p></div><button type="button" class="secondary" id="enable-reminders">Enable notifications</button></div>
+            <div id="upcoming-recurring"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="goals">
+        <article class="panel">
+          <div class="panel-heading"><div><h2>Savings goals</h2><p>Create targets and track your progress</p></div><button class="secondary" data-open-dialog="goal-dialog">+ Add goal</button></div>
+          <div id="goals-list" class="goals-grid"></div>
+        </article>
+      </section>
+
+      <section class="page" id="shared">
+        <div class="two-column">
+          <article class="panel">
+            <div class="panel-heading"><div><h2>Your workspaces</h2><p>Personal, family or couple finances</p></div></div>
+            <label>Current workspace<select id="workspace-select"></select></label>
+            <div id="workspace-details" class="workspace-details"></div>
+            <form id="create-workspace-form" class="stack-form">
+              <h3>Create a shared workspace</h3>
+              <label>Workspace name<input name="name" placeholder="Family budget" required></label>
+              <button class="primary" type="submit">Create workspace</button>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-heading"><div><h2>Join a workspace</h2><p>Enter an invite code from another member</p></div></div>
+            <form id="join-workspace-form" class="stack-form">
+              <label>Invite code<input name="code" placeholder="AB12CD34EF" required></label>
+              <button class="primary" type="submit">Join workspace</button>
+            </form>
+            <div class="cloud-status-card">
+              <span>Cloud synchronization</span>
+              <strong id="cloud-sync-status">Checking setup…</strong>
+              <small id="cloud-sync-detail">Run the included Supabase SQL migration to activate.</small>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="page" id="about">
         <article class="about-hero panel">
           <div>
@@ -449,7 +538,10 @@
           <article class="panel">
             <div class="panel-heading"><div><h2>Data and backup</h2><p>Keep a local copy of your prototype data</p></div></div>
             <div class="button-stack">
-              <button class="secondary" id="export-data">Export backup</button>
+              <button class="secondary" id="export-data">Export JSON backup</button>
+              <button class="secondary" id="export-csv-settings">Export transactions CSV</button>
+              <button class="secondary" id="export-pdf-settings">Export report PDF</button>
+              <button class="secondary" id="enable-reminders-settings">Enable bill reminders</button>
               <label class="secondary file-label">Import backup<input type="file" id="import-data" accept=".json"></label>
               <button class="danger" id="reset-data">Reset demo data</button>
             </div>
@@ -565,6 +657,23 @@
     </form>
   </dialog>
 
+
+  <dialog id="goal-dialog">
+    <form id="goal-form">
+      <div class="dialog-heading"><div><span class="eyebrow">NEW SAVINGS GOAL</span><h2>Create goal</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div>
+      <label>Goal name<input name="name" placeholder="Emergency fund" required></label>
+      <div class="form-grid">
+        <label>Target amount<input name="target" type="number" min="1" step="0.01" required></label>
+        <label>Currency<select name="currency" id="goal-currency" required></select></label>
+      </div>
+      <div class="form-grid">
+        <label>Already saved<input name="current" type="number" min="0" step="0.01" value="0"></label>
+        <label>Target date<input name="target_date" type="date"></label>
+      </div>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button type="submit" class="primary">Save goal</button></div>
+    </form>
+  </dialog>
+
   </div>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="config.js"></script>
@@ -572,5 +681,7 @@
   <script src="banks.js"></script>
   <script src="i18n.js"></script>
   <script type="module" src="app.js"></script>
+  <script type="module" src="features.js"></script>
+  <script type="module" src="cloud-sync.js"></script>
 </body>
 </html>
