@@ -94,6 +94,9 @@ function populateAllCountryCurrencyControls(){
   populateCountrySelect(document.querySelector("#profile-country"),state?.currentCountry||currentUser?.user_metadata?.country||"AL");
   populateCountrySelect(document.querySelector("#onboarding-country"),currentUser?.user_metadata?.country||"AL");
   populateCountrySelect(document.querySelector("#account-country"),state?.currentCountry||"AL");
+  populateCountrySelect(document.querySelector("#transaction-country"),state?.currentCountry||"AL");
+  populateCountrySelect(document.querySelector("#travel-country"),state?.currentCountry||"AL");
+  populateCountrySelect(document.querySelector("#budget-country"),state?.currentCountry||"AL");
   populateCurrencySelect(document.querySelector("#signup-currency"),document.querySelector("#signup-currency")?.value||state?.mainCurrency||"EUR");
   populateCurrencySelect(document.querySelector("#profile-currency"),state?.mainCurrency||"EUR");
   populateCurrencySelect(document.querySelector("#onboarding-currency"),state?.mainCurrency||"EUR");
@@ -319,10 +322,10 @@ const demo={
   ],
   transactions:[],
   budgets:[
-    {id:crypto.randomUUID(),group:"Essential",category:"Housing",limit:520},
-    {id:crypto.randomUUID(),group:"Flexible",category:"Food",limit:200},
-    {id:crypto.randomUUID(),group:"Savings",category:"Emergency Fund",limit:200},
-    {id:crypto.randomUUID(),group:"Investments",category:"Monthly Investing",limit:150}
+    {id:crypto.randomUUID(),group:"Essential",category:"Housing",limit:520,currency:"EUR",country:"AL"},
+    {id:crypto.randomUUID(),group:"Flexible",category:"Food",limit:200,currency:"EUR",country:"AL"},
+    {id:crypto.randomUUID(),group:"Savings",category:"Emergency Fund",limit:200,currency:"EUR",country:"AL"},
+    {id:crypto.randomUUID(),group:"Investments",category:"Monthly Investing",limit:150,currency:"EUR",country:"AL"}
   ],
   investments:[
     {id:crypto.randomUUID(),name:"Global Index Fund",type:"ETF",currency:"EUR",cost:1200,value:1350},
@@ -333,18 +336,43 @@ const demo={
 function seed(s){
   const now=new Date(),iso=d=>d.toISOString().slice(0,10);
   s.transactions=[
-    {id:crypto.randomUUID(),type:"income",amount:200,currency:"USD",category:"Freelance",country:"US",accountId:s.accounts[3].id,date:iso(now),note:"Client payment"},
-    {id:crypto.randomUUID(),type:"expense",amount:400,currency:"EUR",category:"Housing",country:"AL",accountId:s.accounts[2].id,date:iso(now),note:"Rent"},
-    {id:crypto.randomUUID(),type:"expense",amount:45.2,currency:"EUR",category:"Food",country:"AL",accountId:s.accounts[2].id,date:iso(new Date(now-86400000)),note:"Groceries"},
-    {id:crypto.randomUUID(),type:"expense",amount:1200,currency:"RUB",category:"Transport",country:"RU",accountId:s.accounts[0].id,date:iso(new Date(now-172800000)),note:"Transit"}
+    {id:crypto.randomUUID(),type:"income",amount:200,currency:"USD",category:"Freelance",country:"US",accountId:s.accounts[3].id,date:iso(now),createdAt:new Date(now.getTime()+4000).toISOString(),note:"Client payment"},
+    {id:crypto.randomUUID(),type:"expense",amount:400,currency:"EUR",category:"Housing",country:"AL",accountId:s.accounts[2].id,date:iso(now),createdAt:new Date(now.getTime()+3000).toISOString(),note:"Rent"},
+    {id:crypto.randomUUID(),type:"expense",amount:45.2,currency:"EUR",category:"Food",country:"AL",accountId:s.accounts[2].id,date:iso(new Date(now-86400000)),createdAt:new Date(now.getTime()-86400000).toISOString(),note:"Groceries"},
+    {id:crypto.randomUUID(),type:"expense",amount:1200,currency:"RUB",category:"Transport",country:"RU",accountId:s.accounts[0].id,date:iso(new Date(now-172800000)),createdAt:new Date(now.getTime()-172800000).toISOString(),note:"Transit"}
   ];
   return s;
 }
 let state=null;
 
+function normalizeState(data){
+  const normalized=data&&typeof data==="object"?data:structuredClone(demo);
+  normalized.accounts=Array.isArray(normalized.accounts)?normalized.accounts:[];
+  normalized.transactions=Array.isArray(normalized.transactions)?normalized.transactions:[];
+  normalized.budgets=Array.isArray(normalized.budgets)?normalized.budgets:[];
+  normalized.investments=Array.isArray(normalized.investments)?normalized.investments:[];
+  normalized.rates={...demo.rates,...(normalized.rates||{})};
+  normalized.transactions=normalized.transactions.map((t,index)=>({
+    ...t,
+    country:normalizeCountryCode(t.country||normalized.currentCountry||"US"),
+    frequency:t.frequency||"once",
+    createdAt:t.createdAt||`${t.date||"1970-01-01"}T${String(23-Math.min(index,23)).padStart(2,"0")}:00:00.000Z`
+  }));
+  normalized.budgets=normalized.budgets.map(b=>({
+    ...b,
+    currency:b.currency||"EUR",
+    country:normalizeCountryCode(b.country||normalized.currentCountry||"US")
+  }));
+  return normalized;
+}
 function load(){
-  try{const raw=localStorage.getItem(KEY);if(raw)return JSON.parse(raw)}catch{}
-  const fresh=seed(structuredClone(demo));localStorage.setItem(KEY,JSON.stringify(fresh));return fresh;
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw)return normalizeState(JSON.parse(raw));
+  }catch{}
+  const fresh=normalizeState(seed(structuredClone(demo)));
+  localStorage.setItem(KEY,JSON.stringify(fresh));
+  return fresh;
 }
 function save(message){
   localStorage.setItem(KEY,JSON.stringify(state));
@@ -377,15 +405,15 @@ function empty(message="No data yet."){return `<div class="empty">${esc(message)
 
 function render(){
   document.querySelector("#main-currency").value=state.mainCurrency;
-  document.querySelector("#current-location").textContent=`Current country: ${state.currentCountry}`;
+  document.querySelector("#current-location").textContent=`Current country: ${countryName(state.currentCountry)}`;
   const nonDebt=state.accounts.filter(a=>a.type!=="Debt").reduce((s,a)=>s+inMain(accountBalance(a),a.currency),0);
   const debt=state.accounts.filter(a=>a.type==="Debt").reduce((s,a)=>s+Math.abs(inMain(accountBalance(a),a.currency)),0);
   const investments=state.investments.reduce((s,i)=>s+inMain(i.value,i.currency),0);
   const income=state.transactions.filter(t=>t.type==="income"&&isThisMonth(t.date)).reduce((s,t)=>s+inMain(t.amount,t.currency),0);
   const expenses=state.transactions.filter(t=>t.type==="expense"&&isThisMonth(t.date)).reduce((s,t)=>s+inMain(t.amount,t.currency),0);
-  const budgetTotal=state.budgets.reduce((s,b)=>s+b.limit,0);
-  const essential=state.budgets.filter(b=>b.group==="Essential").reduce((s,b)=>s+b.limit,0);
-  const savingsTarget=state.budgets.filter(b=>["Savings","Investments"].includes(b.group)).reduce((s,b)=>s+b.limit,0);
+  const budgetTotal=state.budgets.reduce((s,b)=>s+inMain(b.limit,b.currency||"EUR"),0);
+  const essential=state.budgets.filter(b=>b.group==="Essential").reduce((s,b)=>s+inMain(b.limit,b.currency||"EUR"),0);
+  const savingsTarget=state.budgets.filter(b=>["Savings","Investments"].includes(b.group)).reduce((s,b)=>s+inMain(b.limit,b.currency||"EUR"),0);
   const daysInMonth=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
   const daysLeft=Math.max(1,daysInMonth-new Date().getDate()+1);
   const unallocated=Math.max(0,income-essential-savingsTarget-expenses);
@@ -407,7 +435,7 @@ function render(){
     :`Be careful. Your expenses are higher than your income this month.`;
   document.querySelector("#budget-summary").textContent=`${budgetTotal?Math.min(100,expenses/budgetTotal*100).toFixed(0):0}% of budget used`;
 
-  renderAccounts();renderTransactions();renderBudgets(expenses,budgetTotal);renderInvestments();renderRates();populateSelects();
+  renderAccounts();renderTransactions();renderBudgets(expenses,budgetTotal);renderInvestments();populateSelects();renderCurrencyConverter();
 }
 function renderAccounts(){
   const groups={};state.accounts.forEach(a=>(groups[a.country]??=[]).push(a));
@@ -431,29 +459,53 @@ function filteredTransactions(){
     const matchType=filter==="all"||t.type===filter;
     const text=`${t.category} ${t.note} ${t.country}`.toLowerCase();
     return matchType&&text.includes(query);
-  }).sort((a,b)=>b.date.localeCompare(a.date));
+  }).sort((a,b)=>new Date(b.createdAt||`${b.date}T00:00:00`)-new Date(a.createdAt||`${a.date}T00:00:00`));
 }
 function transactionHTML(items,deletable=false){
   if(!items.length)return empty("No matching transactions.");
   return items.map(t=>{
     const a=state.accounts.find(x=>x.id===t.accountId);
-    return `<div class="row"><div><div class="row-title">${esc(t.category)}${t.frequency&&t.frequency!=="once"?` <span class="recurring-badge">↻ ${esc(t.frequency)}</span>`:""}</div><div class="row-subtitle">${esc(countryName(t.country))} · ${esc(a?.name||"Unknown")} · ${esc(t.date)}${t.note?` · ${esc(t.note)}`:""}</div></div><div><span class="amount ${t.type}">${t.type==="income"?"+":"-"}${money(t.amount,t.currency)}</span><div class="row-subtitle">${money(inMain(t.amount,t.currency))}</div>${deletable?`<button class="icon-button delete-tx" data-id="${t.id}" aria-label="Delete transaction">×</button>`:""}</div></div>`;
+    const sign=t.type==="income"?"+":"-";
+    return `<article class="transaction-item">
+      <div class="transaction-main">
+        <div class="transaction-icon ${t.type}">${t.type==="income"?"↙":"↗"}</div>
+        <div class="transaction-copy">
+          <div class="row-title">${esc(t.category)}${t.frequency&&t.frequency!=="once"?` <span class="recurring-badge">↻ ${esc(t.frequency)}</span>`:""}</div>
+          <div class="row-subtitle">${esc(countryName(t.country))} · ${esc(a?.name||"Unknown")} · ${esc(t.date)}${t.note?` · ${esc(t.note)}`:""}</div>
+        </div>
+      </div>
+      <div class="transaction-value">
+        <strong class="amount ${t.type}">${sign}${money(t.amount,t.currency)}</strong>
+        <small>${money(inMain(t.amount,t.currency))}</small>
+      </div>
+      ${deletable?`<button class="delete-transaction delete-tx" data-id="${t.id}" aria-label="Delete transaction" title="Delete transaction">×</button>`:""}
+    </article>`;
   }).join("");
 }
 function renderTransactions(){
-  const all=[...state.transactions].sort((a,b)=>b.date.localeCompare(a.date));
+  const all=[...state.transactions].sort((a,b)=>new Date(b.createdAt||`${b.date}T00:00:00`)-new Date(a.createdAt||`${a.date}T00:00:00`));
   document.querySelector("#recent-transactions").innerHTML=transactionHTML(all.slice(0,5));
   document.querySelector("#transaction-list").innerHTML=transactionHTML(filteredTransactions(),true);
 }
 function renderBudgets(expenses,budgetTotal){
   const html=state.budgets.map(b=>{
-    const spent=categorySpent(b.category),pct=Math.min(100,spent/b.limit*100);
-    return `<div class="progress-wrap"><div class="progress-label"><strong>${esc(b.group)} · ${esc(b.category)}</strong><span>${money(spent)} / ${money(b.limit)}</span></div><div class="progress ${spent>b.limit?"over":""}"><span style="width:${pct}%"></span></div></div>`;
+    const currency=b.currency||"EUR";
+    const spentMain=categorySpent(b.category);
+    const spentInBudget=convert(spentMain,state.mainCurrency,currency);
+    const pct=Math.min(100,spentInBudget/b.limit*100);
+    const over=spentInBudget>b.limit;
+    return `<article class="budget-item ${over?"is-over":""}">
+      <div class="budget-item-head">
+        <div><strong>${esc(b.group)} · ${esc(b.category)}</strong><small>${esc(countryName(b.country||state.currentCountry))} · ${currency}</small></div>
+        <span>${money(spentInBudget,currency)} / ${money(b.limit,currency)}</span>
+      </div>
+      <div class="progress ${over?"over":""}"><span style="width:${pct}%"></span></div>
+    </article>`;
   }).join("")||empty();
   document.querySelector("#budget-overview").innerHTML=html;
   document.querySelector("#budget-list").innerHTML=html;
   const remaining=Math.max(0,budgetTotal-expenses);
-  document.querySelector("#budget-explanation").innerHTML=`<div class="result-main" style="color:#172033">${money(remaining)}</div><p style="color:#64748b">Estimated budget remaining this month.</p><div class="result-grid" style="color:#172033"><div><span>Planned budget</span><strong>${money(budgetTotal)}</strong></div><div><span>Spent so far</span><strong>${money(expenses)}</strong></div><div><span>Remaining</span><strong>${money(remaining)}</strong></div></div>`;
+  document.querySelector("#budget-explanation").innerHTML=`<div class="budget-total">${money(remaining)}</div><p>Estimated budget remaining this month.</p><div class="budget-summary-list"><div><span>Planned budget</span><strong>${money(budgetTotal)}</strong></div><div><span>Spent so far</span><strong>${money(expenses)}</strong></div><div><span>Remaining</span><strong>${money(remaining)}</strong></div></div>`;
 }
 function renderInvestments(){
   document.querySelector("#investment-list").innerHTML=state.investments.map(i=>{
@@ -461,11 +513,31 @@ function renderInvestments(){
     return `<article class="mini-card"><small>${esc(i.type)} · ${esc(i.currency)}</small><strong>${money(i.value,i.currency)}</strong><span>${esc(i.name)}</span><div class="${gain>=0?"gain":"loss"}">${gain>=0?"+":""}${money(gain,i.currency)} (${pct.toFixed(1)}%)</div></article>`;
   }).join("")||empty();
 }
-function renderRates(){
-  document.querySelector("#rate-settings").innerHTML=currencies.map(c=>`<div class="rate-row"><strong>${c}</strong><input class="rate-input" data-currency="${c}" type="number" step="0.0001" value="${state.rates[c]}"></div>`).join("");
+function renderCurrencyConverter(){
+  const from=document.querySelector("#converter-from");
+  const to=document.querySelector("#converter-to");
+  if(!from||!to)return;
+  const previousFrom=from.value||state.mainCurrency||"USD";
+  const previousTo=to.value||(state.mainCurrency==="RUB"?"BDT":"RUB");
+  populateCurrencySelect(from,previousFrom);
+  populateCurrencySelect(to,previousTo);
+  from.value=currencies.includes(previousFrom)?previousFrom:"USD";
+  to.value=currencies.includes(previousTo)?previousTo:"RUB";
+  calculateCurrencyConversion();
+}
+function calculateCurrencyConversion(){
+  const form=document.querySelector("#currency-converter-form");
+  const result=document.querySelector("#converter-result");
+  if(!form||!result||!state)return;
+  const data=new FormData(form);
+  const amount=Number(data.get("amount"))||0;
+  const from=data.get("from");
+  const to=data.get("to");
+  const converted=convert(amount,from,to);
+  result.innerHTML=`<span>${money(amount,from)}</span><strong>${money(converted,to)}</strong><small>1 ${from} ≈ ${Number(convert(1,from,to)).toLocaleString(undefined,{maximumFractionDigits:6})} ${to}</small>`;
 }
 function populateSelects(){
-  ["main-currency","transaction-currency","account-currency","investment-currency"].forEach(id=>populateCurrencySelect(document.querySelector("#"+id),id==="main-currency"?state.mainCurrency:undefined));
+  ["main-currency","transaction-currency","account-currency","investment-currency","budget-currency"].forEach(id=>populateCurrencySelect(document.querySelector("#"+id),id==="main-currency"?state.mainCurrency:undefined));
   document.querySelector("#main-currency").value=state.mainCurrency;
   document.querySelector("#transaction-account").innerHTML=state.accounts.filter(a=>a.type!=="Debt").map(a=>`<option value="${a.id}">${esc(a.name)} (${a.currency})</option>`).join("");
   populateAllCountryCurrencyControls();
@@ -486,13 +558,19 @@ function openDialog(id){
   if(id==="transaction-dialog"){
     const form=document.querySelector("#transaction-form");
     form.elements.date.value=new Date().toISOString().slice(0,10);
-    form.elements.country.value=state.currentCountry||"";
+    populateCountrySelect(form.elements.country,state.currentCountry||"AL");
     const account=state.accounts.find(a=>a.type!=="Debt");
     if(account){form.elements.accountId.value=account.id;form.elements.currency.value=account.currency}
     setTimeout(()=>form.elements.amount.focus(),50);
   }
   if(id==="account-dialog"){
     populateCountryBankSelects();
+  }
+  if(id==="budget-dialog"){
+    const form=document.querySelector("#budget-form");
+    populateCountrySelect(form.elements.country,state.currentCountry||"AL");
+    populateCurrencySelect(form.elements.currency,state.mainCurrency||"EUR");
+    form.elements.currency.value=state.mainCurrency||"EUR";
   }
   dialog.showModal();
 }
@@ -548,7 +626,11 @@ function openCalc(name){
 
 document.querySelector("#transaction-account").addEventListener("change",e=>{
   const account=state.accounts.find(a=>a.id===e.target.value);
-  if(account)document.querySelector("#transaction-currency").value=account.currency;
+  if(account){
+    document.querySelector("#transaction-currency").value=account.currency;
+    const country=document.querySelector("#transaction-country");
+    if(country)country.value=normalizeCountryCode(account.country);
+  }
 });
 document.querySelector("#main-currency").addEventListener("change",e=>{state.mainCurrency=e.target.value;save("Main currency updated")});
 document.querySelector("#transaction-search").addEventListener("input",renderTransactions);
@@ -556,7 +638,7 @@ document.querySelector("#transaction-filter").addEventListener("change",renderTr
 
 document.querySelector("#transaction-form").addEventListener("submit",e=>{
   e.preventDefault();const f=new FormData(e.target);
-  state.transactions.push({id:crypto.randomUUID(),type:f.get("type"),amount:+f.get("amount"),currency:f.get("currency"),category:f.get("category").trim(),country:f.get("country").trim(),accountId:f.get("accountId"),date:f.get("date"),frequency:f.get("frequency")||"once",note:f.get("note").trim()});
+  state.transactions.push({id:crypto.randomUUID(),type:f.get("type"),amount:+f.get("amount"),currency:f.get("currency"),category:f.get("category").trim(),country:normalizeCountryCode(f.get("country")),accountId:f.get("accountId"),date:f.get("date"),createdAt:new Date().toISOString(),frequency:f.get("frequency")||"once",note:f.get("note").trim()});
   e.target.reset();closeDialog(document.querySelector("#transaction-dialog"));save("Transaction saved");
 });
 document.querySelector("#account-form").addEventListener("submit",e=>{
@@ -566,7 +648,7 @@ document.querySelector("#account-form").addEventListener("submit",e=>{
 });
 document.querySelector("#budget-form").addEventListener("submit",e=>{
   e.preventDefault();const f=new FormData(e.target);
-  state.budgets.push({id:crypto.randomUUID(),group:f.get("group"),category:f.get("category").trim(),limit:+f.get("limit")});
+  state.budgets.push({id:crypto.randomUUID(),group:f.get("group"),category:f.get("category").trim(),currency:f.get("currency"),country:normalizeCountryCode(f.get("country")),limit:+f.get("limit")});
   e.target.reset();closeDialog(document.querySelector("#budget-dialog"));save("Budget added");
 });
 document.querySelector("#investment-form-dialog").addEventListener("submit",e=>{
@@ -578,8 +660,38 @@ document.addEventListener("click",e=>{
   const btn=e.target.closest(".delete-tx");
   if(btn&&confirm("Delete this transaction?")){state.transactions=state.transactions.filter(t=>t.id!==btn.dataset.id);save("Transaction deleted")}
 });
-document.addEventListener("change",e=>{
-  if(e.target.classList.contains("rate-input")){state.rates[e.target.dataset.currency]=+e.target.value||1;save("Exchange rate updated")}
+
+
+
+document.querySelector("#currency-converter-form")?.addEventListener("submit",e=>{e.preventDefault();calculateCurrencyConversion()});
+document.querySelector("#swap-currencies")?.addEventListener("click",()=>{
+  const from=document.querySelector("#converter-from"),to=document.querySelector("#converter-to");
+  [from.value,to.value]=[to.value,from.value];
+  calculateCurrencyConversion();
+});
+document.querySelector("#converter-from")?.addEventListener("change",calculateCurrencyConversion);
+document.querySelector("#converter-to")?.addEventListener("change",calculateCurrencyConversion);
+document.querySelector("#refresh-rates")?.addEventListener("click",async()=>{
+  const button=document.querySelector("#refresh-rates");
+  const status=document.querySelector("#rate-status");
+  button.disabled=true;button.textContent="Refreshing…";
+  try{
+    const response=await fetch("https://open.er-api.com/v6/latest/EUR",{cache:"no-store"});
+    if(!response.ok)throw new Error("Rate service unavailable");
+    const data=await response.json();
+    if(data.result!=="success"||!data.rates)throw new Error("Invalid rate response");
+    currencies.forEach(code=>{if(Number(data.rates[code]))state.rates[code]=Number(data.rates[code])});
+    state.rates.EUR=1;
+    save();
+    calculateCurrencyConversion();
+    status.textContent=`Rates refreshed ${new Date().toLocaleString()}.`;
+    toast("Currency rates refreshed");
+  }catch(error){
+    status.textContent="Could not refresh rates. Saved reference rates are still available.";
+    toast("Could not refresh exchange rates");
+  }finally{
+    button.disabled=false;button.textContent="Refresh rates";
+  }
 });
 
 function setResult(selector,title,main,rows){
@@ -604,9 +716,9 @@ document.querySelector("#stock-form").addEventListener("submit",e=>{
   setResult("#stock-result","Net profit / loss",money(profit),[["Total cost",money(cost)],["Sale value",money(sale)],["Return",`${ret.toFixed(2)}%`],["Break-even price",money(breakEven)]]);
 });
 document.querySelector("#travel-form").addEventListener("submit",e=>{
-  e.preventDefault();const f=new FormData(e.target),country=f.get("country"),budget=+f.get("budget"),spent=+f.get("spent"),days=Math.max(1,+f.get("days")),left=Math.max(0,budget-spent);
+  e.preventDefault();const f=new FormData(e.target),country=normalizeCountryCode(f.get("country")),budget=+f.get("budget"),spent=+f.get("spent"),days=Math.max(1,+f.get("days")),left=Math.max(0,budget-spent);
   state.currentCountry=country;save("Travel plan updated");
-  setResult("#travel-result",`${country} travel plan`,money(left),[["Trip budget",money(budget)],["Spent",money(spent)],["Days remaining",days],["Safe daily spending",money(left/days)]]);
+  setResult("#travel-result",`${countryName(country)} travel plan`,money(left),[["Trip budget",money(budget)],["Spent",money(spent)],["Days remaining",days],["Safe daily spending",money(left/days)]]);
 });
 
 
@@ -663,6 +775,7 @@ function initializeFinanceApp(){
   calculateGrowth("#investment-form","#investment-result");
   calculateGrowth("#fund-form","#fund-result",1);
   document.querySelector("#stock-form").dispatchEvent(new Event("submit",{cancelable:true,bubbles:true}));
+  populateCountrySelect(document.querySelector("#travel-country"),state.currentCountry||"AL");
   document.querySelector("#travel-form").dispatchEvent(new Event("submit",{cancelable:true,bubbles:true}));
 }
 if("serviceWorker" in navigator)navigator.serviceWorker.register("service-worker.js").catch(()=>{});

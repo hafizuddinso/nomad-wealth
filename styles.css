@@ -198,3 +198,81 @@ html[dir="rtl"] .sidebar{direction:rtl}
 .bank-help{font-size:11px;color:var(--muted)}
 @media (prefers-color-scheme:dark){html:not([data-theme]){color-scheme:dark}}
 @media(max-width:820px){.theme-toggle{position:absolute;right:14px;top:16px}.topbar{position:relative}.profile-actions{display:grid}}
+
+
+/* Global v5 correction release */
+.transaction-item{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) max-content 42px;
+  gap:16px;
+  align-items:center;
+  padding:16px 0;
+  border-top:1px solid var(--line);
+}
+.transaction-item:first-child{border-top:0}
+.transaction-main{display:flex;align-items:center;gap:12px;min-width:0}
+.transaction-copy{min-width:0}
+.transaction-copy .row-title,.transaction-copy .row-subtitle{overflow-wrap:anywhere}
+.transaction-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:900;flex:0 0 auto}
+.transaction-icon.income{background:rgba(22,163,74,.13);color:#22c55e}
+.transaction-icon.expense{background:rgba(220,38,38,.13);color:#ef4444}
+.transaction-value{text-align:right;display:grid;gap:3px}
+.transaction-value small{color:var(--muted);font-size:12px}
+.delete-transaction{
+  width:38px;height:38px;border-radius:11px;
+  border:1px solid var(--line);
+  background:#24334a;color:#fff;
+  font-size:23px;line-height:1;cursor:pointer;
+  display:grid;place-items:center;
+}
+.delete-transaction:hover{background:#b91c1c;border-color:#b91c1c}
+.icon-button{
+  background:#24334a!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+}
+.icon-button:hover{background:#b91c1c!important}
+.budget-item{padding:13px 0;border-top:1px solid var(--line)}
+.budget-item:first-child{border-top:0}
+.budget-item-head{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:9px}
+.budget-item-head>div{display:grid;gap:3px}.budget-item-head small{color:var(--muted)}
+.budget-item-head>span{font-size:12px;font-weight:800;text-align:right}
+.budget-total{font-size:36px;font-weight:900;color:var(--text)}
+.budget-summary-list{display:grid}
+.budget-summary-list>div{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-top:1px solid var(--line)}
+.converter-form{display:grid;gap:14px}
+.converter-currencies{display:grid;grid-template-columns:1fr 42px 1fr;align-items:end;gap:10px}
+.swap-button{height:42px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:11px;cursor:pointer;font-size:20px}
+.converter-result{margin-top:16px;padding:18px;border-radius:16px;background:linear-gradient(135deg,rgba(15,118,110,.14),rgba(37,99,235,.14));display:grid;gap:5px}
+.converter-result span,.converter-result small{color:var(--muted)}
+.converter-result strong{font-size:28px}
+.converter-note{font-size:12px!important}
+html[data-theme="dark"] .calculator-intro{
+  background:linear-gradient(135deg,#10243a,#132b43);
+  border-color:#27445f;
+  color:#e5edf7;
+}
+html[data-theme="dark"] .calculator-intro h2,
+html[data-theme="dark"] .calculator-intro p{color:#e5edf7}
+html[data-theme="dark"] .explanation-card{
+  background:linear-gradient(145deg,#101d30,#132238);
+}
+html[data-theme="dark"] .health-banner{
+  background:#0d2d27;border-color:#145c4e;color:#b7f7e8;
+}
+html[data-theme="dark"] .metric-card.highlight{
+  background:linear-gradient(145deg,#102a2d,#11263a);
+  border-color:#1b5b5a;
+}
+html[data-theme="dark"] .progress{background:#dbe5f0}
+html[data-theme="dark"] .delete-transaction{background:#25364d;color:#fff}
+html[data-theme="dark"] .delete-transaction:hover{background:#b91c1c}
+@media(max-width:700px){
+  .transaction-item{grid-template-columns:minmax(0,1fr) max-content 38px;gap:9px}
+  .transaction-icon{display:none}
+  .transaction-value .amount{font-size:13px}
+  .delete-transaction{width:34px;height:34px}
+  .budget-item-head{align-items:start;flex-direction:column;gap:5px}
+  .budget-item-head>span{text-align:left}
+  .converter-currencies{grid-template-columns:1fr 38px 1fr}
+}

@@ -1,4 +1,4 @@
-# Nomad Wealth Global v4
+# Nomad Wealth Global v5 — Correction Release
 
 Developed by **Hafizuddin**.
 
@@ -42,3 +42,17 @@ Upload all files to the root of your GitHub repository. Vercel:
 - Output directory: empty
 
 After deployment, hard-refresh once or test in a private window because previous service-worker versions may remain cached.
+
+
+## Global v5 corrections
+
+- Organized transaction alignment with a dedicated amount and delete column
+- High-contrast close and delete controls
+- Real country dropdowns in transaction, account, travel, budget and profile forms
+- New transactions sorted by creation time so the latest entry appears first
+- Currency and country stored per budget
+- Full supported currency list available for accounts, budgets and investments
+- Manual exchange-rate editor replaced by a two-currency converter
+- Optional online exchange-rate refresh with offline fallback
+- Dark-theme contrast fixes for budget and calculator panels
+- Existing browser data automatically migrated

@@ -374,7 +374,7 @@
           <article class="panel">
             <div class="panel-heading"><div><h2>Travel mode</h2><p>Plan a trip and calculate safe daily spending</p></div></div>
             <form id="travel-form" class="calc-form compact">
-              <label>Current country<input name="country" value="Albania" required></label>
+              <label>Current country<select name="country" id="travel-country" required></select></label>
               <label>Trip budget<input name="budget" type="number" min="0" value="800" required></label>
               <label>Already spent<input name="spent" type="number" min="0" value="340" required></label>
               <label>Days remaining<input name="days" type="number" min="1" value="18" required></label>
@@ -433,8 +433,18 @@
         </article>
         <div class="two-column">
           <article class="panel">
-            <div class="panel-heading"><div><h2>Manual exchange rates</h2><p>Rates compared with 1 EUR</p></div></div>
-            <div id="rate-settings"></div>
+            <div class="panel-heading"><div><h2>Currency converter</h2><p>Convert between any two supported currencies</p></div><button type="button" class="text-button" id="refresh-rates">Refresh rates</button></div>
+            <form id="currency-converter-form" class="converter-form">
+              <label>Amount<input name="amount" type="number" min="0" step="0.01" value="100" required></label>
+              <div class="converter-currencies">
+                <label>From<select name="from" id="converter-from"></select></label>
+                <button type="button" id="swap-currencies" class="swap-button" aria-label="Swap currencies">⇄</button>
+                <label>To<select name="to" id="converter-to"></select></label>
+              </div>
+              <button type="submit" class="primary">Convert currency</button>
+            </form>
+            <div id="converter-result" class="converter-result"></div>
+            <p class="converter-note" id="rate-status">Using the app's saved reference rates.</p>
           </article>
           <article class="panel">
             <div class="panel-heading"><div><h2>Data and backup</h2><p>Keep a local copy of your prototype data</p></div></div>
@@ -497,7 +507,7 @@
       </label>
       <div class="form-grid">
         <label>Category<input name="category" list="category-options" placeholder="Groceries" required></label>
-        <label>Country<input name="country" placeholder="Albania" required></label>
+        <label>Country<select name="country" id="transaction-country" required></select></label>
       </div>
       <datalist id="category-options">
         <option value="Housing"><option value="Groceries"><option value="Transport"><option value="Restaurants">
@@ -532,7 +542,11 @@
       <div class="dialog-heading"><div><span class="eyebrow">NEW BUDGET</span><h2>Add budget</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div>
       <label>Budget group<select name="group"><option>Essential</option><option>Flexible</option><option>Savings</option><option>Investments</option></select></label>
       <label>Category<input name="category" placeholder="Transport" required></label>
-      <label>Monthly limit<input name="limit" type="number" min="1" inputmode="decimal" required></label>
+      <div class="form-grid">
+        <label>Currency<select name="currency" id="budget-currency" required></select></label>
+        <label>Country<select name="country" id="budget-country" required></select></label>
+      </div>
+      <label>Monthly limit<input name="limit" type="number" min="1" step="0.01" inputmode="decimal" required></label>
       <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button class="primary" type="submit">Save budget</button></div>
     </form>
   </dialog>
