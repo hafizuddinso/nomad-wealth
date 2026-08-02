@@ -1,5 +1,4 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
+const createClient=window.supabase?.createClient;
 const config=window.NOMAD_WEALTH_CONFIG||{};
 const isConfigured=
   config.SUPABASE_URL &&
@@ -7,7 +6,15 @@ const isConfigured=
   !config.SUPABASE_URL.includes("YOUR_") &&
   !config.SUPABASE_ANON_KEY.includes("YOUR_");
 
-const supabase=isConfigured?createClient(config.SUPABASE_URL,config.SUPABASE_ANON_KEY):null;
+const supabase=isConfigured&&createClient?createClient(config.SUPABASE_URL,config.SUPABASE_ANON_KEY,{
+  auth:{
+    persistSession:true,
+    autoRefreshToken:true,
+    detectSessionInUrl:true,
+    flowType:"pkce",
+    storage:window.localStorage
+  }
+}):null;
 window.NomadSupabase=supabase;
 let currentUser=null;
 let pendingSignup=null;
@@ -19,7 +26,29 @@ const configWarning=document.querySelector("#auth-config-warning");
 
 if(!isConfigured)configWarning.classList.remove("hidden");
 
+function setAuthMessage(message="",kind="error"){
+  const box=document.querySelector("#auth-inline-message");
+  if(!box)return;
+  box.textContent=message;
+  box.className=`auth-inline-message ${kind}`;
+  box.classList.toggle("hidden",!message);
+}
+async function authRequest(promise,label="Authentication"){
+  const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timed out. Check your internet connection and try again.`)),18000));
+  return Promise.race([promise,timeout]);
+}
+function friendlyAuthError(error){
+  const raw=String(error?.message||error||"Authentication failed.");
+  const lower=raw.toLowerCase();
+  if(lower.includes("invalid login credentials"))return "The email or password is incorrect.";
+  if(lower.includes("email not confirmed"))return "Confirm your email before logging in.";
+  if(lower.includes("user already registered"))return "An account already exists for this email. Log in instead.";
+  if(lower.includes("rate limit"))return "Too many attempts. Wait a little and try again.";
+  if(lower.includes("fetch")||lower.includes("network"))return "Could not connect to Supabase. Check your internet connection.";
+  return raw;
+}
 function authToast(message,isError=false){
+  if(isError)setAuthMessage(message,"error");
   const el=document.querySelector("#toast");
   el.textContent=message;
   el.style.background=isError?"#991b1b":"#0f172a";
@@ -34,6 +63,7 @@ function requireConfigured(){
   return false;
 }
 function setAuthView(id){
+  setAuthMessage("");
   document.querySelectorAll(".auth-view").forEach(v=>v.classList.remove("active"));
   document.querySelector("#"+id).classList.add("active");
 }
@@ -62,16 +92,39 @@ function normalizeCountryCode(value){
 }
 function populateCountrySelect(select,selected){
   if(!select)return;
-  const display=new Intl.DisplayNames([currentLanguage],{type:"region"});
-  const options=countryData.map(c=>({code:c.code,label:display.of(c.code)||c.name})).sort((a,b)=>a.label.localeCompare(b.label,currentLanguage));
-  select.innerHTML=options.map(c=>`<option value="${c.code}">${esc(c.label)}</option>`).join("");
-  if(selected)select.value=normalizeCountryCode(selected);
+  const source=countryData.length?countryData:[
+    {code:"AL",name:"Albania",currency:"ALL"},
+    {code:"BD",name:"Bangladesh",currency:"BDT"},
+    {code:"RU",name:"Russia",currency:"RUB"},
+    {code:"US",name:"United States",currency:"USD"},
+    {code:"GB",name:"United Kingdom",currency:"GBP"},
+    {code:"DE",name:"Germany",currency:"EUR"},
+    {code:"FR",name:"France",currency:"EUR"},
+    {code:"ES",name:"Spain",currency:"EUR"},
+    {code:"IT",name:"Italy",currency:"EUR"},
+    {code:"CA",name:"Canada",currency:"CAD"},
+    {code:"AU",name:"Australia",currency:"AUD"},
+    {code:"AE",name:"United Arab Emirates",currency:"AED"}
+  ];
+  let display=null;
+  try{display=new Intl.DisplayNames([currentLanguage||"en"],{type:"region"})}catch{
+    try{display=new Intl.DisplayNames(["en"],{type:"region"})}catch{}
+  }
+  const options=source.map(c=>({code:c.code,label:display?.of(c.code)||c.name||c.code}))
+    .sort((a,b)=>a.label.localeCompare(b.label,currentLanguage||"en"));
+  select.innerHTML='<option value="">Choose a country</option>'+options.map(c=>`<option value="${c.code}">${esc(c.label)}</option>`).join("");
+  const wanted=normalizeCountryCode(selected||"AL");
+  select.value=options.some(c=>c.code===wanted)?wanted:"AL";
 }
 function populateCurrencySelect(select,selected){
   if(!select)return;
-  let dn;try{dn=new Intl.DisplayNames([currentLanguage],{type:"currency"})}catch{}
-  select.innerHTML=currencies.map(code=>`<option value="${code}">${code}${dn?` — ${esc(dn.of(code)||code)}`:""}</option>`).join("");
-  if(selected&&currencies.includes(selected))select.value=selected;
+  const list=currencies.length?currencies:["EUR","USD","GBP","RUB","BDT","ALL"];
+  let dn;try{dn=new Intl.DisplayNames([currentLanguage||"en"],{type:"currency"})}catch{
+    try{dn=new Intl.DisplayNames(["en"],{type:"currency"})}catch{}
+  }
+  select.innerHTML=list.map(code=>`<option value="${code}">${code}${dn?` — ${esc(dn.of(code)||code)}`:""}</option>`).join("");
+  const wanted=selected&&list.includes(selected)?selected:"EUR";
+  select.value=wanted;
 }
 function applyTheme(theme=currentTheme){
   currentTheme=theme;
@@ -101,6 +154,25 @@ function populateAllCountryCurrencyControls(){
   populateCurrencySelect(document.querySelector("#signup-currency"),document.querySelector("#signup-currency")?.value||state?.mainCurrency||"EUR");
   populateCurrencySelect(document.querySelector("#profile-currency"),state?.mainCurrency||"EUR");
   populateCurrencySelect(document.querySelector("#onboarding-currency"),state?.mainCurrency||"EUR");
+}
+
+
+function initializeAuthControls(){
+  try{
+    populateCountrySelect(document.querySelector("#signup-country"),"AL");
+    populateCurrencySelect(document.querySelector("#signup-currency"),"EUR");
+    const country=document.querySelector("#signup-country");
+    if(country&&!country.dataset.currencyBound){
+      country.dataset.currencyBound="1";
+      country.addEventListener("change",()=>{
+        const item=countryByCode.get(country.value);
+        const currency=document.querySelector("#signup-currency");
+        if(item?.currency&&currency&&currencies.includes(item.currency))currency.value=item.currency;
+      });
+    }
+  }catch(error){
+    console.error("Authentication controls could not initialize:",error);
+  }
 }
 
 function userDisplayName(user){
@@ -190,7 +262,10 @@ document.querySelector("#signup-form").addEventListener("submit",async event=>{
   };
   const submit=form.querySelector('button[type="submit"]');
   submit.disabled=true;submit.textContent="Sending code…";
-  const {data,error}=await supabase.auth.signUp({
+  setAuthMessage("");
+  let data,error;
+  try{
+    ({data,error}=await authRequest(supabase.auth.signUp({
     email:payload.email,
     password:payload.password,
     options:{
@@ -205,9 +280,10 @@ document.querySelector("#signup-form").addEventListener("submit",async event=>{
       },
       emailRedirectTo:window.location.origin+window.location.pathname
     }
-  });
+  }),"Signup"));
+  }catch(requestError){error=requestError}
   submit.disabled=false;submit.textContent="Send verification code";
-  if(error){authToast(error.message,true);return}
+  if(error){authToast(friendlyAuthError(error),true);return}
   pendingSignup=payload;
   document.querySelector("#otp-email-label").textContent=payload.email;
   setSignupStep(3);
@@ -223,15 +299,27 @@ document.querySelector("#otp-form").addEventListener("submit",async event=>{
   const token=event.currentTarget.elements.token.value.trim();
   const button=event.currentTarget.querySelector('button[type="submit"]');
   button.disabled=true;button.textContent="Verifying…";
-  const {data,error}=await supabase.auth.verifyOtp({
-    email:pendingSignup.email,
-    token,
-    type:"signup"
-  });
+  setAuthMessage("");
+  let data,error;
+  try{
+    ({data,error}=await authRequest(supabase.auth.verifyOtp({
+      email:pendingSignup.email,
+      token,
+      type:"email"
+    }),"OTP verification"));
+    if(error){
+      const fallback=await authRequest(supabase.auth.verifyOtp({
+        email:pendingSignup.email,
+        token,
+        type:"signup"
+      }),"OTP verification");
+      data=fallback.data;error=fallback.error;
+    }
+  }catch(requestError){error=requestError}
   button.disabled=false;button.textContent="Verify and create account";
-  if(error){authToast(error.message,true);return}
+  if(error){authToast(friendlyAuthError(error),true);return}
   authToast("Email verified. Your account is active.");
-  showApp(data.user);
+  if(data?.user)showApp(data.user);
 });
 
 document.querySelector("#resend-otp").addEventListener("click",async()=>{
@@ -246,12 +334,17 @@ document.querySelector("#login-form").addEventListener("submit",async event=>{
   const form=event.currentTarget;
   const button=form.querySelector('button[type="submit"]');
   button.disabled=true;button.textContent="Logging in…";
-  const {data,error}=await supabase.auth.signInWithPassword({
-    email:form.elements.email.value.trim().toLowerCase(),
-    password:form.elements.password.value
-  });
+  setAuthMessage("");
+  let data,error;
+  try{
+    ({data,error}=await authRequest(supabase.auth.signInWithPassword({
+      email:form.elements.email.value.trim().toLowerCase(),
+      password:form.elements.password.value
+    }),"Login"));
+  }catch(requestError){error=requestError}
   button.disabled=false;button.textContent="Log in";
-  if(error){authToast(error.message,true);return}
+  if(error){authToast(friendlyAuthError(error),true);return}
+  if(!data?.user){authToast("Login succeeded but no user session was returned. Please try again.",true);return}
   showApp(data.user);
 });
 
@@ -291,14 +384,25 @@ document.querySelector("#logout-button").addEventListener("click",async()=>{
 });
 
 async function initializeAuthentication(){
-  if(!isConfigured){showAuth();return}
-  const {data:{session}}=await supabase.auth.getSession();
-  if(session?.user)showApp(session.user);else showAuth();
+  if(!isConfigured||!supabase){showAuth();return}
+  try{
+    const {data,error}=await authRequest(supabase.auth.getSession(),"Session check");
+    if(error)throw error;
+    if(data?.session?.user)showApp(data.session.user);else showAuth();
+  }catch(error){
+    console.error(error);
+    showAuth();
+    setAuthMessage(friendlyAuthError(error),"error");
+  }
 
   supabase.auth.onAuthStateChange((event,session)=>{
-    if(event==="PASSWORD_RECOVERY"){setAuthView("reset-view");authScreen.classList.remove("hidden");appRoot.classList.add("hidden")}
-    else if(event==="SIGNED_OUT")showAuth();
-    else if(session?.user&&!currentUser)showApp(session.user);
+    if(event==="PASSWORD_RECOVERY"){
+      setAuthView("reset-view");authScreen.classList.remove("hidden");appRoot.classList.add("hidden");
+    }else if(event==="SIGNED_OUT"){
+      showAuth();
+    }else if(session?.user&&!currentUser){
+      showApp(session.user);
+    }
   });
 }
 
@@ -838,4 +942,4 @@ window.NomadApp={
   toast
 };
 
-applyTheme(currentTheme);applyLanguage(currentLanguage);initializeAuthentication();
+applyTheme(currentTheme);initializeAuthControls();applyLanguage(currentLanguage);initializeAuthControls();initializeAuthentication();

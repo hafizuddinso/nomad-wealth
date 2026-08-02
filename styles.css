@@ -326,3 +326,60 @@ html[data-theme="dark"] .delete-transaction:hover{background:#b91c1c}
 }
 
 .home-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:14px}.home-kpi{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.home-kpi span,.home-kpi small{display:block;color:var(--muted)}.home-kpi strong{display:block;font-size:clamp(25px,3vw,38px);margin:9px 0}.expense-card strong{color:#dc2626}.income-card strong{color:#0f9f8f}.home-action-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}.expense-action{background:#dc2626!important}.income-action{background:#0f9f8f!important}.split-entry-actions{display:flex;gap:8px}.home-recent-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-top:1px solid var(--line)}.home-recent-row small{display:block;color:var(--muted)}.home-recent-row .income{color:#16a34a}.home-recent-row .expense{color:#dc2626}.compact-home-empty{min-height:170px;display:grid;place-items:center;align-content:center;text-align:center;color:var(--muted);gap:6px}.account-manage-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px;padding-top:11px;border-top:1px solid var(--line)}.danger-button{border:1px solid rgba(220,38,38,.35);background:#dc2626;color:#fff;border-radius:11px;padding:11px 14px;font-weight:800}.danger-button.full-width{width:100%}.danger-text{color:#ef4444}.dialog-actions.spread{justify-content:space-between}html[data-theme="dark"] body,html[data-theme="dark"] .app-shell,html[data-theme="dark"] .main-content{background:#071425!important;color:#f8fafc}html[data-theme="dark"] .panel,html[data-theme="dark"] .home-kpi,html[data-theme="dark"] .metric-card,html[data-theme="dark"] .summary-strip article,html[data-theme="dark"] .account-card,html[data-theme="dark"] .goal-card,html[data-theme="dark"] .comparison-grid article,html[data-theme="dark"] dialog{background:#102036!important;color:#f8fafc!important;border-color:#28405f!important}html[data-theme="dark"] small,html[data-theme="dark"] .row-subtitle,html[data-theme="dark"] .panel p{color:#afc0d7!important}html[data-theme="dark"] h1,html[data-theme="dark"] h2,html[data-theme="dark"] h3,html[data-theme="dark"] strong,html[data-theme="dark"] label{color:#f8fafc}html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:#0b1a2e!important;color:#f8fafc!important;border-color:#334b69!important}@media(max-width:780px){.home-summary-grid{grid-template-columns:1fr}.home-action-row{grid-template-columns:1fr 1fr}}@media(max-width:420px){.home-action-row{grid-template-columns:1fr}.split-entry-actions{width:100%}.split-entry-actions button{flex:1}}
+#signup-country:invalid,#signup-currency:invalid{border-color:#ef4444}
+.auth-form select:empty{min-height:44px}
+
+/* v10 mobile-responsive authentication and app shell */
+.mobile-auth-brand,.mobile-auth-tabs{display:none}
+.auth-inline-message{margin:0 0 16px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.45}
+.auth-inline-message.error{display:block;background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.auth-inline-message.success{display:block;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+html[data-theme="dark"] .auth-inline-message.error{background:#3b1118;color:#fecaca;border-color:#7f1d1d}
+.auth-submit:disabled,.google-button:disabled{opacity:.6;cursor:wait}
+.auth-form input,.auth-form select{font-size:16px;min-height:48px}
+.auth-form button{min-height:46px}
+@media(max-width:980px){
+  .auth-screen{display:block;min-height:100dvh;background:var(--background,#f4f7fb)}
+  .auth-visual{display:none}
+  .auth-panel{display:block;min-height:100dvh;padding:max(18px,env(safe-area-inset-top)) 18px max(36px,env(safe-area-inset-bottom));background:var(--background,#f4f7fb)}
+  .auth-box{width:min(100%,560px);margin:0 auto}
+  .mobile-auth-brand{display:flex;align-items:center;gap:11px;margin:4px 0 18px}
+  .mobile-auth-brand .brand-logo{width:45px;height:45px}
+  .mobile-auth-brand strong{display:block;color:var(--text,#172033);font-size:18px}
+  .mobile-auth-brand small{display:block;color:var(--muted,#64748b);margin-top:2px}
+  .mobile-auth-tabs{display:grid;grid-template-columns:1fr 1fr;padding:4px;border:1px solid var(--line,#dbe3ee);border-radius:14px;background:var(--panel,#fff);margin-bottom:20px}
+  .mobile-auth-tabs button{border:0;border-radius:10px;padding:11px;background:transparent;color:var(--muted,#64748b);font-weight:800}
+  .mobile-auth-tabs button.active{background:#0f8f83;color:#fff;box-shadow:0 5px 16px rgba(15,143,131,.22)}
+  .auth-view{background:var(--panel,#fff);border:1px solid var(--line,#dbe3ee);border-radius:20px;padding:22px;box-shadow:0 15px 45px rgba(15,23,42,.08)}
+  .auth-view h2{font-size:26px}
+  .auth-subtitle{margin-bottom:19px}
+}
+@media(max-width:520px){
+  .auth-panel{padding-left:13px;padding-right:13px}
+  .auth-view{padding:18px 15px;border-radius:17px}
+  .auth-view h2{font-size:23px}
+  .auth-row{display:grid;grid-template-columns:1fr;gap:9px}
+  .auth-row .link-button-text{text-align:left;padding-left:0}
+  .google-button{min-height:50px}
+  .step-indicator{margin:15px auto 20px}
+  .form-grid{grid-template-columns:1fr!important}
+  dialog{width:calc(100vw - 20px)!important;max-width:none!important;margin:auto}
+}
+@media(max-width:760px){
+  .main-content{padding:14px 12px calc(92px + env(safe-area-inset-bottom))}
+  .topbar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:10px 12px}
+  .topbar-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:auto 1fr}
+  .topbar-actions .primary,.topbar-actions .split-entry-actions{width:100%}
+  .split-entry-actions{display:grid!important;grid-template-columns:1fr 1fr;width:100%}
+  .home-summary-grid{gap:10px}
+  .home-kpi{padding:15px}
+  .home-action-row{position:sticky;top:0;z-index:15;padding:8px 0;background:var(--background,#f4f7fb)}
+  .panel{padding:15px}
+  .page-chart-grid{gap:12px}
+  .chart-box{height:235px}
+  .transaction-row{align-items:start}
+}
+html[data-theme="dark"] .auth-screen,
+html[data-theme="dark"] .auth-panel{background:#071425}
+html[data-theme="dark"] .auth-view,
+html[data-theme="dark"] .mobile-auth-tabs{background:#102036;border-color:#28405f}
