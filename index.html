@@ -408,6 +408,27 @@
       </section>
 
       <section class="page" id="settings">
+        <article class="panel profile-panel">
+          <div class="panel-heading"><div><h2>Profile</h2><p>Your account and preferences</p></div></div>
+          <div class="profile-row"><span class="profile-label">Name</span><strong id="profile-name">User</strong></div>
+          <div class="profile-row"><span class="profile-label">Email</span><strong id="profile-email">—</strong></div>
+          <div class="profile-row"><span class="profile-label">Password</span><strong>••••••••</strong></div>
+          <label class="profile-lang">Language
+            <select id="language-select">
+              <option value="en">English</option>
+              <option value="es">Español (Spanish)</option>
+              <option value="fr">Français (French)</option>
+              <option value="de">Deutsch (German)</option>
+              <option value="ru">Русский (Russian)</option>
+              <option value="ar">العربية (Arabic)</option>
+              <option value="hi">हिन्दी (Hindi)</option>
+              <option value="bn">বাংলা (Bengali)</option>
+              <option value="zh">中文 (Chinese)</option>
+              <option value="pt">Português (Portuguese)</option>
+            </select>
+          </label>
+          <p class="profile-hint">Language preference is saved. Full translation is on the roadmap.</p>
+        </article>
         <div class="two-column">
           <article class="panel">
             <div class="panel-heading"><div><h2>Manual exchange rates</h2><p>Rates compared with 1 EUR</p></div></div>
@@ -452,6 +473,14 @@
         <label>Date<input name="date" type="date" required></label>
       </div>
       <label>Account<select name="accountId" id="transaction-account" required></select></label>
+      <label>How often?
+        <select name="frequency" id="transaction-frequency">
+          <option value="once">One-time</option>
+          <option value="weekly">Every week</option>
+          <option value="monthly">Every month (rent, salary, subscriptions)</option>
+          <option value="yearly">Every year</option>
+        </select>
+      </label>
       <div class="form-grid">
         <label>Category<input name="category" list="category-options" placeholder="Groceries" required></label>
         <label>Country<input name="country" placeholder="Albania" required></label>

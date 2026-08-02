@@ -64,6 +64,8 @@ function updateUserInterface(user){
   document.querySelector("#user-avatar").textContent=initial;
   document.querySelector("#header-avatar").textContent=initial;
   document.querySelector("#header-user-name").textContent=name;
+  const pn=document.querySelector("#profile-name");if(pn)pn.textContent=name;
+  const pe=document.querySelector("#profile-email");if(pe)pe.textContent=email;
   const metadata=user?.user_metadata||{};
   if(metadata.country)state.currentCountry=metadata.country;
   if(metadata.main_currency&&currencies.includes(metadata.main_currency))state.mainCurrency=metadata.main_currency;
@@ -364,7 +366,7 @@ function transactionHTML(items,deletable=false){
   if(!items.length)return empty("No matching transactions.");
   return items.map(t=>{
     const a=state.accounts.find(x=>x.id===t.accountId);
-    return `<div class="row"><div><div class="row-title">${esc(t.category)}</div><div class="row-subtitle">${esc(t.country)} · ${esc(a?.name||"Unknown")} · ${esc(t.date)}${t.note?` · ${esc(t.note)}`:""}</div></div><div><span class="amount ${t.type}">${t.type==="income"?"+":"-"}${money(t.amount,t.currency)}</span><div class="row-subtitle">${money(inMain(t.amount,t.currency))}</div>${deletable?`<button class="icon-button delete-tx" data-id="${t.id}" aria-label="Delete transaction">×</button>`:""}</div></div>`;
+    return `<div class="row"><div><div class="row-title">${esc(t.category)}${t.frequency&&t.frequency!=="once"?` <span class="recurring-badge">↻ ${esc(t.frequency)}</span>`:""}</div><div class="row-subtitle">${esc(t.country)} · ${esc(a?.name||"Unknown")} · ${esc(t.date)}${t.note?` · ${esc(t.note)}`:""}</div></div><div><span class="amount ${t.type}">${t.type==="income"?"+":"-"}${money(t.amount,t.currency)}</span><div class="row-subtitle">${money(inMain(t.amount,t.currency))}</div>${deletable?`<button class="icon-button delete-tx" data-id="${t.id}" aria-label="Delete transaction">×</button>`:""}</div></div>`;
   }).join("");
 }
 function renderTransactions(){
@@ -438,7 +440,20 @@ function updateBankOptions(country){
 }
 document.addEventListener("change",e=>{
   if(e.target&&e.target.id==="account-country"){updateBankOptions(e.target.value);}
+  if(e.target&&e.target.id==="language-select"){
+    localStorage.setItem("nomad_language",e.target.value);
+    authToast&&authToast("Language preference saved.");
+  }
 });
+(function initLanguage(){
+  const saved=localStorage.getItem("nomad_language")||"en";
+  document.addEventListener("DOMContentLoaded",()=>{
+    const sel=document.querySelector("#language-select");
+    if(sel)sel.value=saved;
+  });
+  const sel=document.querySelector("#language-select");
+  if(sel)sel.value=saved;
+})();
 function closeDialog(dialog){if(dialog?.open)dialog.close()}
 
 document.querySelector("#today-label").textContent=new Intl.DateTimeFormat(undefined,{dateStyle:"full"}).format(new Date());
@@ -473,7 +488,7 @@ document.querySelector("#transaction-filter").addEventListener("change",renderTr
 
 document.querySelector("#transaction-form").addEventListener("submit",e=>{
   e.preventDefault();const f=new FormData(e.target);
-  state.transactions.push({id:crypto.randomUUID(),type:f.get("type"),amount:+f.get("amount"),currency:f.get("currency"),category:f.get("category").trim(),country:f.get("country").trim(),accountId:f.get("accountId"),date:f.get("date"),note:f.get("note").trim()});
+  state.transactions.push({id:crypto.randomUUID(),type:f.get("type"),amount:+f.get("amount"),currency:f.get("currency"),category:f.get("category").trim(),country:f.get("country").trim(),accountId:f.get("accountId"),date:f.get("date"),frequency:f.get("frequency")||"once",note:f.get("note").trim()});
   e.target.reset();closeDialog(document.querySelector("#transaction-dialog"));save("Transaction saved");
 });
 document.querySelector("#account-form").addEventListener("submit",e=>{
