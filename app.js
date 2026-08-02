@@ -417,8 +417,28 @@ function openDialog(id){
     if(account){form.elements.accountId.value=account.id;form.elements.currency.value=account.currency}
     setTimeout(()=>form.elements.amount.focus(),50);
   }
+  if(id==="account-dialog"){
+    populateCountryBankSelects();
+  }
   dialog.showModal();
 }
+function populateCountryBankSelects(){
+  const countrySel=document.querySelector("#account-country");
+  const bankSel=document.querySelector("#account-institution");
+  if(!countrySel||!bankSel||!window.NOMAD_WEALTH_COUNTRIES)return;
+  countrySel.innerHTML=window.NOMAD_WEALTH_COUNTRIES.map(c=>`<option value="${c}">${c}</option>`).join("");
+  const preferred=state.currentCountry&&window.NOMAD_WEALTH_BANKS[state.currentCountry]?state.currentCountry:window.NOMAD_WEALTH_COUNTRIES[0];
+  countrySel.value=preferred;
+  updateBankOptions(preferred);
+}
+function updateBankOptions(country){
+  const bankSel=document.querySelector("#account-institution");
+  const banks=(window.NOMAD_WEALTH_BANKS[country]||window.NOMAD_WEALTH_BANKS["Other"]||[]);
+  bankSel.innerHTML=banks.map(b=>`<option value="${b}">${b}</option>`).join("");
+}
+document.addEventListener("change",e=>{
+  if(e.target&&e.target.id==="account-country"){updateBankOptions(e.target.value);}
+});
 function closeDialog(dialog){if(dialog?.open)dialog.close()}
 
 document.querySelector("#today-label").textContent=new Intl.DateTimeFormat(undefined,{dateStyle:"full"}).format(new Date());
