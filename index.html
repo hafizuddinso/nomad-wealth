@@ -194,91 +194,11 @@
       </header>
 
       <section class="page active" id="dashboard">
-        <article class="hero-card">
-          <div>
-            <span class="hero-kicker">FINANCIAL OVERVIEW</span>
-            <h2>Understand all your money in one place.</h2>
-            <p>Track accounts, currencies, budgets, investments and travel spending across countries.</p>
-            <div class="hero-actions">
-              <button class="primary" data-open-dialog="transaction-dialog">Add transaction</button>
-              <button class="ghost" data-page="calculators">Open calculators</button>
-            </div>
-          </div>
-          <div class="hero-illustration" aria-hidden="true">
-            <svg viewBox="0 0 420 260">
-              <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#14b8a6"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
-              <rect x="26" y="22" width="368" height="216" rx="28" fill="#ffffff" opacity=".9"/>
-              <circle cx="100" cy="98" r="46" fill="url(#g)" opacity=".15"/>
-              <path d="M62 180c40-48 69-28 95-64s56-8 82-40 54 6 96-24" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round"/>
-              <circle cx="337" cy="52" r="16" fill="#f59e0b"/>
-              <rect x="62" y="194" width="84" height="14" rx="7" fill="#cbd5e1"/>
-              <rect x="158" y="194" width="62" height="14" rx="7" fill="#cbd5e1"/>
-              <rect x="232" y="194" width="116" height="14" rx="7" fill="#cbd5e1"/>
-            </svg>
-          </div>
-        </article>
-
-        <div id="health-banner" class="health-banner"></div>
-        <div class="summary-strip">
-          <article><span>This month</span><strong id="summary-this-month">—</strong><small id="summary-vs-last">Compared with last month</small></article>
-          <article><span>Top category</span><strong id="summary-top-category">—</strong><small id="summary-top-category-value">No spending yet</small></article>
-          <article><span>Recurring this month</span><strong id="summary-recurring">—</strong><small>Automatically generated entries</small></article>
-        </div>
-
-        <div class="metric-grid">
-          <article class="metric-card"><span>Total wealth</span><strong id="net-worth">€0</strong><small>Assets minus debts</small></article>
-          <article class="metric-card"><span>Available money</span><strong id="available-money">€0</strong><small>Cash and accessible accounts</small></article>
-          <article class="metric-card"><span>Income this month</span><strong id="month-income">€0</strong><small>Received income</small></article>
-          <article class="metric-card"><span>Spent this month</span><strong id="month-expense">€0</strong><small>Recorded expenses</small></article>
-          <article class="metric-card highlight"><span>Safe to spend today</span><strong id="safe-today">€0</strong><small>After bills and savings</small></article>
-        </div>
-
-        <div class="page-chart-grid dashboard-charts">
-          <article class="panel chart-card">
-            <div class="panel-heading"><div><h2>Income and expenses</h2><p>Last six months</p></div></div>
-            <div class="chart-box"><canvas id="dashboard-cashflow-chart"></canvas></div>
-          </article>
-          <article class="panel chart-card">
-            <div class="panel-heading"><div><h2>Spending by category</h2><p>Current month</p></div></div>
-            <div class="chart-box"><canvas id="dashboard-category-chart"></canvas></div>
-          </article>
-        </div>
-        <div class="dashboard-grid">
-          <article class="panel span-2">
-            <div class="panel-heading"><div><h2>Accounts by country</h2><p>Original balances and converted totals</p></div><button class="text-button" data-page="accounts">View all</button></div>
-            <div id="country-accounts"></div>
-          </article>
-
-          <article class="panel">
-            <div class="panel-heading"><div><h2>Financial health</h2><p>Simple guidance</p></div></div>
-            <div class="health-stat"><span>Emergency runway</span><strong id="runway">0 months</strong></div>
-            <div class="health-stat"><span>Savings rate</span><strong id="savings-rate">0%</strong></div>
-            <div class="health-stat"><span>Total debt</span><strong id="total-debt">€0</strong></div>
-          </article>
-
-          <article class="panel">
-            <div class="panel-heading"><div><h2>Budget overview</h2><p id="budget-summary"></p></div><button class="text-button" data-page="budget">Manage</button></div>
-            <div id="budget-overview"></div>
-          </article>
-
-          <article class="panel span-2">
-            <div class="panel-heading"><div><h2>Recent transactions</h2><p>Latest activity across your accounts</p></div><button class="text-button" data-page="transactions">View all</button></div>
-            <div id="recent-transactions"></div>
-          </article>
-
-          <article class="panel">
-            <div class="panel-heading"><div><h2>Quick calculators</h2><p>Estimate before you decide</p></div></div>
-            <div class="quick-tools">
-              <button data-open-calc="loan"><span>▤</span><strong>Loan installment</strong><small>Monthly payment</small></button>
-              <button data-open-calc="investment"><span>↗</span><strong>Investment growth</strong><small>Compound return</small></button>
-              <button data-open-calc="stock"><span>⌁</span><strong>Stock profit</strong><small>Gain or loss</small></button>
-              <button data-open-calc="fund"><span>◈</span><strong>Mutual fund</strong><small>Long-term estimate</small></button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="page" id="accounts">
+<div class="home-summary-grid"><article class="home-kpi expense-card"><span>This month expenses</span><strong id="home-month-expenses">0</strong><small id="home-expense-comparison">No spending recorded yet</small></article><article class="home-kpi income-card"><span>This month income</span><strong id="home-month-income">0</strong><small id="home-income-comparison">No income recorded yet</small></article><article class="home-kpi balance-card"><span>Remaining balance</span><strong id="home-month-balance">0</strong><small>Income minus expenses this month</small></article></div>
+<div class="home-action-row"><button class="primary expense-action" data-open-entry="expense">− Add Expense</button><button class="primary income-action" data-open-entry="income">+ Add Income</button></div>
+<div class="page-chart-grid dashboard-charts"><article class="panel chart-card"><div class="panel-heading"><div><h2>Income vs expenses</h2><p>Last six months</p></div></div><div class="chart-box"><canvas id="dashboard-cashflow-chart"></canvas></div></article><article class="panel chart-card"><div class="panel-heading"><div><h2>Spending by category</h2><p>Current month</p></div></div><div class="chart-box"><canvas id="dashboard-category-chart"></canvas></div></article></div>
+<article class="panel"><div class="panel-heading"><div><h2>Recent transactions</h2><p>Your latest activity</p></div><button class="text-button" data-page-target="transactions">View all</button></div><div id="home-recent-transactions"></div></article>
+</section><section class="page" id="accounts">
         <div class="page-chart-grid">
           <article class="panel chart-card">
             <div class="panel-heading"><div><h2>Balances by account</h2><p>Converted to your main currency</p></div></div>
@@ -307,7 +227,7 @@
           </article>
         </div>
         <article class="panel">
-          <div class="panel-heading"><div><h2>Transactions</h2><p>Income and expenses across countries</p></div><button class="secondary" data-open-dialog="transaction-dialog">+ Add transaction</button></div>
+          <div class="panel-heading"><div><h2>Transactions</h2><p>Income and expenses across countries</p></div><div class="split-entry-actions compact"><button class="secondary expense-action" data-open-entry="expense">− Expense</button><button class="secondary income-action" data-open-entry="income">+ Income</button></div></div>
           <div class="advanced-filter-card">
             <div class="filter-grid">
               <label>Search<input class="transaction-filter-control" id="transaction-search" type="search" placeholder="Category, note, account or country"></label>
@@ -626,7 +546,7 @@
               <button class="secondary" id="export-pdf-settings">Export report PDF</button>
               <button class="secondary" id="enable-reminders-settings">Enable bill reminders</button>
               <label class="secondary file-label">Import backup<input type="file" id="import-data" accept=".json"></label>
-              <button class="danger" id="reset-data">Reset demo data</button>
+              <button class="danger-button full-width" id="reset-financial-data">Reset all financial data</button>
             </div>
           </article>
         </div>
@@ -741,7 +661,9 @@
   </dialog>
 
 
-  <dialog id="goal-dialog">
+  <dialog id="edit-account-dialog"><form id="edit-account-form"><input type="hidden" name="id"><div class="dialog-heading"><div><span class="eyebrow">ACCOUNT SETTINGS</span><h2>Edit account</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div><label>Account name<input name="name" required></label><label>Bank or institution<input name="institution" required></label><div class="form-grid"><label>Account type<select name="type"><option>Bank</option><option>Cash</option><option>Wallet</option><option>Savings</option><option>Investment</option><option>Debt</option></select></label><label>Currency<select name="currency" id="edit-account-currency"></select></label></div><label>Country<select name="country" id="edit-account-country"></select></label><div class="dialog-actions spread"><button type="button" class="danger-button" id="delete-account-button">Delete account</button><div><button type="button" class="secondary" data-close-dialog>Cancel</button><button type="submit" class="primary">Save changes</button></div></div></form></dialog>
+<dialog id="adjust-balance-dialog"><form id="adjust-balance-form"><input type="hidden" name="account_id"><div class="dialog-heading"><div><span class="eyebrow">BALANCE UPDATE</span><h2>Adjust current balance</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div><label>Adjustment type<select name="adjustment_type"><option value="correction">Balance correction</option><option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option></select></label><label id="balance-value-label">New current balance<input name="amount" type="number" step="0.01" required></label><label>Note<input name="note" placeholder="Optional explanation"></label><div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button type="submit" class="primary">Update balance</button></div></form></dialog>
+<dialog id="reset-financial-dialog"><div class="migration-dialog-content"><div class="dialog-heading"><div><span class="eyebrow danger-text">PERMANENT ACTION</span><h2>Reset all financial data?</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div><p>This will permanently delete all transactions, budgets, accounts, balances, goals and recurring entries. This action cannot be undone.</p><div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button type="button" class="danger-button" id="confirm-financial-reset">Reset everything</button></div></div></dialog><dialog id="goal-dialog">
     <form id="goal-form">
       <div class="dialog-heading"><div><span class="eyebrow">NEW SAVINGS GOAL</span><h2>Create goal</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div>
       <label>Goal name<input name="name" placeholder="Emergency fund" required></label>
@@ -779,6 +701,6 @@
   <script type="module" src="app.js"></script>
   <script type="module" src="features.js"></script>
   <script type="module" src="cloud-sync.js"></script>
-  <script type="module" src="charts-v8.js"></script>
+  <script type="module" src="charts-v8.js"></script><script type="module" src="v9-clean.js"></script>
 </body>
 </html>

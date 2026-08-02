@@ -334,18 +334,7 @@ const demo={
   ]
 };
 
-function seed(s){
-  const now=new Date(),iso=d=>d.toISOString().slice(0,10);
-  s.transactions=[
-    {id:crypto.randomUUID(),type:"income",amount:200,currency:"USD",category:"Freelance",country:"US",accountId:s.accounts[3].id,date:iso(now),createdAt:new Date(now.getTime()+4000).toISOString(),note:"Client payment"},
-    {id:crypto.randomUUID(),type:"expense",amount:400,currency:"EUR",category:"Housing",country:"AL",accountId:s.accounts[2].id,date:iso(now),createdAt:new Date(now.getTime()+3000).toISOString(),note:"Rent"},
-    {id:crypto.randomUUID(),type:"expense",amount:45.2,currency:"EUR",category:"Food",country:"AL",accountId:s.accounts[2].id,date:iso(new Date(now-86400000)),createdAt:new Date(now.getTime()-86400000).toISOString(),note:"Groceries"},
-    {id:crypto.randomUUID(),type:"expense",amount:1200,currency:"RUB",category:"Transport",country:"RU",accountId:s.accounts[0].id,date:iso(new Date(now-172800000)),createdAt:new Date(now.getTime()-172800000).toISOString(),note:"Transit"}
-  ];
-  return s;
-}
-let state=null;
-
+function seed(data){data.accounts=[];data.transactions=[];data.budgets=[];data.investments=[];data.goals=[];data.netWorthSnapshots=[];data.currentCountry=data.currentCountry||"AL";data.mainCurrency=data.mainCurrency||"EUR";data.travel={country:data.currentCountry,budget:0,spent:0,days:1};return data;}
 function normalizeState(data){
   const normalized=data&&typeof data==="object"?data:structuredClone(demo);
   normalized.accounts=Array.isArray(normalized.accounts)?normalized.accounts:[];
