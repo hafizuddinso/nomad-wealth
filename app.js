@@ -1,4 +1,4 @@
-const createClient=window.supabase?.createClient;
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 const config=window.NOMAD_WEALTH_CONFIG||{};
 const isConfigured=
   config.SUPABASE_URL &&
@@ -16,6 +16,7 @@ const supabase=isConfigured&&createClient?createClient(config.SUPABASE_URL,confi
   }
 }):null;
 window.NomadSupabase=supabase;
+window.__NOMAD_AUTH_MODULE_LOADED__=true;
 let currentUser=null;
 let pendingSignup=null;
 let KEY="nomad-wealth-guest";
@@ -24,7 +25,12 @@ const authScreen=document.querySelector("#auth-screen");
 const appRoot=document.querySelector("#app-root");
 const configWarning=document.querySelector("#auth-config-warning");
 
-if(!isConfigured)configWarning.classList.remove("hidden");
+if(!isConfigured){
+  configWarning?.classList.remove("hidden");
+}else if(!supabase){
+  configWarning?.classList.remove("hidden");
+  if(configWarning)configWarning.innerHTML="<strong>Login system unavailable</strong><p>Supabase could not initialize. Refresh the page or check your network connection.</p>";
+}
 
 function setAuthMessage(message="",kind="error"){
   const box=document.querySelector("#auth-inline-message");
@@ -57,7 +63,7 @@ function authToast(message,isError=false){
   window.__authToast=setTimeout(()=>el.classList.remove("show"),2800);
 }
 function requireConfigured(){
-  if(isConfigured)return true;
+  if(isConfigured&&supabase)return true;
   configWarning.classList.remove("hidden");
   authToast("Add your Supabase credentials in config.js first.",true);
   return false;
@@ -328,33 +334,45 @@ document.querySelector("#resend-otp").addEventListener("click",async()=>{
   if(error)authToast(error.message,true);else authToast("A new verification code was sent.");
 });
 
-document.querySelector("#login-form").addEventListener("submit",async event=>{
+document.querySelector("#login-form")?.addEventListener("submit",async event=>{
   event.preventDefault();
-  if(!requireConfigured())return;
   const form=event.currentTarget;
   const button=form.querySelector('button[type="submit"]');
-  button.disabled=true;button.textContent="Logging in…";
-  setAuthMessage("");
-  let data,error;
   try{
-    ({data,error}=await authRequest(supabase.auth.signInWithPassword({
+    if(!requireConfigured())return;
+    button.disabled=true;button.textContent="Logging in…";
+    setAuthMessage("");
+    const {data,error}=await authRequest(supabase.auth.signInWithPassword({
       email:form.elements.email.value.trim().toLowerCase(),
       password:form.elements.password.value
-    }),"Login"));
-  }catch(requestError){error=requestError}
-  button.disabled=false;button.textContent="Log in";
-  if(error){authToast(friendlyAuthError(error),true);return}
-  if(!data?.user){authToast("Login succeeded but no user session was returned. Please try again.",true);return}
-  showApp(data.user);
+    }),"Login");
+    if(error)throw error;
+    if(!data?.user)throw new Error("Login succeeded but no user session was returned.");
+    showApp(data.user);
+  }catch(error){
+    authToast(friendlyAuthError(error),true);
+  }finally{
+    button.disabled=false;button.textContent="Log in";
+  }
 });
 
-document.querySelector("#google-login").addEventListener("click",async()=>{
-  if(!requireConfigured())return;
-  const {error}=await supabase.auth.signInWithOAuth({
-    provider:"google",
-    options:{redirectTo:window.location.origin+window.location.pathname}
-  });
-  if(error)authToast(error.message,true);
+document.querySelector("#google-login")?.addEventListener("click",async()=>{
+  const button=document.querySelector("#google-login");
+  try{
+    if(!requireConfigured())return;
+    button.disabled=true;
+    setAuthMessage("");
+    const redirectTo=window.location.origin+window.location.pathname;
+    const {data,error}=await authRequest(supabase.auth.signInWithOAuth({
+      provider:"google",
+      options:{redirectTo}
+    }),"Google login");
+    if(error)throw error;
+    if(data?.url)window.location.assign(data.url);
+  }catch(error){
+    authToast(friendlyAuthError(error),true);
+    button.disabled=false;
+  }
 });
 
 document.querySelector("#forgot-form").addEventListener("submit",async event=>{

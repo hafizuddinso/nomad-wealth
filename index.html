@@ -65,12 +65,12 @@
 
           <button type="button" class="google-button" id="google-login">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.22c0-.74-.07-1.45-.19-2.13H12v4.03h5.24a4.48 4.48 0 0 1-1.94 2.94v2.51h3.14c1.84-1.7 2.91-4.2 2.91-7.35Z"/><path fill="#34A853" d="M12 21.75c2.62 0 4.82-.87 6.43-2.36l-3.14-2.51c-.87.58-1.98.93-3.29.93-2.53 0-4.68-1.71-5.45-4.01H3.31v2.59A9.72 9.72 0 0 0 12 21.75Z"/><path fill="#FBBC05" d="M6.55 13.8a5.84 5.84 0 0 1 0-3.72V7.49H3.31a9.74 9.74 0 0 0 0 8.9l3.24-2.59Z"/><path fill="#EA4335" d="M12 6.06c1.43 0 2.71.49 3.72 1.45l2.79-2.79A9.34 9.34 0 0 0 12 2.12a9.72 9.72 0 0 0-8.69 5.37l3.24 2.59C7.32 7.77 9.47 6.06 12 6.06Z"/></svg>
-            Continue with Google
+            <span class="google-button-label">Continue with Google</span>
           </button>
 
           <div class="auth-divider"><span>or use email</span></div>
 
-          <form id="login-form" class="auth-form">
+          <form id="login-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
             <label>Email address<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
             <label>Password
               <span class="password-field"><input name="password" type="password" autocomplete="current-password" placeholder="Your password" minlength="8" required><button type="button" class="password-toggle" aria-label="Show password">Show</button></span>
@@ -91,7 +91,7 @@
             <span class="active" data-step-dot="1">1</span><i></i><span data-step-dot="2">2</span><i></i><span data-step-dot="3">3</span>
           </div>
 
-          <form id="signup-form" class="auth-form">
+          <form id="signup-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
             <div class="signup-step active" data-signup-step="1">
               <label>What is your name?<input name="name" type="text" autocomplete="name" placeholder="Your full name" required></label>
               <label>Where do you currently live?<select name="country" id="signup-country" required></select></label>
@@ -117,7 +117,7 @@
             <div class="otp-icon">✉</div>
             <h3>Check your email</h3>
             <p>We sent a 6-digit verification code to <strong id="otp-email-label"></strong>.</p>
-            <form id="otp-form" class="auth-form">
+            <form id="otp-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
               <label>Verification code<input id="otp-code" name="token" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required></label>
               <button type="submit" class="primary auth-submit">Verify and create account</button>
               <button type="button" class="link-button-text centered" id="resend-otp">Resend code</button>
@@ -131,7 +131,7 @@
           <span class="eyebrow">PASSWORD HELP</span>
           <h2>Reset your password</h2>
           <p class="auth-subtitle">Enter your email and we will send a secure reset link.</p>
-          <form id="forgot-form" class="auth-form">
+          <form id="forgot-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
             <label>Email address<input name="email" type="email" autocomplete="email" required></label>
             <button type="submit" class="primary auth-submit">Send reset email</button>
           </form>
@@ -141,7 +141,7 @@
         <div id="reset-view" class="auth-view">
           <span class="eyebrow">NEW PASSWORD</span>
           <h2>Choose a new password</h2>
-          <form id="reset-form" class="auth-form">
+          <form id="reset-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
             <label>New password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
             <label>Confirm new password<input name="confirm_password" type="password" autocomplete="new-password" minlength="8" required></label>
             <button type="submit" class="primary auth-submit">Update password</button>
@@ -707,13 +707,14 @@
   <script src="banks.js"></script>
   <script src="i18n.js"></script>
   <script src="auth-bootstrap.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth-form-guard.js"></script>
+  <script src="auth-startup-check.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="app.js"></script>
-  <script src="features.js"></script>
-  <script src="cloud-sync.js"></script>
-  <script src="charts-v8.js"></script>
-  <script src="v9-clean.js"></script>
+  <script type="module" src="app.js"></script>
+  <script type="module" src="features.js"></script>
+  <script type="module" src="cloud-sync.js"></script>
+  <script type="module" src="charts-v8.js"></script>
+  <script type="module" src="v9-clean.js"></script>
   <script src="responsive-auth.js"></script>
 </body>
 </html>

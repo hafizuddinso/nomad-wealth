@@ -383,3 +383,8 @@ html[data-theme="dark"] .auth-screen,
 html[data-theme="dark"] .auth-panel{background:#071425}
 html[data-theme="dark"] .auth-view,
 html[data-theme="dark"] .mobile-auth-tabs{background:#102036;border-color:#28405f}
+
+.google-button{display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;color:#1f2937!important;font-size:15px!important;font-weight:800!important}
+.google-button svg{display:block!important;width:21px!important;height:21px!important;flex:0 0 21px!important}
+.google-button-label{display:inline-block!important;opacity:1!important;visibility:visible!important;color:inherit!important}
+html[data-theme="dark"] .google-button{color:#f8fafc!important}
