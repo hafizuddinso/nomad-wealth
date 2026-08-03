@@ -1,4 +1,4 @@
-const CACHE='nomad-wealth-v11-static';
+const CACHE='nomad-wealth-v11-1-state-signup-fix';
 self.addEventListener('install',event=>{self.skipWaiting();});
 self.addEventListener('activate',event=>{
   event.waitUntil(

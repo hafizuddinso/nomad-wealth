@@ -77,31 +77,33 @@
 
         <div id="signup-view" class="auth-view">
           <span class="eyebrow">CREATE ACCOUNT</span>
-          <h2>Start your financial overview</h2>
-          <p class="auth-subtitle">Three short steps. It takes about one minute.</p>
-
-          <div class="step-indicator"><span class="active" data-step-dot="1">1</span><i></i><span data-step-dot="2">2</span></div>
+          <h2>Create your Nomad Wealth account</h2>
+          <p class="auth-subtitle">Enter your basic information. You can choose country, currency and preferences later in Settings.</p>
 
           <form id="signup-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
-            <div class="signup-step active" data-signup-step="1">
-              <label>What is your name?<input name="name" type="text" autocomplete="name" placeholder="Your full name" required></label>
-              <label>Where do you currently live?<select name="country" id="signup-country" required></select></label>
-              <label>Your main reporting currency<select name="currency" id="signup-currency"></select></label>
-              <label>Which best describes you?<select name="user_type"><option>Digital nomad</option><option>Freelancer</option><option>Remote employee</option><option>International student</option><option>Expatriate</option><option>Other</option></select></label>
-              <button type="button" class="primary auth-submit" data-next-signup>Continue</button>
-            </div>
-
-            <div class="signup-step" data-signup-step="2">
-              <label>Email address<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
-              <label>Create password
-                <span class="password-field"><input name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required><button type="button" class="password-toggle" aria-label="Show password">Show</button></span>
-              </label>
-              <label>Confirm password
-                <span class="password-field"><input name="confirm_password" type="password" autocomplete="new-password" placeholder="Repeat password" minlength="8" required><button type="button" class="password-toggle" aria-label="Show password">Show</button></span>
-              </label>
-              <label class="check-label terms"><input name="terms" type="checkbox" required> I agree to the Terms and Privacy Policy.</label>
-              <div class="auth-button-row"><button type="button" class="secondary" data-prev-signup>Back</button><button type="submit" class="primary">Create account</button></div>
-            </div>
+            <label>Your name
+              <input name="name" type="text" autocomplete="name" placeholder="Your full name" required>
+            </label>
+            <label>Email address
+              <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+            </label>
+            <label>Create password
+              <span class="password-field">
+                <input name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required>
+                <button type="button" class="password-toggle" aria-label="Show password">Show</button>
+              </span>
+            </label>
+            <label>Confirm password
+              <span class="password-field">
+                <input name="confirm_password" type="password" autocomplete="new-password" placeholder="Repeat password" minlength="8" required>
+                <button type="button" class="password-toggle" aria-label="Show password">Show</button>
+              </span>
+            </label>
+            <label class="check-label terms">
+              <input name="terms" type="checkbox" required>
+              I agree to the Terms and Privacy Policy.
+            </label>
+            <button type="submit" class="primary auth-submit">Create account</button>
           </form>
 
           <p class="auth-switch">Already registered? <button type="button" id="show-login">Log in</button></p>

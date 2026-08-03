@@ -408,3 +408,12 @@ html[data-theme="dark"] .google-button{color:#f8fafc!important}
   .auth-view{padding:19px 16px}
   .auth-form{gap:13px}
 }
+
+/* v11.1 simple signup */
+#signup-view .auth-form{margin-top:20px}
+#signup-view .auth-submit{margin-top:4px}
+#signup-view .auth-subtitle{max-width:440px}
+@media(max-width:520px){
+  #signup-view .auth-view{padding:18px}
+  #signup-view h2{font-size:24px}
+}

@@ -19,6 +19,7 @@ window.NomadSupabase=supabase;
 let currentUser=null;
 let pendingSignup=null;
 let KEY="nomad-wealth-guest";
+let state=null;
 
 const authScreen=document.querySelector("#auth-screen");
 const appRoot=document.querySelector("#app-root");
@@ -242,14 +243,6 @@ document.querySelectorAll(".password-toggle").forEach(button=>button.addEventLis
   input.type=show?"text":"password";
   button.textContent=show?"Hide":"Show";
 }));
-document.querySelector("[data-next-signup]")?.addEventListener("click",()=>{
-  const form=document.querySelector("#signup-form");
-  const fields=[form.elements.name,form.elements.country,form.elements.currency,form.elements.user_type];
-  if(fields.some(field=>!field.reportValidity()))return;
-  setSignupStep(2);
-});
-document.querySelector("[data-prev-signup]")?.addEventListener("click",()=>setSignupStep(1));
-
 document.querySelector("#signup-form")?.addEventListener("submit",async event=>{
   event.preventDefault();
   if(!requireConfigured())return;
@@ -265,9 +258,6 @@ document.querySelector("#signup-form")?.addEventListener("submit",async event=>{
 
   const payload={
     name:form.elements.name.value.trim(),
-    country:normalizeCountryCode(form.elements.country.value),
-    currency:form.elements.currency.value,
-    userType:form.elements.user_type.value,
     email:form.elements.email.value.trim().toLowerCase(),
     password:form.elements.password.value
   };
@@ -282,9 +272,9 @@ document.querySelector("#signup-form")?.addEventListener("submit",async event=>{
       options:{
         data:{
           full_name:payload.name,
-          country:payload.country,
-          main_currency:payload.currency,
-          user_type:payload.userType,
+          country:"AL",
+          main_currency:"EUR",
+          user_type:"Other",
           language:currentLanguage,
           theme:currentTheme,
           onboarding_complete:true
@@ -302,8 +292,6 @@ document.querySelector("#signup-form")?.addEventListener("submit",async event=>{
     }
 
     form.reset();
-    initializeAuthControls();
-    setSignupStep(1);
     setAuthView("login-view");
     setAuthMessage(
       "Account created. Check your email and click the confirmation link, then return here and log in.",
