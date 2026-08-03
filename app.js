@@ -230,10 +230,10 @@ function showAuth(){
   currentUser=null;
   appRoot.classList.add("hidden");
   authScreen.classList.remove("hidden");
-  setAuthView("login-view");
+  setAuthView("login-view"); authModalLayer?.classList.remove("hidden");
 }
 
-document.querySelector("#show-signup")?.addEventListener("click",()=>{setAuthView("signup-view");setSignupStep(1)});
+document.querySelector("#show-signup")?.addEventListener("click",()=>{setAuthView("signup-view"); authModalLayer?.classList.remove("hidden");setSignupStep(1)});
 document.querySelector("#show-login")?.addEventListener("click",()=>setAuthView("login-view"));
 document.querySelector("#show-forgot")?.addEventListener("click",()=>setAuthView("forgot-view"));
 document.querySelector("#back-to-login")?.addEventListener("click",()=>setAuthView("login-view"));
@@ -1104,11 +1104,25 @@ applyTheme(currentTheme);initializeAuthControls();applyLanguage(currentLanguage)
 
 /* V13.4 font style and million-goal preferences */
 const NOMAD_FONT_STORAGE_KEY="nomad_font_style";
-const NOMAD_FONT_OPTIONS=["inter","system","rounded","serif","mono"];
+const NOMAD_FONT_OPTIONS={
+  inter:'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  system:'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
+  rounded:'"Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif',
+  serif:'Georgia, "Times New Roman", serif',
+  mono:'"SFMono-Regular", Consolas, "Liberation Mono", monospace'
+};
 
 function applyAppFont(font){
-  const selected=NOMAD_FONT_OPTIONS.includes(font)?font:"inter";
+  const selected=Object.prototype.hasOwnProperty.call(NOMAD_FONT_OPTIONS,font)
+    ?font
+    :"inter";
+
   document.documentElement.dataset.font=selected;
+  document.documentElement.style.setProperty(
+    "--app-font-family",
+    NOMAD_FONT_OPTIONS[selected]
+  );
+
   localStorage.setItem(NOMAD_FONT_STORAGE_KEY,selected);
 
   document.querySelectorAll('input[name="app-font"]').forEach(input=>{
@@ -1120,7 +1134,7 @@ document.querySelectorAll('input[name="app-font"]').forEach(input=>{
   input.addEventListener("change",()=>{
     if(input.checked){
       applyAppFont(input.value);
-      toast("Font style updated");
+      toast(`${input.closest("label")?.querySelector("strong")?.textContent||"Font"} selected`);
     }
   });
 });
@@ -1144,5 +1158,44 @@ if(millionGoalCurrency){
 }
 
 applyAppFont(localStorage.getItem(NOMAD_FONT_STORAGE_KEY)||"inter");
+
+
+/* V13.5 public landing page and authentication modal */
+const authModalLayer=document.querySelector("#auth-modal-layer");
+
+function openAuthModal(view="login-view"){
+  setAuthView(view);
+  authModalLayer?.classList.remove("hidden");
+  authModalLayer?.setAttribute("aria-hidden","false");
+  document.body.classList.add("auth-modal-open");
+
+  setTimeout(()=>{
+    const active=document.querySelector(`#${view}`);
+    active?.querySelector("input")?.focus();
+  },60);
+}
+
+function closeAuthModal(){
+  authModalLayer?.classList.add("hidden");
+  authModalLayer?.setAttribute("aria-hidden","true");
+  document.body.classList.remove("auth-modal-open");
+}
+
+document.querySelectorAll("[data-auth-open]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    openAuthModal(button.dataset.authOpen||"login-view");
+  });
+});
+
+document.querySelectorAll("[data-auth-close]").forEach(element=>{
+  element.addEventListener("click",closeAuthModal);
+});
+
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"&&!authModalLayer?.classList.contains("hidden")){
+    closeAuthModal();
+  }
+});
+
 
 initializeAuthentication();

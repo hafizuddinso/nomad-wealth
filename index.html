@@ -6,127 +6,226 @@
   <meta name="theme-color" content="#0f766e" />
   <meta name="description" content="Nomad Wealth is a responsive multi-country and multi-currency finance dashboard developed by Hafizuddin." />
   <meta name="author" content="Hafizuddin" />
-  <title>Nomad Wealth v13 — Developed by Hafizuddin</title>
+  <title>Nomad Wealth — Your money. Anywhere.</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css?v=13.4.0" />
+  <link rel="stylesheet" href="styles.css?v=13.5.0" />
 </head>
 <body>
-  <section id="auth-screen" class="auth-screen" aria-label="Authentication">
-    <div class="auth-visual">
-      <a class="auth-brand" href="#">
+  <section id="auth-screen" class="auth-screen auth-landing" aria-label="Welcome to Nomad Wealth">
+    <header class="public-header">
+      <a class="public-brand" href="#" aria-label="Nomad Wealth home">
         <span class="brand-logo" aria-hidden="true">
-          <svg viewBox="0 0 48 48"><path d="M24 4a20 20 0 1 0 20 20A20 20 0 0 0 24 4Zm9.4 10.6-6 13a4 4 0 0 1-1.9 1.9l-13 6 6-13a4 4 0 0 1 1.9-1.9Z"/><circle cx="24" cy="24" r="3.2"/></svg>
+          <svg viewBox="0 0 48 48">
+            <path d="M24 4a20 20 0 1 0 20 20A20 20 0 0 0 24 4Zm9.4 10.6-6 13a4 4 0 0 1-1.9 1.9l-13 6 6-13a4 4 0 0 1 1.9-1.9Z"/>
+            <circle cx="24" cy="24" r="3.2"/>
+          </svg>
         </span>
-        <span><strong>Nomad Wealth</strong><small>Your money. Anywhere.</small></span>
+        <span>
+          <strong>Nomad Wealth</strong>
+          <small>Your money. Anywhere.</small>
+        </span>
       </a>
 
-      <div class="auth-copy">
-        <span class="auth-pill">Built for global lives</span>
-        <h1>One clear view of your money across every country.</h1>
-        <p>Track international accounts, currencies, budgets, investments and travel spending from one secure dashboard.</p>
-        <div class="auth-benefits">
-          <div><span>✓</span><p><strong>Multi-country accounts</strong><small>Keep banks, wallets and cash organized.</small></p></div>
-          <div><span>✓</span><p><strong>Simple budgeting</strong><small>Know what is safe to spend today.</small></p></div>
-          <div><span>✓</span><p><strong>Financial calculators</strong><small>Estimate loans and investment returns.</small></p></div>
-        </div>
+      <div class="public-header-actions">
+        <button type="button" class="public-login-button" data-auth-open="login-view">Log in</button>
+        <button type="button" class="primary public-signup-button" data-auth-open="signup-view">Create account</button>
       </div>
+    </header>
 
-      <div class="auth-preview" aria-hidden="true">
-        <div class="preview-card large">
-          <span>Monthly overview</span><strong>Clear and simple</strong><small>Income, expenses and budgets</small>
-          <svg viewBox="0 0 260 80"><path d="M5 68C35 48 52 62 79 38S122 51 150 27s48 9 105-20" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg>
-        </div>
-        <div class="preview-card floating"><span>Your data</span><strong>Secure</strong></div>
-      </div>
+    <main class="public-main">
+      <section class="public-hero">
+        <div class="public-hero-copy">
+          <span class="auth-pill">Personal finance across countries</span>
+          <h1>Understand your money, wherever life takes you.</h1>
+          <p>
+            Track accounts, income, expenses, budgets, loans and currencies
+            from one simple personal dashboard.
+          </p>
 
-      <p class="auth-credit">Designed and developed by Hafizuddin</p>
-    </div>
+          <div class="public-hero-actions">
+            <button type="button" class="primary hero-signup-button" data-auth-open="signup-view">
+              Create free account
+            </button>
+            <button type="button" class="secondary hero-login-button" data-auth-open="login-view">
+              Log in
+            </button>
+          </div>
 
-    <div class="auth-panel">
-      <div class="auth-box">
-        <div class="mobile-auth-brand">
-          <span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 4a20 20 0 1 0 20 20A20 20 0 0 0 24 4Zm9.4 10.6-6 13a4 4 0 0 1-1.9 1.9l-13 6 6-13a4 4 0 0 1 1.9-1.9Z"/><circle cx="24" cy="24" r="3.2"/></svg></span>
-          <span><strong>Nomad Wealth</strong><small>Simple money tracking anywhere</small></span>
+          <div class="public-benefits" aria-label="Main features">
+            <span>Multi-currency accounts</span>
+            <span>Simple income and expense tracking</span>
+            <span>Loan and installment tracking</span>
+          </div>
         </div>
-        <div class="mobile-auth-tabs">
-          <button type="button" data-auth-tab="login-view" class="active">Log in</button>
-          <button type="button" data-auth-tab="signup-view">Create account</button>
+
+        <div class="public-preview" aria-hidden="true">
+          <div class="preview-window">
+            <div class="preview-window-header">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="preview-balance-card">
+              <small>Remaining balance</small>
+              <strong>€2,070.00</strong>
+              <span>Income minus expenses</span>
+            </div>
+            <div class="preview-stat-grid">
+              <div><small>Income</small><strong>+ €4,250</strong></div>
+              <div><small>Expenses</small><strong>− €2,180</strong></div>
+            </div>
+            <div class="preview-list">
+              <div><span>↓</span><p><strong>Salary</strong><small>Bank account</small></p><b>+€3,200</b></div>
+              <div><span>↑</span><p><strong>Groceries</strong><small>Cash wallet</small></p><b>−€48</b></div>
+            </div>
+          </div>
         </div>
+      </section>
+    </main>
+
+    <footer class="public-footer">
+      Nomad Wealth · Developed by Hafizuddin
+    </footer>
+
+    <div id="auth-modal-layer" class="auth-modal-layer hidden" aria-hidden="true">
+      <div class="auth-modal-backdrop" data-auth-close></div>
+
+      <section class="auth-modal-card" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+        <button type="button" class="auth-modal-close" data-auth-close aria-label="Close">×</button>
+
+        <div class="auth-modal-brand">
+          <span class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <path d="M24 4a20 20 0 1 0 20 20A20 20 0 0 0 24 4Zm9.4 10.6-6 13a4 4 0 0 1-1.9 1.9l-13 6 6-13a4 4 0 0 1 1.9-1.9Z"/>
+              <circle cx="24" cy="24" r="3.2"/>
+            </svg>
+          </span>
+          <div>
+            <strong>Nomad Wealth</strong>
+            <small>Secure personal access</small>
+          </div>
+        </div>
+
         <div id="auth-inline-message" class="auth-inline-message hidden" role="alert"></div>
         <div id="auth-config-warning" class="config-warning hidden">
           <strong>Authentication setup required</strong>
-          <p>Add your Supabase URL and publishable key in <code>config.js?v=13.4.0"login-view" class="auth-view active">
+          <p>Add your Supabase URL and publishable key in <code>config.js</code>.</p>
+        </div>
+
+        <div id="login-view" class="auth-view active">
           <span class="eyebrow">WELCOME BACK</span>
-          <h2>Log in to Nomad Wealth</h2>
-          <p class="auth-subtitle">Continue to your personal finance dashboard.</p>
+          <h2 id="auth-modal-title">Log in</h2>
+          <p class="auth-subtitle">Continue to your Nomad Wealth dashboard.</p>
 
           <form id="login-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
-            <label>Email address<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
-            <label>Password
-              <span class="password-field"><input name="password" type="password" autocomplete="current-password" placeholder="Your password" minlength="8" required><button type="button" class="password-toggle" aria-label="Show password">Show</button></span>
+            <label>
+              Email address
+              <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
             </label>
-            <div class="auth-row"><label class="check-label"><input type="checkbox" checked> Remember me</label><button type="button" class="link-button-text" id="show-forgot">Forgot password?</button></div>
+
+            <label>
+              Password
+              <span class="password-field">
+                <input name="password" type="password" autocomplete="current-password" placeholder="Your password" minlength="8" required>
+                <button type="button" class="password-toggle" aria-label="Show password">Show</button>
+              </span>
+            </label>
+
+            <div class="auth-row">
+              <label class="check-label"><input type="checkbox" checked> Remember me</label>
+              <button type="button" class="link-button-text" id="show-forgot">Forgot password?</button>
+            </div>
+
             <button class="primary auth-submit" type="submit">Log in</button>
           </form>
 
-          <p class="auth-switch">New to Nomad Wealth? <button type="button" id="show-signup">Create an account</button></p>
+          <p class="auth-switch">
+            New here?
+            <button type="button" id="show-signup">Create an account</button>
+          </p>
         </div>
 
         <div id="signup-view" class="auth-view">
           <span class="eyebrow">CREATE ACCOUNT</span>
-          <h2>Create your Nomad Wealth account</h2>
-          <p class="auth-subtitle">Enter your basic information. You can choose country, currency and preferences later in Settings.</p>
+          <h2>Create your account</h2>
+          <p class="auth-subtitle">Start tracking your money in a few simple steps.</p>
 
           <form id="signup-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
-            <label>Your name
+            <label>
+              Your name
               <input name="name" type="text" autocomplete="name" placeholder="Your full name" required>
             </label>
-            <label>Email address
+
+            <label>
+              Email address
               <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
             </label>
-            <label>Create password
+
+            <label>
+              Create password
               <span class="password-field">
                 <input name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required>
                 <button type="button" class="password-toggle" aria-label="Show password">Show</button>
               </span>
             </label>
-            <label>Confirm password
+
+            <label>
+              Confirm password
               <span class="password-field">
                 <input name="confirm_password" type="password" autocomplete="new-password" placeholder="Repeat password" minlength="8" required>
                 <button type="button" class="password-toggle" aria-label="Show password">Show</button>
               </span>
             </label>
+
             <label class="check-label terms">
               <input name="terms" type="checkbox" required>
               I agree to the Terms and Privacy Policy.
             </label>
+
             <button type="submit" class="primary auth-submit">Create account</button>
           </form>
 
-          <p class="auth-switch">Already registered? <button type="button" id="show-login">Log in</button></p>
+          <p class="auth-switch">
+            Already registered?
+            <button type="button" id="show-login">Log in</button>
+          </p>
         </div>
 
         <div id="forgot-view" class="auth-view">
           <span class="eyebrow">PASSWORD HELP</span>
           <h2>Reset your password</h2>
-          <p class="auth-subtitle">Enter your email and we will send a secure reset link.</p>
+          <p class="auth-subtitle">Enter your email to receive a password reset link.</p>
+
           <form id="forgot-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
-            <label>Email address<input name="email" type="email" autocomplete="email" required></label>
+            <label>
+              Email address
+              <input name="email" type="email" autocomplete="email" required>
+            </label>
             <button type="submit" class="primary auth-submit">Send reset email</button>
           </form>
-          <p class="auth-switch"><button type="button" id="back-to-login">← Back to login</button></p>
+
+          <p class="auth-switch">
+            <button type="button" id="back-to-login">← Back to login</button>
+          </p>
         </div>
 
         <div id="reset-view" class="auth-view">
           <span class="eyebrow">NEW PASSWORD</span>
           <h2>Choose a new password</h2>
+
           <form id="reset-form" class="auth-form" method="post" action="javascript:void(0)" autocomplete="on">
-            <label>New password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
-            <label>Confirm new password<input name="confirm_password" type="password" autocomplete="new-password" minlength="8" required></label>
+            <label>
+              New password
+              <input name="password" type="password" autocomplete="new-password" minlength="8" required>
+            </label>
+
+            <label>
+              Confirm new password
+              <input name="confirm_password" type="password" autocomplete="new-password" minlength="8" required>
+            </label>
+
             <button type="submit" class="primary auth-submit">Update password</button>
           </form>
         </div>
-      </div>
+      </section>
     </div>
   </section>
 
@@ -685,7 +784,7 @@
         </article>
 </section>
 
-      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13.4 Final Polish</footer>
+      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13.5 Responsive Auth & Fonts</footer>
     </main>
   </div>
 
@@ -940,17 +1039,17 @@
       if(event.target?.matches?.(".auth-form"))event.preventDefault();
     },true);
   </script>
-  <script src="config.js?v=13.4.0"></script>
-  <script src="countries.js?v=13.4.0"></script>
-  <script src="banks.js?v=13.4.0"></script>
-  <script src="i18n.js?v=13.4.0"></script>
+  <script src="config.js?v=13.5.0"></script>
+  <script src="countries.js?v=13.5.0"></script>
+  <script src="banks.js?v=13.5.0"></script>
+  <script src="i18n.js?v=13.5.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="app.js?v=13.4.0"></script>
-  <script type="module" src="features.js?v=13.4.0"></script>
-  <script type="module" src="cloud-sync.js?v=13.4.0"></script>
-  <script type="module" src="charts-v8.js?v=13.4.0"></script>
-  <script type="module" src="v9-clean.js?v=13.4.0"></script>
-  <script src="loans-v13.js?v=13.4.0"></script>
+  <script type="module" src="app.js?v=13.5.0"></script>
+  <script type="module" src="features.js?v=13.5.0"></script>
+  <script type="module" src="cloud-sync.js?v=13.5.0"></script>
+  <script type="module" src="charts-v8.js?v=13.5.0"></script>
+  <script type="module" src="v9-clean.js?v=13.5.0"></script>
+  <script src="loans-v13.js?v=13.5.0"></script>
 </body>
 </html>

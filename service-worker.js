@@ -1,4 +1,4 @@
-const CACHE='nomad-wealth-v13-4-final-polish';
+const CACHE='nomad-wealth-v13-5-auth-font-fix';
 self.addEventListener('install',event=>{self.skipWaiting();});
 self.addEventListener('activate',event=>{
   event.waitUntil(
