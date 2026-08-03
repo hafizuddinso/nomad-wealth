@@ -8,7 +8,7 @@
   <meta name="author" content="Hafizuddin" />
   <title>Nomad Wealth v13 — Developed by Hafizuddin</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=13.2.0" />
 </head>
 <body>
   <section id="auth-screen" class="auth-screen" aria-label="Authentication">
@@ -55,7 +55,7 @@
         <div id="auth-inline-message" class="auth-inline-message hidden" role="alert"></div>
         <div id="auth-config-warning" class="config-warning hidden">
           <strong>Authentication setup required</strong>
-          <p>Add your Supabase URL and publishable key in <code>config.js</code>.</p>
+          <p>Add your Supabase URL and publishable key in <code>config.js?v=13.2.0</code>.</p>
         </div>
 
         <div id="login-view" class="auth-view active">
@@ -213,10 +213,10 @@
 
         <div class="dashboard-content-grid">
           <aside class="quick-entry-panel">
-            <button class="quick-entry-button income-entry" data-open-entry="income">
+            <button type="button" class="quick-entry-button income-entry" data-open-entry="income">
               <span>＋</span><div><strong>Add Income</strong><small>Salary, freelance, business</small></div>
             </button>
-            <button class="quick-entry-button expense-entry" data-open-entry="expense">
+            <button type="button" class="quick-entry-button expense-entry" data-open-entry="expense">
               <span>−</span><div><strong>Add Expense</strong><small>Record everyday spending</small></div>
             </button>
           </aside>
@@ -242,7 +242,7 @@
           <article class="panel recent-panel">
             <div class="panel-heading">
               <div><h2>Recent transactions</h2><p>Your latest activity</p></div>
-              <button class="text-button" data-page-target="transactions">View all</button>
+              <button type="button" class="text-button" data-page-target="transactions">View all</button>
             </div>
             <div id="home-recent-transactions"></div>
           </article>
@@ -250,17 +250,17 @@
           <article class="panel dashboard-account-preview">
             <div class="panel-heading">
               <div><h2>Accounts</h2><p>Accessible balances</p></div>
-              <button class="secondary compact-button" data-page-target="accounts">Manage accounts</button>
+              <button type="button" class="secondary compact-button" data-page-target="accounts">Manage accounts</button>
             </div>
             <div id="dashboard-account-list" class="dashboard-account-list"></div>
           </article>
         </div>
 
         <div class="dashboard-tool-links">
-          <button data-page-target="calculators" data-open-calc="loan"><span>↗</span>Loan</button>
-          <button data-page-target="calculators" data-open-calc="investment"><span>⌁</span>Investment</button>
-          <button data-page-target="calculators" data-open-calc="stock"><span>⌁</span>Stock</button>
-          <button data-page-target="calculators" data-open-calc="fund"><span>◇</span>Mutual Fund</button>
+          <button type="button" data-page-target="calculators" data-open-calc="loan"><span>↗</span>Loan</button>
+          <button type="button" data-page-target="calculators" data-open-calc="investment"><span>⌁</span>Investment</button>
+          <button type="button" data-page-target="calculators" data-open-calc="stock"><span>⌁</span>Stock</button>
+          <button type="button" data-page-target="calculators" data-open-calc="fund"><span>◇</span>Mutual Fund</button>
         </div>
       </section><section class="page" id="accounts">
         <div class="page-chart-grid">
@@ -274,7 +274,7 @@
           </article>
         </div>
         <article class="panel">
-          <div class="panel-heading"><div><h2>Your accounts</h2><p>Bank, cash, savings, wallets and debt</p></div><button class="primary compact-button" data-open-dialog="account-dialog">+ Add account</button></div>
+          <div class="panel-heading"><div><h2>Your accounts</h2><p>Bank, cash, savings, wallets and debt</p></div><button type="button" class="primary compact-button" data-open-dialog="account-dialog">+ Add account</button></div>
           <div id="account-list" class="card-list"></div>
         </article>
       </section>
@@ -291,7 +291,7 @@
           </article>
         </div>
         <article class="panel">
-          <div class="panel-heading"><div><h2>Transactions</h2><p>Income and expenses across countries</p></div><div class="split-entry-actions compact"><button class="secondary expense-action" data-open-entry="expense">− Expense</button><button class="secondary income-action" data-open-entry="income">+ Income</button></div></div>
+          <div class="panel-heading"><div><h2>Transactions</h2><p>Income and expenses across countries</p></div><div class="split-entry-actions compact"><button type="button" class="secondary expense-action" data-open-entry="expense">− Expense</button><button type="button" class="secondary income-action" data-open-entry="income">+ Income</button></div></div>
           <div class="advanced-filter-card">
             <div class="filter-grid">
               <label>Search<input class="transaction-filter-control" id="transaction-search" type="search" placeholder="Category, note, account or country"></label>
@@ -328,7 +328,7 @@
         </div>
         <div class="two-column">
           <article class="panel">
-            <div class="panel-heading"><div><h2>Monthly budget</h2><p>Plan money in simple groups</p></div><button class="secondary" data-open-dialog="budget-dialog">+ Add budget</button></div>
+            <div class="panel-heading"><div><h2>Monthly budget</h2><p>Plan money in simple groups</p></div><button type="button" class="secondary" data-open-dialog="budget-dialog">+ Add budget</button></div>
             <div id="budget-list"></div>
           </article>
           <article class="panel explanation-card">
@@ -434,7 +434,7 @@
           </article>
         </div>
         <article class="panel">
-          <div class="panel-heading"><div><h2>Investments</h2><p>Manual holdings and performance</p></div><button class="secondary" data-open-dialog="investment-dialog">+ Add investment</button></div>
+          <div class="panel-heading"><div><h2>Investments</h2><p>Manual holdings and performance</p></div><button type="button" class="secondary" data-open-dialog="investment-dialog">+ Add investment</button></div>
           <div id="investment-list" class="card-list"></div>
         </article>
       </section>
@@ -500,7 +500,7 @@
           </article>
         </div>
         <article class="panel">
-          <div class="panel-heading"><div><h2>Savings goals</h2><p>Create targets and track your progress</p></div><button class="secondary" data-open-dialog="goal-dialog">+ Add goal</button></div>
+          <div class="panel-heading"><div><h2>Savings goals</h2><p>Create targets and track your progress</p></div><button type="button" class="secondary" data-open-dialog="goal-dialog">+ Add goal</button></div>
           <div id="goals-list" class="goals-grid"></div>
         </article>
       </section>
@@ -707,48 +707,60 @@
     </form>
   </dialog>
 
-  <dialog id="transaction-dialog">
+  <dialog id="transaction-dialog" class="transaction-dialog">
     <form id="transaction-form">
       <div class="dialog-heading">
-        <div><span class="eyebrow">NEW ENTRY</span><h2>Add transaction</h2></div>
+        <div><span class="eyebrow">NEW ENTRY</span><h2 id="transaction-dialog-title">Add transaction</h2></div>
         <button type="button" class="icon-button" data-close-dialog aria-label="Close">×</button>
       </div>
+
       <div class="transaction-type-tabs" role="tablist" aria-label="Transaction type">
-        <label class="transaction-type-tab expense-tab"><input type="radio" name="type" value="expense" checked><span>− Expense</span></label>
-        <label class="transaction-type-tab income-tab"><input type="radio" name="type" value="income"><span>＋ Income</span></label>
+        <label class="transaction-type-tab expense-tab">
+          <input type="radio" name="type" value="expense" checked>
+          <span>− Expense</span>
+        </label>
+        <label class="transaction-type-tab income-tab">
+          <input type="radio" name="type" value="income">
+          <span>＋ Income</span>
+        </label>
       </div>
-      <label id="transaction-account-label">Which account did you use?
+
+      <label id="transaction-account-label">
+        Which account did you pay from?
         <select name="accountId" id="transaction-account" required></select>
       </label>
+
       <div id="transaction-account-summary" class="transaction-account-summary hidden">
-        <div><span>Selected account</span><strong id="transaction-selected-account">—</strong></div>
-        <div><span>Currency</span><strong id="transaction-selected-currency">—</strong></div>
-        <div><span>Country</span><strong id="transaction-selected-country">—</strong></div>
+        <div><small>Selected account</small><strong id="transaction-selected-account">—</strong></div>
+        <div><small>Currency</small><strong id="transaction-selected-currency">—</strong></div>
+        <div><small>Country</small><strong id="transaction-selected-country">—</strong></div>
       </div>
+
       <input type="hidden" name="currency" id="transaction-currency">
       <input type="hidden" name="country" id="transaction-country">
-      <div class="form-grid transaction-amount-date">
+
+      <div class="form-grid">
         <label>Amount<input name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required></label>
         <label>Date<input name="date" type="date" required></label>
       </div>
+
+      <label>Category<select name="category" id="transaction-category-select" required></select></label>
+      <label id="custom-category-wrap" class="hidden">Custom category<input name="custom_category" placeholder="Enter a category"></label>
+
       <label>How often?
         <select name="frequency" id="transaction-frequency">
           <option value="once">One-time</option>
           <option value="weekly">Every week</option>
-          <option value="monthly">Every month (rent, salary, subscriptions)</option>
+          <option value="monthly">Every month</option>
           <option value="yearly">Every year</option>
         </select>
       </label>
-      <label>Category<input name="category" list="category-options" placeholder="Groceries" required></label>
-      <datalist id="category-options">
-        <option value="Housing"><option value="Groceries"><option value="Transport"><option value="Restaurants">
-        <option value="Salary"><option value="Freelance"><option value="Travel"><option value="Insurance">
-        <option value="Visa and Residency"><option value="Family Support"><option value="Shopping">
-      </datalist>
+
       <label>Note<input name="note" placeholder="Optional note"></label>
+
       <div class="dialog-actions">
         <button type="button" class="secondary" data-close-dialog>Cancel</button>
-        <button type="submit" class="primary">Save transaction</button>
+        <button type="submit" class="primary expense-save-button" id="save-transaction-button">Save expense</button>
       </div>
     </form>
   </dialog>
@@ -834,17 +846,17 @@
       if(event.target?.matches?.(".auth-form"))event.preventDefault();
     },true);
   </script>
-  <script src="config.js"></script>
-  <script src="countries.js"></script>
-  <script src="banks.js"></script>
-  <script src="i18n.js"></script>
+  <script src="config.js?v=13.2.0"></script>
+  <script src="countries.js?v=13.2.0"></script>
+  <script src="banks.js?v=13.2.0"></script>
+  <script src="i18n.js?v=13.2.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="app.js"></script>
-  <script type="module" src="features.js"></script>
-  <script type="module" src="cloud-sync.js"></script>
-  <script type="module" src="charts-v8.js"></script>
-  <script type="module" src="v9-clean.js"></script>
-  <script src="loans-v13.js"></script>
+  <script type="module" src="app.js?v=13.2.0"></script>
+  <script type="module" src="features.js?v=13.2.0"></script>
+  <script type="module" src="cloud-sync.js?v=13.2.0"></script>
+  <script type="module" src="charts-v8.js?v=13.2.0"></script>
+  <script type="module" src="v9-clean.js?v=13.2.0"></script>
+  <script src="loans-v13.js?v=13.2.0"></script>
 </body>
 </html>

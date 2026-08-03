@@ -831,9 +831,60 @@ html[data-theme="dark"] .income-tab input:checked+span{background:linear-gradien
 @media(max-width:1000px){.loan-summary-grid{grid-template-columns:1fr 1fr}.loan-metrics{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){.loans-hero{display:grid}.loan-summary-grid{grid-template-columns:1fr}.loan-metrics,.loan-payment-breakdown{grid-template-columns:1fr 1fr}.loan-details-grid{grid-template-columns:1fr}.loan-history-row{grid-template-columns:1fr auto}.loan-history-row .history-extra{display:none}}
 
-/* v13.1 smart transaction flow */
-.transaction-account-summary{display:grid;grid-template-columns:1.6fr .7fr .9fr;gap:10px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}
-.transaction-account-summary>div{min-width:0}.transaction-account-summary span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.transaction-account-summary strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
-.transaction-type-tabs.hidden{display:none!important}#transaction-account:disabled{opacity:.65}
-html[data-theme="dark"] .transaction-account-summary{background:#0c1b2f;border-color:#2b425e}
-@media(max-width:560px){.transaction-account-summary{grid-template-columns:1fr 1fr}.transaction-account-summary>div:first-child{grid-column:1/-1}}
+
+/* V13.2 stable transaction flow */
+.transaction-dialog form{width:min(560px,calc(100vw - 28px))}
+.transaction-type-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 18px}
+.transaction-type-tabs.single-mode{grid-template-columns:1fr}
+.transaction-type-tab{cursor:pointer}
+.transaction-type-tab input{position:absolute;opacity:0;pointer-events:none}
+.transaction-type-tab span{display:flex;align-items:center;justify-content:center;min-height:48px;border:1px solid var(--line);border-radius:13px;background:var(--panel);color:var(--text);font-weight:850}
+.transaction-type-tab.expense-tab input:checked+span{border-color:transparent;background:linear-gradient(135deg,#b9364c,#ff6170);color:#fff}
+.transaction-type-tab.income-tab input:checked+span{border-color:transparent;background:linear-gradient(135deg,#0d8f70,#24c99a);color:#fff}
+.transaction-account-summary{display:grid;grid-template-columns:1.4fr .65fr .9fr;gap:10px;margin:0 0 18px;padding:13px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--teal2) 8%,var(--panel))}
+.transaction-account-summary small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.transaction-account-summary strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.income-save-button{background:linear-gradient(135deg,#0d8f70,#24c99a)!important}
+.expense-save-button{background:linear-gradient(135deg,#b9364c,#ff6170)!important}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] .app-shell,
+html[data-theme="dark"] .page,
+html[data-theme="dark"] .main-content{background:#061426!important;color:#e8f0fb!important}
+
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .mini-card,
+html[data-theme="dark"] .home-kpi,
+html[data-theme="dark"] .calculator-panel,
+html[data-theme="dark"] .filter-panel,
+html[data-theme="dark"] .settings-card,
+html[data-theme="dark"] .loan-card,
+html[data-theme="dark"] .workspace-card,
+html[data-theme="dark"] dialog,
+html[data-theme="dark"] dialog form{background:#102239!important;color:#e8f0fb!important;border-color:#29425f!important}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea{background:#0a1a2e!important;color:#edf5ff!important;border-color:#304b69!important;color-scheme:dark}
+
+html[data-theme="dark"] option{background:#0a1a2e!important;color:#edf5ff!important}
+
+html[data-theme="dark"] .secondary,
+html[data-theme="dark"] .icon-button,
+html[data-theme="dark"] .notification-button,
+html[data-theme="dark"] .currency-control,
+html[data-theme="dark"] .account-more-button,
+html[data-theme="dark"] .text-button{background:#13263e!important;color:#e8f0fb!important;border-color:#304b69!important}
+
+html[data-theme="dark"] .transaction-type-tab span{background:#13263e;color:#dbe8f8;border-color:#304b69}
+html[data-theme="dark"] .transaction-account-summary{background:#0c2035;border-color:#2b4c67}
+html[data-theme="dark"] .transaction-item,
+html[data-theme="dark"] .home-recent-row,
+html[data-theme="dark"] .dashboard-account-row{border-color:#29425f!important}
+html[data-theme="dark"] .empty-state{background:#0d1f34!important;color:#dfeaf7!important;border-color:#29425f!important}
+html[data-theme="dark"] dialog::backdrop{background:rgba(0,7,18,.78)!important}
+
+@media(max-width:600px){
+  .transaction-account-summary{grid-template-columns:1fr 1fr}
+  .transaction-account-summary>div:first-child{grid-column:1/-1}
+}

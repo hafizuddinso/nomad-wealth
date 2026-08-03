@@ -1,4 +1,4 @@
-const CACHE='nomad-wealth-v13-1-smart-transactions';
+const CACHE='nomad-wealth-v13-2-stable-fix';
 self.addEventListener('install',event=>{self.skipWaiting();});
 self.addEventListener('activate',event=>{
   event.waitUntil(

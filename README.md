@@ -1,11 +1,15 @@
-# Nomad Wealth Website v13.1 — Smart Transactions
+# Nomad Wealth v13.2 — Stable Fix
 
-- Account-first transaction form
-- Currency and country selected automatically from the account
-- Generic Add Transaction shows Expense and Income tabs
-- Expense button opens expense-only mode
-- Income button opens income-only mode
-- Income asks which account should receive the money
-- Expense asks which account was used
-- Saved transactions always update the selected account balance
-- Existing loan tracker retained
+Built from the stable v13 loan release.
+
+- Repairs the JavaScript error that disabled buttons and links
+- Expense opens expense-only mode
+- Income opens income-only mode
+- Add Transaction keeps both choices
+- Account selected first
+- Currency and country selected automatically
+- Income updates the receiving account
+- Expense updates the paying account
+- Full dark-mode correction
+- Fresh cache version for Vercel/browser
+- Loan tracking remains included

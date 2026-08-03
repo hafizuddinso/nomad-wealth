@@ -746,6 +746,7 @@ function populateSelects(){
 
   [
     "main-currency",
+    "transaction-currency",
     "account-currency",
     "investment-currency",
     "budget-currency",
@@ -765,11 +766,10 @@ function populateSelects(){
 
   const transactionAccount=document.querySelector("#transaction-account");
   if(transactionAccount){
-    const usableAccounts=state.accounts.filter(account=>account.type!=="Debt");
-    transactionAccount.innerHTML=`<option value="">Choose an account</option>`+usableAccounts
-      .map(account=>`<option value="${account.id}">${esc(account.name)} · ${esc(account.institution||account.type)}</option>`)
+    transactionAccount.innerHTML=state.accounts
+      .filter(account=>account.type!=="Debt")
+      .map(account=>`<option value="${account.id}">${esc(account.name)} (${account.currency})</option>`)
       .join("");
-    transactionAccount.disabled=usableAccounts.length===0;
   }
 
   populateAllCountryCurrencyControls();
@@ -792,12 +792,11 @@ function openDialog(id){
   const dialog=document.querySelector("#"+id);if(!dialog)return;
   if(id==="transaction-dialog"){
     const form=document.querySelector("#transaction-form");
-    form.reset();
-    form.dataset.entryMode="all";
     form.elements.date.value=new Date().toISOString().slice(0,10);
-    window.NomadTransactionUI?.setMode?.("all");
-    window.NomadTransactionUI?.syncAccount?.();
-    setTimeout(()=>form.elements.accountId?.focus(),50);
+    populateCountrySelect(form.elements.country,state.currentCountry||"AL");
+    const account=state.accounts.find(a=>a.type!=="Debt");
+    if(account){form.elements.accountId.value=account.id;form.elements.currency.value=account.currency}
+    setTimeout(()=>form.elements.amount.focus(),50);
   }
   if(id==="account-dialog"){
     populateCountryBankSelects();
@@ -843,7 +842,7 @@ const hour=new Date().getHours();document.querySelector("#greeting").textContent
 document.querySelectorAll("[data-page]").forEach(el=>el.addEventListener("click",()=>showPage(el.dataset.page)));
 document.querySelectorAll("[data-page-link]").forEach(el=>el.addEventListener("click",e=>{e.preventDefault();showPage(el.dataset.pageLink)}));
 document.querySelectorAll("[data-open-dialog]").forEach(el=>el.addEventListener("click",()=>openDialog(el.dataset.openDialog)));
-document.querySelector("#quick-add").onclick=()=>openDialog("transaction-dialog");
+document.querySelector("#quick-add")?.addEventListener("click",()=>openDialog("transaction-dialog"));
 document.querySelectorAll("[data-close-dialog]").forEach(btn=>btn.addEventListener("click",()=>closeDialog(btn.closest("dialog"))));
 document.querySelectorAll("dialog").forEach(dialog=>{
   dialog.addEventListener("click",event=>{
@@ -861,7 +860,7 @@ function openCalc(name){
 }
 
 document.querySelector("#transaction-account")?.addEventListener("change",()=>window.NomadTransactionUI?.syncAccount?.());
-document.querySelector("#main-currency").addEventListener("change",e=>{state.mainCurrency=e.target.value;save("Main currency updated")});
+document.querySelector("#main-currency")?.addEventListener("change",e=>{state.mainCurrency=e.target.value;save("Main currency updated")});
 document.querySelectorAll(".transaction-filter-control").forEach(control=>{
   control.addEventListener(control.type==="search"||control.type==="number"?"input":"change",renderTransactions);
 });
@@ -872,14 +871,48 @@ document.querySelector("#clear-transaction-filters")?.addEventListener("click",(
   renderTransactions();
 });
 
-document.querySelector("#transaction-form")?.addEventListener("submit",e=>{
-  e.preventDefault();
-  const f=new FormData(e.target);
-  const selectedAccount=state.accounts.find(account=>account.id===f.get("accountId"));
-  if(!selectedAccount){toast("Choose an account first");return;}
-  state.transactions.push({id:crypto.randomUUID(),type:f.get("type"),amount:+f.get("amount"),currency:selectedAccount.currency,category:String(f.get("category")||"Other").trim(),country:normalizeCountryCode(selectedAccount.country),accountId:selectedAccount.id,date:f.get("date"),createdAt:new Date().toISOString(),frequency:f.get("frequency")||"once",note:String(f.get("note")||"").trim()});
-  e.target.reset();closeDialog(document.querySelector("#transaction-dialog"));save("Transaction saved");
+document.querySelector("#transaction-form")?.addEventListener("submit",event=>{
+  event.preventDefault();
+  if(!state)return;
+
+  const form=event.currentTarget;
+  const data=new FormData(form);
+  const selectedAccount=state.accounts.find(
+    account=>account.id===data.get("accountId")
+  );
+
+  if(!selectedAccount){
+    toast("Choose an account first");
+    return;
+  }
+
+  const amount=Number(data.get("amount"));
+  if(!Number.isFinite(amount)||amount<=0){
+    toast("Enter a valid amount");
+    return;
+  }
+
+  const type=data.get("type")==="income"?"income":"expense";
+
+  state.transactions.push({
+    id:crypto.randomUUID(),
+    type,
+    amount,
+    currency:selectedAccount.currency,
+    category:String(data.get("category")||"Other").trim(),
+    country:normalizeCountryCode(selectedAccount.country),
+    accountId:selectedAccount.id,
+    date:data.get("date"),
+    createdAt:new Date().toISOString(),
+    frequency:data.get("frequency")||"once",
+    note:String(data.get("note")||"").trim()
+  });
+
+  form.reset();
+  closeDialog(document.querySelector("#transaction-dialog"));
+  save(type==="income"?"Income added":"Expense added");
 });
+
 document.querySelector("#account-form").addEventListener("submit",e=>{
   e.preventDefault();const f=new FormData(e.target);
   state.accounts.push({id:crypto.randomUUID(),name:f.get("name").trim(),institution:f.get("institution").trim(),country:normalizeCountryCode(f.get("country")),currency:f.get("currency"),type:f.get("type"),openingBalance:+f.get("balance")});
