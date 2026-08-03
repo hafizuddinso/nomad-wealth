@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f766e" />
   <meta name="description" content="Nomad Wealth is a responsive multi-country and multi-currency finance dashboard developed by Hafizuddin." />
   <meta name="author" content="Hafizuddin" />
-  <title>Nomad Wealth — Developed by Hafizuddin</title>
+  <title>Nomad Wealth v13 — Developed by Hafizuddin</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -148,6 +148,7 @@
         <button class="nav-item" data-page="accounts"><span>▣</span><b data-i18n="accounts">Accounts</b></button>
         <button class="nav-item" data-page="transactions"><span>⇄</span><b data-i18n="transactions">Transactions</b></button>
         <button class="nav-item" data-page="budget"><span>◫</span><b data-i18n="budget">Budget</b></button>
+        <button class="nav-item" data-page="loans"><span>▥</span><b>Loans</b></button>
         <button class="nav-item" data-page="calculators"><span>∑</span><b data-i18n="calculators">Calculators</b></button>
         <button class="nav-item" data-page="investments"><span>↗</span><b data-i18n="investments">Investments</b></button>
         <button class="nav-item" data-page="travel"><span>✈</span><b data-i18n="travel">Travel Mode</b></button>
@@ -167,29 +168,101 @@
     </aside>
 
     <main class="main">
-      <header class="topbar">
-        <div>
+      <header class="topbar v12-topbar">
+        <div class="page-heading">
           <p class="eyebrow" id="greeting">Good afternoon</p>
           <h1 id="page-title">Dashboard</h1>
           <p id="today-label"></p>
         </div>
-        <div class="top-actions">
+        <div class="top-actions v12-top-actions">
           <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Change appearance">◐</button>
-          <button type="button" class="header-user-chip profile-shortcut" id="profile-shortcut" aria-label="Open profile settings"><span id="header-avatar">U</span><div><small>Signed in as</small><strong id="header-user-name">User</strong></div><span class="profile-shortcut-arrow">›</span></button>
-          <label class="compact-select">
-            <span>Main currency</span>
+          <div class="currency-control">
+            <span class="currency-globe">◎</span>
             <select id="main-currency" aria-label="Main reporting currency"></select>
-          </label>
-          <button class="primary" id="quick-add">+ Add transaction</button>
+          </div>
+          <button type="button" class="notification-button" aria-label="Notifications">♢</button>
+          <button type="button" class="header-user-chip profile-shortcut" id="profile-shortcut" aria-label="Open profile settings">
+            <span id="header-avatar">U</span>
+            <div><small>Profile</small><strong id="header-user-name">User</strong></div>
+            <span class="profile-shortcut-arrow">⌄</span>
+          </button>
         </div>
       </header>
 
       <section class="page active" id="dashboard">
-<div class="home-summary-grid"><article class="home-kpi expense-card"><span>This month expenses</span><strong id="home-month-expenses">0</strong><small id="home-expense-comparison">No spending recorded yet</small></article><article class="home-kpi income-card"><span>This month income</span><strong id="home-month-income">0</strong><small id="home-income-comparison">No income recorded yet</small></article><article class="home-kpi balance-card"><span>Remaining balance</span><strong id="home-month-balance">0</strong><small>Income minus expenses this month</small></article></div>
-<div class="home-action-row"><button class="primary expense-action" data-open-entry="expense">− Add Expense</button><button class="primary income-action" data-open-entry="income">+ Add Income</button></div>
-<div class="page-chart-grid dashboard-charts"><article class="panel chart-card"><div class="panel-heading"><div><h2>Income vs expenses</h2><p>Last six months</p></div></div><div class="chart-box"><canvas id="dashboard-cashflow-chart"></canvas></div></article><article class="panel chart-card"><div class="panel-heading"><div><h2>Spending by category</h2><p>Current month</p></div></div><div class="chart-box"><canvas id="dashboard-category-chart"></canvas></div></article></div>
-<article class="panel"><div class="panel-heading"><div><h2>Recent transactions</h2><p>Your latest activity</p></div><button class="text-button" data-page-target="transactions">View all</button></div><div id="home-recent-transactions"></div></article>
-</section><section class="page" id="accounts">
+        <div class="dashboard-top-grid">
+          <article class="home-kpi income-card">
+            <div class="kpi-icon income-icon">↗</div>
+            <span>Current month income</span>
+            <strong id="home-month-income">0</strong>
+            <small id="home-income-comparison">No income recorded yet</small>
+          </article>
+          <article class="home-kpi expense-card">
+            <div class="kpi-icon expense-icon">↘</div>
+            <span>Current month expenses</span>
+            <strong id="home-month-expenses">0</strong>
+            <small id="home-expense-comparison">No spending recorded yet</small>
+          </article>
+          <article class="home-kpi balance-card">
+            <div class="kpi-icon balance-icon">▣</div>
+            <span>Remaining balance</span>
+            <strong id="home-month-balance">0</strong>
+            <small>Income minus expenses this month</small>
+          </article>
+        </div>
+
+        <div class="dashboard-content-grid">
+          <aside class="quick-entry-panel">
+            <button class="quick-entry-button income-entry" data-open-entry="income">
+              <span>＋</span><div><strong>Add Income</strong><small>Salary, freelance, business</small></div>
+            </button>
+            <button class="quick-entry-button expense-entry" data-open-entry="expense">
+              <span>−</span><div><strong>Add Expense</strong><small>Record everyday spending</small></div>
+            </button>
+          </aside>
+
+          <article class="panel chart-card dashboard-chart-card">
+            <div class="panel-heading">
+              <div><h2>Income vs Expense</h2><p>Last six months</p></div>
+              <span class="period-chip">6 months</span>
+            </div>
+            <div class="chart-box"><canvas id="dashboard-cashflow-chart"></canvas></div>
+          </article>
+
+          <article class="panel chart-card dashboard-chart-card">
+            <div class="panel-heading">
+              <div><h2>Spending by Category</h2><p>Current month</p></div>
+              <span class="period-chip">This month</span>
+            </div>
+            <div class="chart-box"><canvas id="dashboard-category-chart"></canvas></div>
+          </article>
+        </div>
+
+        <div class="dashboard-bottom-grid">
+          <article class="panel recent-panel">
+            <div class="panel-heading">
+              <div><h2>Recent transactions</h2><p>Your latest activity</p></div>
+              <button class="text-button" data-page-target="transactions">View all</button>
+            </div>
+            <div id="home-recent-transactions"></div>
+          </article>
+
+          <article class="panel dashboard-account-preview">
+            <div class="panel-heading">
+              <div><h2>Accounts</h2><p>Accessible balances</p></div>
+              <button class="secondary compact-button" data-page-target="accounts">Manage accounts</button>
+            </div>
+            <div id="dashboard-account-list" class="dashboard-account-list"></div>
+          </article>
+        </div>
+
+        <div class="dashboard-tool-links">
+          <button data-page-target="calculators" data-open-calc="loan"><span>↗</span>Loan</button>
+          <button data-page-target="calculators" data-open-calc="investment"><span>⌁</span>Investment</button>
+          <button data-page-target="calculators" data-open-calc="stock"><span>⌁</span>Stock</button>
+          <button data-page-target="calculators" data-open-calc="fund"><span>◇</span>Mutual Fund</button>
+        </div>
+      </section><section class="page" id="accounts">
         <div class="page-chart-grid">
           <article class="panel chart-card">
             <div class="panel-heading"><div><h2>Balances by account</h2><p>Converted to your main currency</p></div></div>
@@ -201,7 +274,7 @@
           </article>
         </div>
         <article class="panel">
-          <div class="panel-heading"><div><h2>Your accounts</h2><p>Bank, cash, savings, wallets and debt</p></div><button class="secondary" data-open-dialog="account-dialog">+ Add account</button></div>
+          <div class="panel-heading"><div><h2>Your accounts</h2><p>Bank, cash, savings, wallets and debt</p></div><button class="primary compact-button" data-open-dialog="account-dialog">+ Add account</button></div>
           <div id="account-list" class="card-list"></div>
         </article>
       </section>
@@ -263,6 +336,22 @@
             <div id="budget-explanation"></div>
           </article>
         </div>
+      </section>
+
+      <section class="page" id="loans">
+        <div class="loans-hero">
+          <div><span class="eyebrow">DEBT TRACKING</span><h2>Loans and repayment progress</h2><p>Track every installment, principal, interest and remaining balance.</p></div>
+          <button class="primary" type="button" data-open-dialog="loan-tracker-dialog">+ Add loan</button>
+        </div>
+
+        <div class="loan-summary-grid">
+          <article class="loan-summary-card"><span>Total borrowed</span><strong id="loans-total-borrowed">0</strong><small>Original principal</small></article>
+          <article class="loan-summary-card"><span>Total paid</span><strong id="loans-total-paid">0</strong><small>Principal and interest</small></article>
+          <article class="loan-summary-card"><span>Principal remaining</span><strong id="loans-principal-remaining">0</strong><small>Debt still outstanding</small></article>
+          <article class="loan-summary-card"><span>Next installment</span><strong id="loans-next-payment">0</strong><small id="loans-next-date">No upcoming payment</small></article>
+        </div>
+
+        <div id="loan-list" class="loan-list"></div>
       </section>
 
       <section class="page" id="calculators">
@@ -543,7 +632,7 @@
         </div>
       </section>
 
-      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · Portfolio Edition</footer>
+      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13 Loan Tracking</footer>
     </main>
   </div>
 
@@ -554,6 +643,57 @@
     <button data-page="accounts"><span>▣</span>Accounts</button>
     <button data-page="calculators"><span>∑</span>More</button>
   </nav>
+
+  <dialog id="loan-tracker-dialog" class="loan-dialog">
+    <form id="loan-tracker-form">
+      <div class="dialog-heading"><div><span class="eyebrow">NEW LOAN</span><h2>Add a loan</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div>
+      <div class="form-grid">
+        <label>Loan name<input name="name" placeholder="Home loan" required></label>
+        <label>Lender<input name="lender" placeholder="Bank or lender" required></label>
+      </div>
+      <div class="form-grid">
+        <label>Original principal<input name="principal" type="number" min="0.01" step="0.01" required></label>
+        <label>Currency<select name="currency" id="loan-currency" required></select></label>
+      </div>
+      <div class="form-grid">
+        <label>Annual interest rate (%)<input name="rate" type="number" min="0" step="0.01" required></label>
+        <label>Loan term (months)<input name="termMonths" type="number" min="1" step="1" required></label>
+      </div>
+      <div class="form-grid">
+        <label>Installment amount<input name="installment" type="number" min="0.01" step="0.01" required></label>
+        <label>Payment frequency<select name="frequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="biweekly">Every two weeks</option><option value="quarterly">Quarterly</option></select></label>
+      </div>
+      <div class="form-grid">
+        <label>Start date<input name="startDate" type="date" required></label>
+        <label>Next payment date<input name="nextPaymentDate" type="date" required></label>
+      </div>
+      <label>Payment account<select name="accountId" id="loan-account"></select></label>
+      <label>Note<input name="note" placeholder="Optional loan details"></label>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button type="submit" class="primary">Save loan</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="loan-payment-dialog" class="loan-dialog">
+    <form id="loan-payment-form">
+      <input type="hidden" name="loanId">
+      <div class="dialog-heading"><div><span class="eyebrow">INSTALLMENT</span><h2>Record loan payment</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div>
+      <div id="loan-payment-context" class="loan-payment-context"></div>
+      <div class="form-grid">
+        <label>Payment amount<input name="amount" type="number" min="0.01" step="0.01" required></label>
+        <label>Payment date<input name="date" type="date" required></label>
+      </div>
+      <label>Paid from account<select name="accountId" id="loan-payment-account"></select></label>
+      <label class="check-label"><input name="createTransaction" type="checkbox" checked> Add this installment to Expenses</label>
+      <label>Note<input name="note" placeholder="Optional payment note"></label>
+      <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button type="submit" class="primary">Record installment</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="loan-details-dialog" class="loan-dialog loan-details-dialog">
+    <div class="dialog-heading"><div><span class="eyebrow">LOAN DETAILS</span><h2 id="loan-details-title">Loan</h2></div><button type="button" class="icon-button" data-close-dialog>×</button></div>
+    <div id="loan-details-content"></div>
+    <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Close</button></div>
+  </dialog>
 
   <dialog id="onboarding-dialog" class="onboarding-dialog">
     <form id="onboarding-form">
@@ -573,16 +713,24 @@
         <div><span class="eyebrow">NEW ENTRY</span><h2>Add transaction</h2></div>
         <button type="button" class="icon-button" data-close-dialog aria-label="Close">×</button>
       </div>
-      <div class="segmented-control">
-        <label><input type="radio" name="type" value="expense" checked><span>Expense</span></label>
-        <label><input type="radio" name="type" value="income"><span>Income</span></label>
+      <div class="transaction-type-tabs" role="tablist" aria-label="Transaction type">
+        <label class="transaction-type-tab expense-tab"><input type="radio" name="type" value="expense" checked><span>− Expense</span></label>
+        <label class="transaction-type-tab income-tab"><input type="radio" name="type" value="income"><span>＋ Income</span></label>
       </div>
-      <label>Amount<input name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required></label>
-      <div class="form-grid">
-        <label>Currency<select name="currency" id="transaction-currency"></select></label>
+      <label id="transaction-account-label">Which account did you use?
+        <select name="accountId" id="transaction-account" required></select>
+      </label>
+      <div id="transaction-account-summary" class="transaction-account-summary hidden">
+        <div><span>Selected account</span><strong id="transaction-selected-account">—</strong></div>
+        <div><span>Currency</span><strong id="transaction-selected-currency">—</strong></div>
+        <div><span>Country</span><strong id="transaction-selected-country">—</strong></div>
+      </div>
+      <input type="hidden" name="currency" id="transaction-currency">
+      <input type="hidden" name="country" id="transaction-country">
+      <div class="form-grid transaction-amount-date">
+        <label>Amount<input name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required></label>
         <label>Date<input name="date" type="date" required></label>
       </div>
-      <label>Account<select name="accountId" id="transaction-account" required></select></label>
       <label>How often?
         <select name="frequency" id="transaction-frequency">
           <option value="once">One-time</option>
@@ -591,10 +739,7 @@
           <option value="yearly">Every year</option>
         </select>
       </label>
-      <div class="form-grid">
-        <label>Category<input name="category" list="category-options" placeholder="Groceries" required></label>
-        <label>Country<select name="country" id="transaction-country" required></select></label>
-      </div>
+      <label>Category<input name="category" list="category-options" placeholder="Groceries" required></label>
       <datalist id="category-options">
         <option value="Housing"><option value="Groceries"><option value="Transport"><option value="Restaurants">
         <option value="Salary"><option value="Freelance"><option value="Travel"><option value="Insurance">
@@ -700,5 +845,6 @@
   <script type="module" src="cloud-sync.js"></script>
   <script type="module" src="charts-v8.js"></script>
   <script type="module" src="v9-clean.js"></script>
+  <script src="loans-v13.js"></script>
 </body>
 </html>

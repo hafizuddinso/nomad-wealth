@@ -1,8 +1,11 @@
-# Nomad Wealth Website v11.2
+# Nomad Wealth Website v13.1 — Smart Transactions
 
-Fixes:
-- Clickable signed-in profile card opens Settings/Profile
-- Main currency control redesigned as a header action box
-- Dark-mode calculator tab colors corrected
-- Account cards now show Edit account and Adjust balance actions
-- Balance correction, deposit and withdrawal no longer require creating a duplicate account
+- Account-first transaction form
+- Currency and country selected automatically from the account
+- Generic Add Transaction shows Expense and Income tabs
+- Expense button opens expense-only mode
+- Income button opens income-only mode
+- Income asks which account should receive the money
+- Expense asks which account was used
+- Saved transactions always update the selected account balance
+- Existing loan tracker retained

@@ -557,6 +557,24 @@ function renderAccounts(){
       </article>
     `).join("")||empty("No accounts yet.","Add your first account");
   }
+
+  const dashboardAccounts=document.querySelector("#dashboard-account-list");
+  if(dashboardAccounts){
+    dashboardAccounts.innerHTML=state.accounts.slice(0,4).map(account=>`
+      <button class="dashboard-account-row" type="button" data-page-target="accounts">
+        <span class="dashboard-account-icon">${account.type==="Cash"?"▣":account.type==="Savings"?"◇":account.type==="Debt"?"▤":"▥"}</span>
+        <span class="dashboard-account-copy">
+          <strong>${esc(account.name)}</strong>
+          <small>${esc(account.type)} · ${esc(account.currency)}</small>
+        </span>
+        <span class="dashboard-account-value">
+          <strong>${money(accountBalance(account),account.currency)}</strong>
+          <small>${esc(account.institution||"Account")}</small>
+        </span>
+        <span class="dashboard-account-menu">⋮</span>
+      </button>
+    `).join("")||empty("No accounts yet.","Add your first account");
+  }
 }
 function filteredTransactions(){
   const query=(document.querySelector("#transaction-search")?.value||"").trim().toLowerCase();
@@ -728,7 +746,6 @@ function populateSelects(){
 
   [
     "main-currency",
-    "transaction-currency",
     "account-currency",
     "investment-currency",
     "budget-currency",
@@ -748,10 +765,11 @@ function populateSelects(){
 
   const transactionAccount=document.querySelector("#transaction-account");
   if(transactionAccount){
-    transactionAccount.innerHTML=state.accounts
-      .filter(account=>account.type!=="Debt")
-      .map(account=>`<option value="${account.id}">${esc(account.name)} (${account.currency})</option>`)
+    const usableAccounts=state.accounts.filter(account=>account.type!=="Debt");
+    transactionAccount.innerHTML=`<option value="">Choose an account</option>`+usableAccounts
+      .map(account=>`<option value="${account.id}">${esc(account.name)} · ${esc(account.institution||account.type)}</option>`)
       .join("");
+    transactionAccount.disabled=usableAccounts.length===0;
   }
 
   populateAllCountryCurrencyControls();
@@ -774,11 +792,12 @@ function openDialog(id){
   const dialog=document.querySelector("#"+id);if(!dialog)return;
   if(id==="transaction-dialog"){
     const form=document.querySelector("#transaction-form");
+    form.reset();
+    form.dataset.entryMode="all";
     form.elements.date.value=new Date().toISOString().slice(0,10);
-    populateCountrySelect(form.elements.country,state.currentCountry||"AL");
-    const account=state.accounts.find(a=>a.type!=="Debt");
-    if(account){form.elements.accountId.value=account.id;form.elements.currency.value=account.currency}
-    setTimeout(()=>form.elements.amount.focus(),50);
+    window.NomadTransactionUI?.setMode?.("all");
+    window.NomadTransactionUI?.syncAccount?.();
+    setTimeout(()=>form.elements.accountId?.focus(),50);
   }
   if(id==="account-dialog"){
     populateCountryBankSelects();
@@ -841,14 +860,7 @@ function openCalc(name){
   document.querySelector("#calc-"+name)?.classList.add("active");
 }
 
-document.querySelector("#transaction-account").addEventListener("change",e=>{
-  const account=state.accounts.find(a=>a.id===e.target.value);
-  if(account){
-    document.querySelector("#transaction-currency").value=account.currency;
-    const country=document.querySelector("#transaction-country");
-    if(country)country.value=normalizeCountryCode(account.country);
-  }
-});
+document.querySelector("#transaction-account")?.addEventListener("change",()=>window.NomadTransactionUI?.syncAccount?.());
 document.querySelector("#main-currency").addEventListener("change",e=>{state.mainCurrency=e.target.value;save("Main currency updated")});
 document.querySelectorAll(".transaction-filter-control").forEach(control=>{
   control.addEventListener(control.type==="search"||control.type==="number"?"input":"change",renderTransactions);
@@ -860,9 +872,12 @@ document.querySelector("#clear-transaction-filters")?.addEventListener("click",(
   renderTransactions();
 });
 
-document.querySelector("#transaction-form").addEventListener("submit",e=>{
-  e.preventDefault();const f=new FormData(e.target);
-  state.transactions.push({id:crypto.randomUUID(),type:f.get("type"),amount:+f.get("amount"),currency:f.get("currency"),category:f.get("category").trim(),country:normalizeCountryCode(f.get("country")),accountId:f.get("accountId"),date:f.get("date"),createdAt:new Date().toISOString(),frequency:f.get("frequency")||"once",note:f.get("note").trim()});
+document.querySelector("#transaction-form")?.addEventListener("submit",e=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const selectedAccount=state.accounts.find(account=>account.id===f.get("accountId"));
+  if(!selectedAccount){toast("Choose an account first");return;}
+  state.transactions.push({id:crypto.randomUUID(),type:f.get("type"),amount:+f.get("amount"),currency:selectedAccount.currency,category:String(f.get("category")||"Other").trim(),country:normalizeCountryCode(selectedAccount.country),accountId:selectedAccount.id,date:f.get("date"),createdAt:new Date().toISOString(),frequency:f.get("frequency")||"once",note:String(f.get("note")||"").trim()});
   e.target.reset();closeDialog(document.querySelector("#transaction-dialog"));save("Transaction saved");
 });
 document.querySelector("#account-form").addEventListener("submit",e=>{
