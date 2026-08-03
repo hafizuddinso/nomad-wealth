@@ -1,14 +1,8 @@
-# Nomad Wealth Website v11.1
+# Nomad Wealth Website v11.2
 
-Critical fixes:
-
-- Declares the missing global financial `state`
-- Fixes `state is not defined` during login
-- Removes country, currency and user-type questions from signup
-- Uses one simple signup form:
-  - Name
-  - Email
-  - Password
-  - Confirm password
-- Country and currency can be changed later under Settings
-- Keeps email confirmation, login, forgot password and persistent sessions
+Fixes:
+- Clickable signed-in profile card opens Settings/Profile
+- Main currency control redesigned as a header action box
+- Dark-mode calculator tab colors corrected
+- Account cards now show Edit account and Adjust balance actions
+- Balance correction, deposit and withdrawal no longer require creating a duplicate account

@@ -417,3 +417,31 @@ html[data-theme="dark"] .google-button{color:#f8fafc!important}
   #signup-view .auth-view{padding:18px}
   #signup-view h2{font-size:24px}
 }
+
+/* v11.2 header, calculator and account controls */
+.profile-shortcut{border:1px solid var(--line);cursor:pointer;appearance:none;text-align:left}
+.profile-shortcut:hover{border-color:var(--teal2);transform:translateY(-1px)}
+.profile-shortcut-arrow{margin-left:4px;color:var(--muted);font-size:20px;line-height:1}
+.main-currency-control{min-width:220px;display:grid;gap:4px;padding:7px 11px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 4px 14px rgba(15,23,42,.04)}
+.main-currency-control>span{font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.main-currency-control select{padding:0;border:0;background:transparent;font-size:12px;font-weight:800;box-shadow:none;min-height:22px}
+.main-currency-control select:focus{box-shadow:none;border:0}
+.account-manage-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:9px!important;margin-top:15px!important}
+.account-action{width:100%;padding:10px 12px!important}
+.calc-tab{background:#e8edf4!important;color:#334155!important;border:1px solid transparent}
+.calc-tab:hover{border-color:#94a3b8}
+.calc-tab.active{background:var(--teal)!important;color:#fff!important;border-color:var(--teal)!important}
+html[data-theme="dark"] .main-currency-control{background:#102036!important;border-color:#28405f!important}
+html[data-theme="dark"] .main-currency-control select{background:transparent!important;color:#f8fafc!important}
+html[data-theme="dark"] .profile-shortcut{background:#102036!important;color:#f8fafc!important;border-color:#28405f!important}
+html[data-theme="dark"] .calc-tab{background:#24334a!important;color:#dbe7f5!important;border-color:#334b69!important}
+html[data-theme="dark"] .calc-tab:hover{background:#2d405a!important;color:#fff!important}
+html[data-theme="dark"] .calc-tab.active{background:#0f8f83!important;color:#fff!important;border-color:#14b8a6!important}
+@media(max-width:820px){
+  .main-currency-control{min-width:0;width:100%}
+  .profile-shortcut{display:flex!important;width:100%;justify-content:flex-start}
+  .profile-shortcut-arrow{margin-left:auto}
+}
+@media(max-width:520px){
+  .account-manage-actions{grid-template-columns:1fr!important}
+}
