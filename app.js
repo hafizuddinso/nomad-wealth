@@ -613,22 +613,37 @@ function filteredTransactions(){
 }
 function transactionHTML(items,deletable=false){
   if(!items.length)return empty("No matching transactions.");
-  return items.map(t=>{
-    const a=state.accounts.find(x=>x.id===t.accountId);
-    const sign=t.type==="income"?"+":"-";
-    return `<article class="transaction-item">
+
+  return items.map(transaction=>{
+    const account=state.accounts.find(item=>item.id===transaction.accountId);
+    const income=transaction.type==="income";
+    const sign=income?"+":"−";
+    const direction=income?"Money in":"Money out";
+    const arrow=income?"↓":"↑";
+
+    return `<article class="transaction-item simple-transaction ${transaction.type}">
       <div class="transaction-main">
-        <div class="transaction-icon ${t.type}">${t.type==="income"?"↙":"↗"}</div>
+        <div class="transaction-icon ${transaction.type}">${arrow}</div>
         <div class="transaction-copy">
-          <div class="row-title">${esc(t.category)}${t.frequency&&t.frequency!=="once"?` <span class="recurring-badge">↻ ${esc(t.frequency)}</span>`:""}</div>
-          <div class="row-subtitle">${esc(countryName(t.country))} · ${esc(a?.name||"Unknown")} · ${esc(t.date)}${t.note?` · ${esc(t.note)}`:""}</div>
+          <div class="transaction-direction">${direction}</div>
+          <div class="row-title">${esc(transaction.category||direction)}</div>
+          <div class="row-subtitle">
+            ${esc(account?.name||"Unlinked account")} · ${esc(transaction.date)}
+            ${transaction.note?` · ${esc(transaction.note)}`:""}
+          </div>
         </div>
       </div>
+
       <div class="transaction-value">
-        <strong class="amount ${t.type}">${sign}${money(t.amount,t.currency)}</strong>
-        <small>${money(inMain(t.amount,t.currency))}</small>
+        <strong class="amount ${transaction.type}">
+          ${sign}${money(transaction.amount,transaction.currency)}
+        </strong>
+        <small>${esc(transaction.currency)} · ${esc(account?.name||"No account")}</small>
       </div>
-      ${deletable?`<button class="delete-transaction delete-tx" data-id="${t.id}" aria-label="Delete transaction" title="Delete transaction">×</button>`:""}
+
+      ${deletable?`<button type="button" class="delete-transaction delete-tx"
+        data-id="${transaction.id}" aria-label="Delete transaction"
+        title="Delete transaction">×</button>`:""}
     </article>`;
   }).join("");
 }

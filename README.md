@@ -1,15 +1,14 @@
-# Nomad Wealth v13.2 — Stable Fix
+# Nomad Wealth v13.3 — Smart Loan & Transactions
 
-Built from the stable v13 loan release.
-
-- Repairs the JavaScript error that disabled buttons and links
-- Expense opens expense-only mode
-- Income opens income-only mode
-- Add Transaction keeps both choices
-- Account selected first
-- Currency and country selected automatically
-- Income updates the receiving account
-- Expense updates the paying account
-- Full dark-mode correction
-- Fresh cache version for Vercel/browser
-- Loan tracking remains included
+Changes:
+- Automatic installment calculation from principal, annual rate, term and payment frequency
+- Live loan summary: installment, total payable, estimated interest and installment count
+- Optional manual installment override
+- Reducing-balance loan estimate
+- Complete dark-mode repair for Loans page and dashboard calculator shortcuts
+- Expense opens a simple Money Out popup
+- Income opens a simple Money In popup
+- Account controls currency and country automatically
+- Recent transactions use a clearer Money In / Money Out format
+- Newest entries remain at the top
+- Existing loan history and payment tracking remain available

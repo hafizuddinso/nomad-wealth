@@ -8,7 +8,7 @@
   <meta name="author" content="Hafizuddin" />
   <title>Nomad Wealth v13 — Developed by Hafizuddin</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css?v=13.2.0" />
+  <link rel="stylesheet" href="styles.css?v=13.3.0" />
 </head>
 <body>
   <section id="auth-screen" class="auth-screen" aria-label="Authentication">
@@ -55,10 +55,7 @@
         <div id="auth-inline-message" class="auth-inline-message hidden" role="alert"></div>
         <div id="auth-config-warning" class="config-warning hidden">
           <strong>Authentication setup required</strong>
-          <p>Add your Supabase URL and publishable key in <code>config.js?v=13.2.0</code>.</p>
-        </div>
-
-        <div id="login-view" class="auth-view active">
+          <p>Add your Supabase URL and publishable key in <code>config.js?v=13.3.0"login-view" class="auth-view active">
           <span class="eyebrow">WELCOME BACK</span>
           <h2>Log in to Nomad Wealth</h2>
           <p class="auth-subtitle">Continue to your personal finance dashboard.</p>
@@ -632,7 +629,7 @@
         </div>
       </section>
 
-      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13 Loan Tracking</footer>
+      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13.3 Smart Loan & Transactions</footer>
     </main>
   </div>
 
@@ -660,9 +657,50 @@
         <label>Loan term (months)<input name="termMonths" type="number" min="1" step="1" required></label>
       </div>
       <div class="form-grid">
-        <label>Installment amount<input name="installment" type="number" min="0.01" step="0.01" required></label>
-        <label>Payment frequency<select name="frequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="biweekly">Every two weeks</option><option value="quarterly">Quarterly</option></select></label>
+        <label>
+          Estimated installment
+          <input name="installment" id="loan-installment" type="number" min="0.01" step="0.01" readonly required>
+          <small class="field-help">Calculated automatically from principal, rate, term and frequency.</small>
+        </label>
+        <label>
+          Payment frequency
+          <select name="frequency" id="loan-frequency">
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+            <option value="biweekly">Every two weeks</option>
+            <option value="quarterly">Quarterly</option>
+          </select>
+        </label>
       </div>
+
+      <label class="check-label loan-override-check">
+        <input type="checkbox" id="loan-installment-override">
+        Override the calculated installment
+      </label>
+
+      <div id="loan-live-summary" class="loan-live-summary">
+        <div>
+          <small>Estimated installment</small>
+          <strong id="loan-summary-installment">—</strong>
+        </div>
+        <div>
+          <small>Total payable</small>
+          <strong id="loan-summary-total">—</strong>
+        </div>
+        <div>
+          <small>Estimated interest</small>
+          <strong id="loan-summary-interest">—</strong>
+        </div>
+        <div>
+          <small>Installments</small>
+          <strong id="loan-summary-count">—</strong>
+        </div>
+      </div>
+
+      <p class="loan-calculation-note">
+        Estimate uses a reducing-balance repayment formula. Your lender may calculate fees,
+        insurance or interest differently.
+      </p>
       <div class="form-grid">
         <label>Start date<input name="startDate" type="date" required></label>
         <label>Next payment date<input name="nextPaymentDate" type="date" required></label>
@@ -846,17 +884,17 @@
       if(event.target?.matches?.(".auth-form"))event.preventDefault();
     },true);
   </script>
-  <script src="config.js?v=13.2.0"></script>
-  <script src="countries.js?v=13.2.0"></script>
-  <script src="banks.js?v=13.2.0"></script>
-  <script src="i18n.js?v=13.2.0"></script>
+  <script src="config.js?v=13.3.0"></script>
+  <script src="countries.js?v=13.3.0"></script>
+  <script src="banks.js?v=13.3.0"></script>
+  <script src="i18n.js?v=13.3.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="app.js?v=13.2.0"></script>
-  <script type="module" src="features.js?v=13.2.0"></script>
-  <script type="module" src="cloud-sync.js?v=13.2.0"></script>
-  <script type="module" src="charts-v8.js?v=13.2.0"></script>
-  <script type="module" src="v9-clean.js?v=13.2.0"></script>
-  <script src="loans-v13.js?v=13.2.0"></script>
+  <script type="module" src="app.js?v=13.3.0"></script>
+  <script type="module" src="features.js?v=13.3.0"></script>
+  <script type="module" src="cloud-sync.js?v=13.3.0"></script>
+  <script type="module" src="charts-v8.js?v=13.3.0"></script>
+  <script type="module" src="v9-clean.js?v=13.3.0"></script>
+  <script src="loans-v13.js?v=13.3.0"></script>
 </body>
 </html>

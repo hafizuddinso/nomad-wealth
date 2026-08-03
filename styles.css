@@ -888,3 +888,149 @@ html[data-theme="dark"] dialog::backdrop{background:rgba(0,7,18,.78)!important}
   .transaction-account-summary{grid-template-columns:1fr 1fr}
   .transaction-account-summary>div:first-child{grid-column:1/-1}
 }
+
+
+/* ============================================================
+   V13.3 — AUTOMATIC LOAN EMI + SIMPLE MONEY IN/OUT
+   ============================================================ */
+
+.loan-live-summary{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0 10px;
+}
+
+.loan-live-summary>div{
+  min-width:0;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--background);
+}
+
+.loan-live-summary small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:6px;
+}
+
+.loan-live-summary strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:16px;
+}
+
+.loan-calculation-note,
+.field-help{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.45;
+}
+
+.loan-override-check{
+  margin-top:2px;
+}
+
+#loan-installment[readonly]{
+  cursor:not-allowed;
+  opacity:.9;
+}
+
+.simple-transaction{
+  border-radius:13px;
+  padding:13px 4px;
+}
+
+.simple-transaction .transaction-direction{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  margin-bottom:2px;
+}
+
+.simple-transaction.income .transaction-direction{
+  color:var(--v12-green);
+}
+
+.simple-transaction.expense .transaction-direction{
+  color:var(--v12-red);
+}
+
+.simple-transaction .transaction-icon.income{
+  background:color-mix(in srgb,var(--v12-green) 18%,transparent);
+  color:var(--v12-green);
+}
+
+.simple-transaction .transaction-icon.expense{
+  background:color-mix(in srgb,var(--v12-red) 18%,transparent);
+  color:var(--v12-red);
+}
+
+/* Force complete loan/dashboard dark mode coverage */
+html[data-theme="dark"] .loans-hero,
+html[data-theme="dark"] .loan-summary-card,
+html[data-theme="dark"] .dashboard-tool-links button,
+html[data-theme="dark"] .calculator-intro,
+html[data-theme="dark"] .result-card,
+html[data-theme="dark"] .loan-live-summary>div,
+html[data-theme="dark"] .loan-metric,
+html[data-theme="dark"] .loan-payment-context,
+html[data-theme="dark"] .loan-detail-item,
+html[data-theme="dark"] .loan-breakdown-item{
+  background:#102239!important;
+  color:#e8f0fb!important;
+  border-color:#29425f!important;
+  box-shadow:none!important;
+}
+
+html[data-theme="dark"] .loans-hero h2,
+html[data-theme="dark"] .loan-summary-card strong,
+html[data-theme="dark"] .dashboard-tool-links button,
+html[data-theme="dark"] .loan-live-summary strong,
+html[data-theme="dark"] .loan-metric strong,
+html[data-theme="dark"] .loan-detail-item strong,
+html[data-theme="dark"] .loan-breakdown-item strong{
+  color:#edf5ff!important;
+}
+
+html[data-theme="dark"] .loans-hero p,
+html[data-theme="dark"] .loan-summary-card span,
+html[data-theme="dark"] .loan-summary-card small,
+html[data-theme="dark"] .loan-live-summary small,
+html[data-theme="dark"] .loan-calculation-note,
+html[data-theme="dark"] .field-help{
+  color:#9fb2ca!important;
+}
+
+html[data-theme="dark"] .dashboard-tool-links span{
+  background:#0d3540!important;
+  color:#24c99a!important;
+}
+
+html[data-theme="dark"] #loan-installment[readonly]{
+  background:#0b1c30!important;
+  color:#c9d8e9!important;
+}
+
+html[data-theme="dark"] .simple-transaction{
+  background:transparent!important;
+}
+
+@media(max-width:760px){
+  .loan-live-summary{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:460px){
+  .loan-live-summary{
+    grid-template-columns:1fr;
+  }
+}

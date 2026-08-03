@@ -7,6 +7,66 @@
   const paymentsPerYear={monthly:12,weekly:52,biweekly:26,quarterly:4};
   const intervals={monthly:{months:1},weekly:{days:7},biweekly:{days:14},quarterly:{months:3}};
 
+  function paymentCount(termMonths,frequency){
+    const months=Math.max(1,num(termMonths));
+    const perYear=paymentsPerYear[frequency]||12;
+    return Math.max(1,Math.round(months/12*perYear));
+  }
+
+  function calculatedInstallment(principal,annualRate,termMonths,frequency){
+    const p=Math.max(0,num(principal));
+    const count=paymentCount(termMonths,frequency);
+    const periodsPerYear=paymentsPerYear[frequency]||12;
+    const periodicRate=Math.max(0,num(annualRate))/100/periodsPerYear;
+
+    if(!p||!count)return 0;
+    if(periodicRate===0)return p/count;
+
+    const factor=Math.pow(1+periodicRate,count);
+    return p*periodicRate*factor/(factor-1);
+  }
+
+  function updateLoanEstimate(){
+    const form=byId('loan-tracker-form');
+    if(!form)return;
+
+    const principal=num(form.elements.principal?.value);
+    const rate=num(form.elements.rate?.value);
+    const termMonths=num(form.elements.termMonths?.value);
+    const frequency=form.elements.frequency?.value||'monthly';
+    const count=paymentCount(termMonths,frequency);
+    const installment=calculatedInstallment(principal,rate,termMonths,frequency);
+    const total=installment*count;
+    const interest=Math.max(0,total-principal);
+    const currency=form.elements.currency?.value||state()?.mainCurrency||'EUR';
+    const override=byId('loan-installment-override')?.checked;
+
+    if(form.elements.installment&&!override){
+      form.elements.installment.value=installment>0?installment.toFixed(2):'';
+    }
+
+    const shownInstallment=override
+      ?num(form.elements.installment?.value)
+      :installment;
+
+    if(byId('loan-summary-installment')){
+      byId('loan-summary-installment').textContent=
+        shownInstallment>0?money(shownInstallment,currency):'—';
+    }
+    if(byId('loan-summary-total')){
+      byId('loan-summary-total').textContent=
+        total>0?money(total,currency):'—';
+    }
+    if(byId('loan-summary-interest')){
+      byId('loan-summary-interest').textContent=
+        total>0?money(interest,currency):'—';
+    }
+    if(byId('loan-summary-count')){
+      byId('loan-summary-count').textContent=
+        count>0?String(count):'—';
+    }
+  }
+
   function money(value,currency){return App()?.money(value,currency)||`${currency||''} ${num(value).toFixed(2)}`}
   function state(){return App()?.getState()}
   function ensure(){
@@ -84,6 +144,13 @@
     ['name','lender','principal','rate','termMonths','installment','frequency','note'].forEach(k=>{if(loan&&form.elements[k])form.elements[k].value=loan[k]??''});
     App().populateCurrencySelect(form.elements.currency,loan?.currency||state().mainCurrency);
     populateAccounts(form.elements.accountId,loan?.accountId||'');
+    const override=byId('loan-installment-override');
+    if(override)override.checked=Boolean(loan?.manualInstallment);
+    if(form.elements.installment){
+      form.elements.installment.readOnly=!override?.checked;
+      if(loan?.installment)form.elements.installment.value=loan.installment;
+    }
+    updateLoanEstimate();
     byId('loan-tracker-dialog').showModal();
   }
   function openPayment(id){
@@ -114,7 +181,7 @@
   });
   byId('loan-tracker-form')?.addEventListener('submit',e=>{
     e.preventDefault(); const s=ensure(),f=e.currentTarget,d=new FormData(f),id=f.dataset.editing;
-    const record={id:id||uid(),name:String(d.get('name')).trim(),lender:String(d.get('lender')).trim(),principal:num(d.get('principal')),currency:d.get('currency'),rate:num(d.get('rate')),termMonths:num(d.get('termMonths')),installment:num(d.get('installment')),frequency:d.get('frequency'),startDate:d.get('startDate'),nextPaymentDate:d.get('nextPaymentDate'),accountId:d.get('accountId')||'',note:String(d.get('note')||'').trim(),payments:id?(s.loans.find(x=>x.id===id)?.payments||[]):[]};
+    const record={id:id||uid(),name:String(d.get('name')).trim(),lender:String(d.get('lender')).trim(),principal:num(d.get('principal')),currency:d.get('currency'),rate:num(d.get('rate')),termMonths:num(d.get('termMonths')),installment:num(d.get('installment')),manualInstallment:Boolean(byId('loan-installment-override')?.checked),frequency:d.get('frequency'),startDate:d.get('startDate'),nextPaymentDate:d.get('nextPaymentDate'),accountId:d.get('accountId')||'',note:String(d.get('note')||'').trim(),payments:id?(s.loans.find(x=>x.id===id)?.payments||[]):[]};
     if(id)s.loans=s.loans.map(x=>x.id===id?record:x);else s.loans.push(record);
     byId('loan-tracker-dialog').close(); App().save(id?'Loan updated':'Loan added'); render();
   });
@@ -126,6 +193,24 @@
     if(d.get('createTransaction')==='on')s.transactions.push({id:uid(),type:'expense',amount,currency:loan.currency,category:'Loan Payment',country:s.currentCountry,accountId:d.get('accountId')||loan.accountId||null,date:d.get('date'),createdAt:new Date().toISOString(),frequency:'once',note:`${loan.name} installment`});
     byId('loan-payment-dialog').close(); App().save('Loan installment recorded'); render();
   });
+
+  const loanForm=byId('loan-tracker-form');
+  ['principal','rate','termMonths','frequency','currency'].forEach(name=>{
+    loanForm?.elements[name]?.addEventListener('input',updateLoanEstimate);
+    loanForm?.elements[name]?.addEventListener('change',updateLoanEstimate);
+  });
+
+  byId('loan-installment')?.addEventListener('input',updateLoanEstimate);
+
+  byId('loan-installment-override')?.addEventListener('change',event=>{
+    const input=byId('loan-installment');
+    if(input){
+      input.readOnly=!event.target.checked;
+      if(event.target.checked)input.focus();
+    }
+    updateLoanEstimate();
+  });
+
   window.addEventListener('nomad:state-rendered',render); window.addEventListener('nomad:state-replaced',render); window.addEventListener('nomad:state-saved',render);
   document.addEventListener('DOMContentLoaded',()=>setTimeout(render,100)); setTimeout(render,700);
 })();
