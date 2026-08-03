@@ -388,3 +388,23 @@ html[data-theme="dark"] .mobile-auth-tabs{background:#102036;border-color:#28405
 .google-button svg{display:block!important;width:21px!important;height:21px!important;flex:0 0 21px!important}
 .google-button-label{display:inline-block!important;opacity:1!important;visibility:visible!important;color:inherit!important}
 html[data-theme="dark"] .google-button{color:#f8fafc!important}
+
+/* v11 clean authentication */
+.auth-inline-message.success{
+  display:block;
+  background:#ecfdf5;
+  color:#065f46;
+  border:1px solid #a7f3d0;
+}
+.auth-inline-message.error{
+  display:block;
+  background:#fef2f2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+}
+.auth-submit:disabled{opacity:.65;cursor:wait}
+#signup-view .step-indicator i{width:80px}
+@media(max-width:520px){
+  .auth-view{padding:19px 16px}
+  .auth-form{gap:13px}
+}
