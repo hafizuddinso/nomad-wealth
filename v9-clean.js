@@ -92,6 +92,12 @@ function openEntry(mode="all"){
     return;
   }
 
+  // Rebuild the account dropdown every time so new accounts are always available.
+  form.elements.accountId.innerHTML=appState.accounts
+    .filter(account=>account.type!=="Debt")
+    .map(account=>`<option value="${account.id}">${esc(account.name)} · ${esc(account.currency)}</option>`)
+    .join("");
+
   form.reset();
   form.dataset.entryMode=mode;
   form.elements.date.value=new Date().toISOString().slice(0,10);
@@ -103,7 +109,7 @@ function openEntry(mode="all"){
 
   syncAccount();
   dialog.showModal();
-  setTimeout(()=>form.elements.accountId?.focus(),50);
+  setTimeout(()=>form.elements.amount?.focus(),50);
 }
 
 function balance(account){
@@ -176,6 +182,26 @@ document.querySelector("#transaction-category-select")?.addEventListener("change
 });
 
 document.addEventListener("click",event=>{
+  const explicitExpense=event.target.closest(
+    "#quick-add-expense, .add-expense-button, [data-transaction-type='expense']"
+  );
+  if(explicitExpense){
+    event.preventDefault();
+    event.stopPropagation();
+    openEntry("expense");
+    return;
+  }
+
+  const explicitIncome=event.target.closest(
+    "#quick-add-income, .add-income-button, [data-transaction-type='income']"
+  );
+  if(explicitIncome){
+    event.preventDefault();
+    event.stopPropagation();
+    openEntry("income");
+    return;
+  }
+
   const entry=event.target.closest("[data-open-entry]");
   if(entry){
     event.preventDefault();

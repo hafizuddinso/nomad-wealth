@@ -8,7 +8,7 @@
   <meta name="author" content="Hafizuddin" />
   <title>Nomad Wealth v13 — Developed by Hafizuddin</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css?v=13.3.0" />
+  <link rel="stylesheet" href="styles.css?v=13.4.0" />
 </head>
 <body>
   <section id="auth-screen" class="auth-screen" aria-label="Authentication">
@@ -55,7 +55,7 @@
         <div id="auth-inline-message" class="auth-inline-message hidden" role="alert"></div>
         <div id="auth-config-warning" class="config-warning hidden">
           <strong>Authentication setup required</strong>
-          <p>Add your Supabase URL and publishable key in <code>config.js?v=13.3.0"login-view" class="auth-view active">
+          <p>Add your Supabase URL and publishable key in <code>config.js?v=13.4.0"login-view" class="auth-view active">
           <span class="eyebrow">WELCOME BACK</span>
           <h2>Log in to Nomad Wealth</h2>
           <p class="auth-subtitle">Continue to your personal finance dashboard.</p>
@@ -259,6 +259,25 @@
           <button type="button" data-page-target="calculators" data-open-calc="stock"><span>⌁</span>Stock</button>
           <button type="button" data-page-target="calculators" data-open-calc="fund"><span>◇</span>Mutual Fund</button>
         </div>
+              <article class="panel million-goal-card">
+          <div class="million-goal-copy">
+            <span class="eyebrow">WEALTH MILESTONE</span>
+            <h2>Save your first 1 million</h2>
+            <p>Choose your goal currency and prepare for a guided savings plan.</p>
+          </div>
+
+          <div class="million-goal-controls">
+            <label>
+              Goal currency
+              <select id="million-goal-currency" aria-label="Goal currency"></select>
+            </label>
+            <div class="million-goal-amount">
+              <small>Target</small>
+              <strong id="million-goal-target">1,000,000 EUR</strong>
+            </div>
+            <span class="coming-soon-badge">Coming Soon</span>
+          </div>
+        </article>
       </section><section class="page" id="accounts">
         <div class="page-chart-grid">
           <article class="panel chart-card">
@@ -627,9 +646,46 @@
             </div>
           </article>
         </div>
-      </section>
+      
+        <article class="panel settings-card font-settings-card">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">TEXT STYLE</span>
+              <h2>Font style</h2>
+              <p>Choose the reading style you prefer across Nomad Wealth.</p>
+            </div>
+          </div>
 
-      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13.3 Smart Loan & Transactions</footer>
+          <div class="font-choice-grid" id="font-choice-grid">
+            <label class="font-choice font-inter">
+              <input type="radio" name="app-font" value="inter">
+              <span><strong>Inter</strong><small>Modern and balanced</small></span>
+            </label>
+
+            <label class="font-choice font-system">
+              <input type="radio" name="app-font" value="system">
+              <span><strong>System</strong><small>Native device style</small></span>
+            </label>
+
+            <label class="font-choice font-rounded">
+              <input type="radio" name="app-font" value="rounded">
+              <span><strong>Rounded</strong><small>Friendly and soft</small></span>
+            </label>
+
+            <label class="font-choice font-serif">
+              <input type="radio" name="app-font" value="serif">
+              <span><strong>Serif</strong><small>Classic and editorial</small></span>
+            </label>
+
+            <label class="font-choice font-mono">
+              <input type="radio" name="app-font" value="mono">
+              <span><strong>Mono</strong><small>Clear numerical focus</small></span>
+            </label>
+          </div>
+        </article>
+</section>
+
+      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13.4 Final Polish</footer>
     </main>
   </div>
 
@@ -884,17 +940,17 @@
       if(event.target?.matches?.(".auth-form"))event.preventDefault();
     },true);
   </script>
-  <script src="config.js?v=13.3.0"></script>
-  <script src="countries.js?v=13.3.0"></script>
-  <script src="banks.js?v=13.3.0"></script>
-  <script src="i18n.js?v=13.3.0"></script>
+  <script src="config.js?v=13.4.0"></script>
+  <script src="countries.js?v=13.4.0"></script>
+  <script src="banks.js?v=13.4.0"></script>
+  <script src="i18n.js?v=13.4.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="app.js?v=13.3.0"></script>
-  <script type="module" src="features.js?v=13.3.0"></script>
-  <script type="module" src="cloud-sync.js?v=13.3.0"></script>
-  <script type="module" src="charts-v8.js?v=13.3.0"></script>
-  <script type="module" src="v9-clean.js?v=13.3.0"></script>
-  <script src="loans-v13.js?v=13.3.0"></script>
+  <script type="module" src="app.js?v=13.4.0"></script>
+  <script type="module" src="features.js?v=13.4.0"></script>
+  <script type="module" src="cloud-sync.js?v=13.4.0"></script>
+  <script type="module" src="charts-v8.js?v=13.4.0"></script>
+  <script type="module" src="v9-clean.js?v=13.4.0"></script>
+  <script src="loans-v13.js?v=13.4.0"></script>
 </body>
 </html>

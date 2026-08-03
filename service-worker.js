@@ -1,4 +1,4 @@
-const CACHE='nomad-wealth-v13-3-loan-emi-transactions';
+const CACHE='nomad-wealth-v13-4-final-polish';
 self.addEventListener('install',event=>{self.skipWaiting();});
 self.addEventListener('activate',event=>{
   event.waitUntil(

@@ -926,6 +926,9 @@ document.querySelector("#transaction-form")?.addEventListener("submit",event=>{
   form.reset();
   closeDialog(document.querySelector("#transaction-dialog"));
   save(type==="income"?"Income added":"Expense added");
+  window.dispatchEvent(new CustomEvent("nomad:transaction-added",{
+    detail:{type,accountId:selectedAccount.id}
+  }));
 });
 
 document.querySelector("#account-form").addEventListener("submit",e=>{
@@ -1097,4 +1100,49 @@ window.NomadApp={
   toast
 };
 
-applyTheme(currentTheme);initializeAuthControls();applyLanguage(currentLanguage);initializeAuthControls();initializeAuthentication();
+applyTheme(currentTheme);initializeAuthControls();applyLanguage(currentLanguage);initializeAuthControls();
+
+/* V13.4 font style and million-goal preferences */
+const NOMAD_FONT_STORAGE_KEY="nomad_font_style";
+const NOMAD_FONT_OPTIONS=["inter","system","rounded","serif","mono"];
+
+function applyAppFont(font){
+  const selected=NOMAD_FONT_OPTIONS.includes(font)?font:"inter";
+  document.documentElement.dataset.font=selected;
+  localStorage.setItem(NOMAD_FONT_STORAGE_KEY,selected);
+
+  document.querySelectorAll('input[name="app-font"]').forEach(input=>{
+    input.checked=input.value===selected;
+  });
+}
+
+document.querySelectorAll('input[name="app-font"]').forEach(input=>{
+  input.addEventListener("change",()=>{
+    if(input.checked){
+      applyAppFont(input.value);
+      toast("Font style updated");
+    }
+  });
+});
+
+const millionGoalCurrency=document.querySelector("#million-goal-currency");
+if(millionGoalCurrency){
+  populateCurrencySelect(
+    millionGoalCurrency,
+    localStorage.getItem("nomad_million_currency")||state?.mainCurrency||"EUR"
+  );
+
+  const updateMillionGoal=()=>{
+    const currency=millionGoalCurrency.value||"EUR";
+    localStorage.setItem("nomad_million_currency",currency);
+    const target=document.querySelector("#million-goal-target");
+    if(target)target.textContent=`1,000,000 ${currency}`;
+  };
+
+  millionGoalCurrency.addEventListener("change",updateMillionGoal);
+  updateMillionGoal();
+}
+
+applyAppFont(localStorage.getItem(NOMAD_FONT_STORAGE_KEY)||"inter");
+
+initializeAuthentication();
