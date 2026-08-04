@@ -119,7 +119,7 @@ function renderInvestmentCards(){
     const gain=current-previous;
     const percentage=previous?gain/previous*100:0;
     return `<article class="investment-detail-card" data-edit-investment="${esc(investment.id)}" tabindex="0" role="button" aria-label="Edit ${esc(investment.name)}">
-      <header><div><small>${esc(investment.type)} · ${esc(investment.currency)}</small><h3>${esc(investment.name)}</h3></div><span class="investment-edit-label">Edit</span></header>
+      <header><div><small>${esc(investment.type)} · ${esc(investment.currency)}</small><h3>${esc(investment.name)}</h3></div><button type="button" class="investment-edit-label" data-edit-investment-button="${esc(investment.id)}">Edit investment</button></header>
       <div class="investment-comparison-grid">
         <div><small>Previous invested</small><strong>${money(previous,investment.currency)}</strong></div>
         <div><small>Current value now</small><strong>${money(current,investment.currency)}</strong></div>
@@ -155,6 +155,13 @@ function init(){
   fixBudgetDialogEvents();
 
   document.addEventListener('click',event=>{
+    const button=event.target.closest('[data-edit-investment-button]');
+    if(button){
+      event.preventDefault();
+      event.stopPropagation();
+      openInvestmentEditor(button.dataset.editInvestmentButton);
+      return;
+    }
     const card=event.target.closest('[data-edit-investment]');
     if(card)openInvestmentEditor(card.dataset.editInvestment);
   });
@@ -168,6 +175,13 @@ function init(){
   window.addEventListener('nomad:state-rendered',renderInvestmentCards);
   window.addEventListener('nomad:state-saved',renderInvestmentCards);
   window.addEventListener('nomad:cloud-loaded',renderInvestmentCards);
+
+  window.NomadV14RenderInvestments=renderInvestmentCards;
+  document.addEventListener('click',event=>{
+    if(event.target.closest('[data-page="investments"],[data-page-target="investments"]')){
+      setTimeout(renderInvestmentCards,0);
+    }
+  });
 }
 
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();

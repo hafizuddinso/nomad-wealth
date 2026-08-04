@@ -24,8 +24,48 @@ function replaceBudgetDialog(){const d=$('#budget-dialog');if(!d)return;d.innerH
 <div class="form-grid"><label>Currency<input name="currency" class="field-readonly" placeholder="Filled from selected account" readonly required></label><label>Category<select name="category" required>${categoryOptions()}</select></label></div>
 <label>Spending limit<input name="limit" type="number" min="0.01" step="0.01" placeholder="Enter limit" required></label>
 <div class="dialog-actions"><button type="button" class="secondary" data-close-dialog>Cancel</button><button class="primary" type="submit">Save budget</button></div></form>`;
-const f=$('#budget-form-v14');f.elements.accountId.addEventListener('change',()=>{const a=state().accounts.find(x=>x.id===f.elements.accountId.value);f.elements.currency.value=a?.currency||''});
-f.addEventListener('submit',async e=>{e.preventDefault();const x=new FormData(f),a=state().accounts.find(a=>a.id===x.get('accountId'));if(!a)return toast('Select an account.',true);const b={id:crypto.randomUUID(),group:x.get('period'),category:x.get('category'),currency:a.currency,country:a.country,limit:Number(x.get('limit'))};state().budgets.push(b);App.save('Budget added');try{await saveRule(b.id,a.id,x.get('period'));d.close();f.reset();renderBudgets()}catch(err){toast(err.message,true)}});
+const f=$('#budget-form-v14');
+const refreshBudgetAccounts=()=>{
+  const selected=f.elements.accountId.value;
+  f.elements.accountId.innerHTML=accountOptions(selected);
+  if(selected&&(state()?.accounts||[]).some(a=>a.id===selected))f.elements.accountId.value=selected;
+  const a=(state()?.accounts||[]).find(x=>x.id===f.elements.accountId.value);
+  f.elements.currency.value=a?.currency||'';
+};
+f.elements.accountId.addEventListener('change',()=>{
+  const a=(state()?.accounts||[]).find(x=>x.id===f.elements.accountId.value);
+  f.elements.currency.value=a?.currency||'';
+});
+d.addEventListener('toggle',()=>{if(d.open)refreshBudgetAccounts()});
+d.addEventListener('click',e=>{if(e.target===d)d.close()});
+f.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!f.reportValidity())return;
+  const x=new FormData(f);
+  const period=String(x.get('period')||'');
+  const accountId=String(x.get('accountId')||'');
+  const category=String(x.get('category')||'');
+  const limit=Number(x.get('limit'));
+  const a=(state()?.accounts||[]).find(item=>item.id===accountId);
+  if(!period)return toast('Select weekly, monthly or yearly.',true);
+  if(!a)return toast('Select an account first.',true);
+  if(!category)return toast('Select an expense category.',true);
+  if(!Number.isFinite(limit)||limit<=0)return toast('Enter a spending limit greater than zero.',true);
+  const b={id:crypto.randomUUID(),group:period,category,currency:a.currency,country:a.country,limit};
+  state().budgets.push(b);
+  try{
+    await saveRule(b.id,a.id,period);
+    App.save('Budget added');
+    d.close();
+    f.reset();
+    f.elements.currency.value='';
+    renderBudgets();
+  }catch(err){
+    state().budgets=state().budgets.filter(item=>item.id!==b.id);
+    toast(err?.message||'Budget could not be saved.',true);
+  }
+});
+window.NomadV14RefreshBudgetAccounts=refreshBudgetAccounts;
 }
 function renderBudgets(){const list=$('#budget-list');if(!list)return;const items=state()?.budgets||[];const html=items.map(b=>{const rule=rules.get(b.id)||{period:b.group||'monthly',account_id:null};const account=state().accounts.find(a=>a.id===rule.account_id);const spent=budgetSpent(b),left=Number(b.limit)-spent,pct=Math.min(100,Math.max(0,spent/Number(b.limit||1)*100));return `<article class="connected-budget-card ${left<0?'over':''}"><header><div><strong>${esc(b.category)}</strong><small>${esc(rule.period)} · ${esc(account?.name||'All accounts')}</small></div><b>${money(b.limit,b.currency)}</b></header><div class="budget-progress"><span style="width:${pct}%"></span></div><div class="connected-budget-meta"><div><small>Spent</small><strong>${money(spent,b.currency)}</strong></div><div><small>Remaining</small><strong>${money(left,b.currency)}</strong></div><div><small>Used</small><strong>${pct.toFixed(0)}%</strong></div></div></article>`}).join('')||'<div class="empty-state"><h3>No budgets yet</h3><p>Create a connected weekly, monthly or yearly budget.</p></div>';list.innerHTML=`<div class="connected-budget-grid">${html}</div>`;const dash=$('#dashboard-connected-budgets');if(dash)dash.innerHTML=items.length?`<h3>Budget progress</h3><div class="connected-budget-grid">${html}</div>`:''}
 
@@ -44,5 +84,9 @@ function makeInputsEmpty(){document.querySelectorAll('dialog form').forEach(f=>{
 async function refreshAll(){await Promise.all([loadRules(),loadLoans(),loadTravel(),profileLoad()])}
 
 document.addEventListener('DOMContentLoaded',()=>{replaceBudgetDialog();replaceTravelForm();replaceLoanDialog();makeInputsEmpty();$('#profile-photo-change')?.addEventListener('click',()=>$('#profile-photo-input').click());$('#profile-photo-input')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)profileUpload(f).catch(x=>toast(x.message,true))});$('#profile-photo-remove')?.addEventListener('click',()=>profileRemove().catch(x=>toast(x.message,true)));document.addEventListener('click',e=>{const b=e.target.closest('[data-v14-pay]');if(b)recordPayment(b.dataset.v14Pay)});setTimeout(refreshAll,1200)});
-window.addEventListener('nomad:cloud-loaded',refreshAll);window.addEventListener('nomad:workspace-changed',refreshAll);window.addEventListener('nomad:state-rendered',renderBudgets);window.addEventListener('nomad:state-saved',renderBudgets);
+window.addEventListener('nomad:cloud-loaded',()=>{window.NomadV14RefreshBudgetAccounts?.();refreshAll()});
+window.addEventListener('nomad:workspace-changed',()=>{window.NomadV14RefreshBudgetAccounts?.();refreshAll()});
+window.addEventListener('nomad:state-rendered',()=>{window.NomadV14RefreshBudgetAccounts?.();renderBudgets()});
+window.addEventListener('nomad:state-saved',()=>{window.NomadV14RefreshBudgetAccounts?.();renderBudgets()});
+document.addEventListener('click',e=>{if(e.target.closest('[data-open-dialog="budget-dialog"]'))setTimeout(()=>window.NomadV14RefreshBudgetAccounts?.(),0)});
 })();
