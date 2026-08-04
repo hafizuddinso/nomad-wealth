@@ -817,10 +817,12 @@ function openDialog(id){
     populateCountryBankSelects();
   }
   if(id==="budget-dialog"){
-    const form=document.querySelector("#budget-form");
-    populateCountrySelect(form.elements.country,state.currentCountry||"AL");
-    populateCurrencySelect(form.elements.currency,state.mainCurrency||"EUR");
-    form.elements.currency.value=state.mainCurrency||"EUR";
+    const legacyForm=document.querySelector("#budget-form");
+    if(legacyForm){
+      populateCountrySelect(legacyForm.elements.country,state.currentCountry||"AL");
+      populateCurrencySelect(legacyForm.elements.currency,state.mainCurrency||"EUR");
+      legacyForm.elements.currency.value=state.mainCurrency||"EUR";
+    }
   }
   dialog.showModal();
 }

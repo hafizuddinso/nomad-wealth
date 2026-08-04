@@ -1802,3 +1802,17 @@ body.auth-modal-open{
 
 /* v14 connected finance */
 .profile-photo-actions{display:flex;gap:10px;align-items:center;margin:10px 0 18px}.profile-avatar.has-photo{background-size:cover;background-position:center;color:transparent}.connected-budget-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.connected-budget-card{padding:16px;border:1px solid var(--border);border-radius:18px;background:var(--panel)}.connected-budget-card header{display:flex;justify-content:space-between;gap:12px}.connected-budget-card .budget-progress{height:10px;border-radius:99px;background:var(--soft);overflow:hidden;margin:12px 0}.connected-budget-card .budget-progress span{display:block;height:100%;background:var(--accent);border-radius:inherit}.connected-budget-card.over .budget-progress span{background:var(--danger)}.connected-budget-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:.8rem}.connected-budget-meta strong,.connected-budget-meta small{display:block}.connected-budget-dashboard{margin-top:18px}.empty-select{color:var(--muted)}.loan-history-form{border-top:1px solid var(--border);padding-top:14px;margin-top:14px}.loan-schedule-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}.travel-plan-card{padding:16px;border:1px solid var(--border);border-radius:18px;margin-top:12px}.field-readonly{background:var(--soft);cursor:not-allowed}
+
+/* v14.1 fixes */
+.investment-detail-card{padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--surface);cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.investment-detail-card:hover,.investment-detail-card:focus{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 12px 30px rgba(15,23,42,.10);outline:none}
+.investment-detail-card header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}
+.investment-detail-card h3{margin:3px 0 0;font-size:18px}
+.investment-edit-label{font-size:12px;font-weight:800;color:var(--primary)}
+.investment-comparison-grid,.investment-value-comparison,.investment-edit-preview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.investment-comparison-grid>div,.investment-edit-preview>div{padding:12px;border-radius:14px;background:var(--surface-soft)}
+.investment-comparison-grid small,.investment-edit-preview small{display:block;color:var(--muted);margin-bottom:5px}
+.investment-comparison-grid strong,.investment-edit-preview strong{display:block;font-size:15px;overflow-wrap:anywhere}
+.investment-graph-note{margin:13px 0 0;color:var(--muted);font-size:12px}
+#edit-investment-dialog{max-width:650px;width:min(650px,calc(100vw - 28px))}
+@media(max-width:700px){.investment-comparison-grid,.investment-value-comparison,.investment-edit-preview{grid-template-columns:1fr}.investment-detail-card{padding:15px}}
