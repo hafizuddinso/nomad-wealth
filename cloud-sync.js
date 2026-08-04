@@ -8,6 +8,13 @@ let channel=null;
 let lastCloudVersion=null;
 
 const tables=["accounts","transactions","budgets","investments","savings_goals","net_worth_snapshots","recurring_rules","reminders"];
+window.NomadCloud={
+  getWorkspaceId:()=>currentWorkspaceId,
+  getWorkspaces:()=>structuredClone(workspaces),
+  reload:()=>loadCloudIntoApp(),
+  push:()=>push()
+};
+
 
 function status(title,detail=""){
   document.querySelector("#cloud-sync-status").textContent=title;
@@ -114,7 +121,7 @@ async function loadCloudIntoApp(){
   applyingRemote=true;
   App.replaceState(mapCloudToState(rows,App.getState()),{persist:true});
   applyingRemote=false;
-  status("Cloud sync active",`Loaded ${new Date().toLocaleString()}`);
+  status("Cloud sync active",`Loaded ${new Date().toLocaleString()}`); window.dispatchEvent(new CustomEvent("nomad:cloud-loaded",{detail:{workspaceId:currentWorkspaceId}}));
   subscribe();
 }
 async function decideInitialData(){
@@ -156,6 +163,7 @@ function subscribe(){
 }
 async function switchWorkspace(id){
   currentWorkspaceId=id;
+  window.dispatchEvent(new CustomEvent("nomad:workspace-changed",{detail:{workspaceId:id}}));
   localStorage.setItem(`nomad_v7_workspace_${App.getUser().id}`,id);
   renderWorkspaces();
   await loadInvitations();

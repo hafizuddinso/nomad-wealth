@@ -330,7 +330,7 @@
               <div><h2>Spending by Category</h2><p>Current month</p></div>
               <span class="period-chip">This month</span>
             </div>
-            <div class="chart-box"><canvas id="dashboard-category-chart"></canvas></div>
+            <div class="chart-box"><canvas id="dashboard-category-chart"></canvas></div><div id="dashboard-connected-budgets" class="connected-budget-dashboard"></div>
           </article>
         </div>
 
@@ -699,7 +699,7 @@
         <article class="panel profile-panel">
           <div class="panel-heading"><div><h2 data-i18n="profile">Profile</h2><p>Your account and preferences</p></div></div>
           <form id="profile-form" class="profile-form">
-            <div class="profile-avatar-block"><div class="profile-avatar" id="profile-avatar">U</div><div><strong id="profile-display-name">User</strong><small id="profile-display-email">—</small></div></div>
+            <div class="profile-avatar-block"><div class="profile-avatar" id="profile-avatar">U</div><div><strong id="profile-display-name">User</strong><small id="profile-display-email">—</small></div></div><div class="profile-photo-actions"><input id="profile-photo-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><button type="button" class="secondary" id="profile-photo-change">Change picture</button><button type="button" class="text-button danger-text" id="profile-photo-remove">Remove picture</button></div>
             <div class="form-grid">
               <label><span data-i18n="name">Name</span><input id="profile-name-input" name="name" required></label>
               <label><span data-i18n="country">Country</span><select id="profile-country" name="country" required></select></label>
@@ -784,7 +784,7 @@
         </article>
 </section>
 
-      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v13.5 Responsive Auth & Fonts</footer>
+      <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v14 Connected Finance</footer>
     </main>
   </div>
 
@@ -1051,5 +1051,6 @@
   <script type="module" src="charts-v8.js?v=13.5.0"></script>
   <script type="module" src="v9-clean.js?v=13.5.0"></script>
   <script src="loans-v13.js?v=13.5.0"></script>
+<script src="v14-upgrade.js"></script>
 </body>
 </html>
