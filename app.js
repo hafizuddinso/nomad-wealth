@@ -223,6 +223,7 @@ function showApp(user){
   appRoot.classList.remove("hidden");
   initializeFinanceApp();
   render();
+  setTimeout(()=>{if(currentUser?.id===user.id)refreshReferenceRatesIfNeeded().catch(error=>console.warn("FX update unavailable:",error))},900);
   const metadata=user?.user_metadata||{};
   if(!metadata.onboarding_complete){
     const form=document.querySelector("#onboarding-form");
@@ -437,7 +438,8 @@ function normalizeState(data){
   normalized.investments=Array.isArray(normalized.investments)?normalized.investments:[];
   normalized.goals=Array.isArray(normalized.goals)?normalized.goals:[];
   normalized.netWorthSnapshots=Array.isArray(normalized.netWorthSnapshots)?normalized.netWorthSnapshots:[];
-  normalized.rates={...demo.rates,...(normalized.rates||{})};
+  normalized.rates={...demo.rates,...(normalized.rates||{}),...loadFxCache().rates};
+  if(loadFxCache().updatedAt)normalized.ratesUpdatedAt=loadFxCache().updatedAt;
   normalized.transactions=normalized.transactions.map((t,index)=>({
     ...t,
     country:normalizeCountryCode(t.country||normalized.currentCountry||"US"),
@@ -470,12 +472,40 @@ function toast(message){
   const el=document.querySelector("#toast");el.textContent=message;el.classList.add("show");
   clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove("show"),2200);
 }
-function toEUR(amount,currency){return amount/(state.rates[currency]||1)}
-function fromEUR(amount,currency){return amount*(state.rates[currency]||1)}
-function convert(amount,from,to){return fromEUR(toEUR(amount,from),to)}
+const FX_CACHE_KEY="nomad-fx-cache-eur";
+function loadFxCache(){
+  try{
+    const cache=JSON.parse(localStorage.getItem(FX_CACHE_KEY)||"null");
+    if(cache && typeof cache.updatedAt==="string" && cache.rates && Date.now()-Date.parse(cache.updatedAt)<7*86400000) return cache;
+  }catch{}
+  return {rates:{},updatedAt:null};
+}
+async function refreshReferenceRatesIfNeeded(force=false){
+  if(!state || !currentUser)return false;
+  if(!force && state.ratesUpdatedAt && Date.now()-Date.parse(state.ratesUpdatedAt)<20*3600000)return false;
+  const response=await fetch("https://open.er-api.com/v6/latest/EUR",{cache:"no-store",signal:AbortSignal.timeout(10000)});
+  if(!response.ok)throw Error("FX source unavailable");
+  const data=await response.json();
+  if(data.result!=="success" || !data.rates || !(Number(data.rates.BDT)>0) || !(Number(data.rates.USD)>0))throw Error("Required FX rates unavailable");
+  const updatedAt=data.time_last_update_utc || new Date().toISOString();
+  const rates={EUR:1};
+  for(const [currency,rate] of Object.entries(data.rates)){
+    if(/^[A-Z]{3}$/.test(currency) && Number(rate)>0)rates[currency]=Number(rate);
+  }
+  state.rates={...state.rates,...rates};state.ratesUpdatedAt=updatedAt;
+  try{localStorage.setItem(FX_CACHE_KEY,JSON.stringify({rates,updatedAt}))}catch{}
+  render();
+  window.dispatchEvent(new Event("nomad:fx-rates-updated"));
+  return true;
+}
+function toEUR(amount,currency){const rate=currency==="EUR"?1:Number(state?.rates?.[currency]);return rate>0?Number(amount)/rate:NaN}
+function fromEUR(amount,currency){const rate=currency==="EUR"?1:Number(state?.rates?.[currency]);return rate>0?Number(amount)*rate:NaN}
+function convert(amount,from,to){if(from===to)return Number(amount);return fromEUR(toEUR(amount,from),to)}
 function inMain(amount,currency){return convert(amount,currency,state.mainCurrency)}
 function money(value,currency=state.mainCurrency){
-  return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(Number(value)||0);
+  const amount=Number(value);
+  if(!Number.isFinite(amount))return "FX rate unavailable";
+  return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(amount);
 }
 function displayMoney(value,currency=state.mainCurrency){
   const source=currency||state.mainCurrency;
@@ -1007,6 +1037,7 @@ document.querySelector("#refresh-rates")?.addEventListener("click",async()=>{
     if(data.result!=="success"||!data.rates)throw new Error("Invalid rate response");
     currencies.forEach(code=>{if(Number(data.rates[code])>0)state.rates[code]=Number(data.rates[code])});
     state.rates.EUR=1;state.ratesUpdatedAt=data.time_last_update_utc||new Date().toISOString();
+    try{localStorage.setItem(FX_CACHE_KEY,JSON.stringify({updatedAt:state.ratesUpdatedAt,rates:state.rates}))}catch{}
     save();
     calculateCurrencyConversion();
     status.textContent=fxStatus();
@@ -1117,7 +1148,7 @@ window.NomadApp={
   getUser:()=>currentUser,
   getSupabase:()=>supabase,
   getMainCurrency:()=>state?.mainCurrency||"EUR",
-  money,displayMoney,
+  money,displayMoney,refreshReferenceRatesIfNeeded,
   convert,
   inMain,
   countryName,
