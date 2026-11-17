@@ -10,3 +10,8 @@ Changes:
 - Font applies to headings, buttons, forms, menus and numbers
 - Font preference persists after refresh
 - Existing dashboard, transactions, loan tracking and all finance features remain unchanged
+
+
+## Market research
+
+The Investments page provides search for Nasdaq-listed names through Nasdaq Trader and an indicative gold spot price from Gold API. Individual stock quote lookup requires an optional `FINNHUB_API_KEY` in the Vercel server environment; without it the feature clearly reports unavailable quotes rather than making up prices. Market results may be delayed. Bank lists are curated suggestions, and users may type unlisted institutions.
