@@ -45,3 +45,8 @@ html[data-theme="dark"] .dashboard-related button:hover{background:#242424}
  .fx-source{display:none}
 }
 @media(prefers-reduced-motion:reduce){.page.active{scroll-behavior:auto}}
+
+.market-country-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:8px 0 12px}
+.market-provider-hint{font-size:11px;color:var(--muted);line-height:1.6;margin:0 0 12px}
+.market-price small{display:block;font-size:12px;font-weight:500;color:var(--muted);line-height:1.4}
+@media(max-width:580px){.market-country-row{grid-template-columns:1fr}}
