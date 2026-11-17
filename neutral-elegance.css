@@ -1,0 +1,392 @@
+/*
+ * Nomad Wealth — Neutral Elegance
+ * Approved warm-neutral redesign, November 2026.
+ * UI only: the existing HTML ids, forms, app logic and Supabase flow remain intact.
+ * This file is loaded after styles.css so the original features can stay untouched.
+ */
+:root {
+  --nw-peach:#FFDBBB;
+  --nw-stone:#CCBEB1;
+  --nw-taupe:#997E67;
+  --nw-coffee:#664930;
+  --nw-ink:#30251e;
+  --nw-muted:#87766a;
+  --nw-bg:#F8F6F3;
+  --nw-card:#FFFDFB;
+  --nw-border:#E8DDD2;
+  --nw-soft:#F3EDE7;
+  --nw-green:#4F7258;
+  --nw-red:#A96151;
+  --navy:#30251e;
+  --teal:#664930;
+  --teal2:#997E67;
+  --blue:#997E67;
+  --muted:#87766a;
+  --line:#E8DDD2;
+  --border:#E8DDD2;
+  --panel:#FFFDFB;
+  --background:#F8F6F3;
+  --primary:#664930;
+  --accent:#997E67;
+  --soft:#F3EDE7;
+  --surface:#FFFDFB;
+  --surface-2:#F3EDE7;
+  --surface-soft:#F3EDE7;
+  --input-bg:#FFFDFB;
+  --body-bg:#F8F6F3;
+  --text:#30251e;
+  --shadow:0 10px 34px rgba(77,55,37,.055);
+  --shadow-sm:0 6px 20px rgba(77,55,37,.04);
+  --v12-bg:#F8F6F3;
+  --v12-card:#FFFDFB;
+  --v12-green:#4F7258;
+  --v12-green-dark:#4F7258;
+  --v12-red:#A96151;
+  --v12-blue:#997E67;
+  --v12-purple:#997E67;
+  --v12-orange:#D8A47F;
+  --sidebar-a:#664930;
+  --sidebar-b:#573D2A;
+  color-scheme:light;
+}
+html[data-theme="dark"] {
+  --navy:#251B15;
+  --teal:#FFDBBB;
+  --teal2:#CCBEB1;
+  --blue:#CCBEB1;
+  --muted:#BDAA9B;
+  --line:#6A5240;
+  --border:#6A5240;
+  --panel:#39291F;
+  --background:#241B16;
+  --primary:#FFDBBB;
+  --accent:#CCBEB1;
+  --soft:#49372C;
+  --surface:#39291F;
+  --surface-2:#49372C;
+  --surface-soft:#49372C;
+  --input-bg:#382920;
+  --body-bg:#241B16;
+  --text:#F5EDE4;
+  --shadow:0 12px 35px rgba(0,0,0,.15);
+  --shadow-sm:0 6px 20px rgba(0,0,0,.12);
+  --v12-bg:#241B16;
+  --v12-card:#39291F;
+  --v12-green:#9BB4A2;
+  --v12-red:#E7A898;
+  --v12-blue:#FFDBBB;
+  --v12-purple:#CCBEB1;
+  --v12-orange:#E1B28C;
+  --sidebar-a:#503724;
+  --sidebar-b:#3C281C;
+  color-scheme:dark;
+}
+body {background:var(--v12-bg);color:var(--text)}
+html[data-theme="dark"] body {background:#241B16;color:var(--text)}
+a,button,input,select,textarea {accent-color:var(--nw-coffee)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:2px solid var(--nw-taupe);
+  outline-offset:3px;
+}
+.primary,button.primary,.auth-submit{
+  background:var(--nw-coffee)!important;
+  color:#FFF9F2!important;
+  border:1px solid var(--nw-coffee)!important;
+  box-shadow:0 8px 22px rgba(102,73,48,.12);
+  border-radius:11px;
+}
+.primary:hover:not(:disabled),button.primary:hover:not(:disabled){
+  background:#533A28!important;
+  border-color:#533A28!important;
+}
+.secondary,.file-label,.calc-tab,.icon-button{
+  background:var(--nw-soft);color:var(--nw-coffee);
+  border:1px solid var(--nw-border);
+}
+.secondary:hover,.file-label:hover,.calc-tab:hover{background:#E9DCCE}
+.text-button,.eyebrow,.link-button-text,.investment-edit-label {color:var(--nw-coffee)!important}
+input:not([type="checkbox"]):not([type="radio"]),textarea,select{
+  border-color:var(--nw-border);
+  background:var(--surface);
+  color:var(--text);
+}
+input:focus,select:focus,textarea:focus{border-color:var(--nw-taupe);box-shadow:0 0 0 3px rgba(153,126,103,.16)}
+/* Public landing. Same content and account buttons. */
+.auth-screen.auth-landing{
+  background:#F8F6F3!important;
+  color:#30251E!important;
+  min-height:100svh;
+}
+.auth-landing .public-header,.auth-landing .public-main,.auth-landing .public-footer{width:min(1290px,calc(100% - 72px))}
+.auth-landing .public-header{min-height:98px}
+.auth-landing .public-brand{color:#30251E}
+.auth-landing .public-brand strong{letter-spacing:-.045em;font-size:19px}
+.auth-landing .public-brand small{color:var(--nw-muted)}
+.brand-logo{background:var(--nw-coffee)!important;box-shadow:none!important;border-radius:13px}
+.brand-logo svg{fill:#FFDBBB!important}
+.auth-landing .public-header-actions{gap:12px}
+.auth-landing .public-login-button,.auth-landing .hero-login-button{
+  background:transparent!important;
+  border:1px solid #C7B3A2!important;
+  color:#664930!important;
+  box-shadow:none!important;
+  font-weight:700;
+}
+.auth-landing .public-header .public-login-button{border-color:transparent!important}
+.auth-landing .public-login-button:hover,.auth-landing .hero-login-button:hover{background:#F1E8DF!important}
+.auth-landing .public-main{padding:28px 0 56px}
+.auth-landing .public-hero{
+  grid-template-columns:minmax(0,1.03fr) minmax(390px,.97fr);
+  gap:clamp(24px,5vw,72px);
+  min-height:590px;
+}
+.auth-landing .public-hero-copy h1{
+  font-size:clamp(47px,5.25vw,76px);
+  line-height:1.07;
+  letter-spacing:-.06em;
+  font-weight:730;
+  color:#30251E;
+  margin:25px 0 23px;
+}
+.auth-landing .hero-warm-accent{color:#997E67}
+.auth-landing .auth-pill{
+  background:none;
+  color:#997E67;
+  border:0;
+  border-radius:0;
+  padding:0;
+  letter-spacing:.15em;
+  font-size:11px;
+  text-transform:uppercase;
+}
+.auth-landing .auth-pill::before{content:"";display:inline-block;width:25px;height:1px;margin-right:11px;vertical-align:middle;background:#997E67}
+.auth-landing .public-hero-copy>p{
+  color:#746457;
+  font-size:16px;
+  line-height:1.8;
+  max-width:520px;
+}
+.auth-landing .public-hero-actions{margin-top:28px;gap:12px}
+.auth-landing .public-benefits{margin-top:40px;gap:12px 23px}
+.auth-landing .public-benefits span{
+  border:0;
+  border-radius:0;
+  background:transparent!important;
+  color:#716053;
+  padding:0;
+  font-size:12px;
+  font-weight:680;
+}
+.auth-landing .public-benefits span::before{content:"✓";margin-right:8px;color:#664930}
+.auth-landing .public-preview{padding:25px 12px 24px;isolation:isolate}
+.auth-landing .public-preview::before{
+  content:"";position:absolute;inset:0 0 0 6%;z-index:-2;
+  border-radius:37px 37px 90px 37px;background:#FFDBBB;
+}
+.auth-landing .public-preview::after{
+  content:"";position:absolute;bottom:13px;left:0;width:34%;height:27%;z-index:-1;
+  border-radius:38px;background:#CCBEB1;
+}
+.auth-landing .preview-window{
+  transform:rotate(-2deg);
+  padding:22px;
+  border:1px solid #E9DED4;
+  border-radius:23px;
+  color:#30251E;
+  background:#FFFDFB;
+  box-shadow:0 25px 60px rgba(82,60,41,.17);
+}
+.auth-landing .preview-window::before{background:none;filter:none}
+.auth-landing .preview-window-header span{background:#D0BBA7}
+.auth-landing .preview-balance-card{background:#F3EDE7;color:#30251E;padding:24px}
+.auth-landing .preview-balance-card strong{color:#30251E}
+.auth-landing .preview-balance-card small,.auth-landing .preview-balance-card span{color:#89776A}
+.auth-landing .preview-stat-grid>div{border:0;background:#F5F0EB;color:#30251E}
+.auth-landing .preview-stat-grid>div:last-child{background:#EADCCE}
+.auth-landing .preview-stat-grid small,.auth-landing .preview-list small{color:#927D6C}
+.auth-landing .preview-stat-grid div:first-child strong{color:#4F7258}
+.auth-landing .preview-stat-grid div:last-child strong{color:#A96151}
+.auth-landing .preview-list{background:#FFFDFB;border:1px solid #E9DED4}
+.auth-landing .preview-list>div{border-color:#EEE4DB}
+.auth-landing .preview-list>div>span{background:#F3EDE7;color:#664930}
+.auth-landing .preview-list b{color:#664930}
+.auth-landing .public-footer{border-top:1px solid #E6DAD0;color:#89776A}
+/* Public auth modal: light, warm, with preserved form behavior. */
+.auth-modal-backdrop{background:rgba(35,23,15,.57);backdrop-filter:blur(7px)}
+.auth-modal-card{
+  background:#FFFDFB!important;
+  color:#30251E!important;
+  border:1px solid #E5D8CB;
+  box-shadow:0 30px 90px rgba(40,26,15,.25);
+}
+.auth-modal-card h2,.auth-modal-card .auth-form label{color:#30251E!important}
+.auth-modal-card .auth-subtitle,.auth-modal-card .check-label{color:#87766A!important}
+.auth-modal-brand small{color:#87766A}
+.auth-modal-close{background:#F3EDE7;color:#664930;border-color:#E4D8CE}
+.auth-modal-card .auth-form input{
+  background:#FFFDFB!important;color:#30251E!important;border-color:#DBCBBE!important;
+}
+.auth-modal-card .auth-form input:focus{border-color:#997E67!important;box-shadow:0 0 0 3px rgba(153,126,103,.15)}
+.auth-modal-card .auth-switch button,.auth-modal-card .link-button-text{color:#664930!important}
+/* Authenticated workspace: preserve all navigation and component ids. */
+.app-shell{grid-template-columns:244px minmax(0,1fr)}
+.sidebar{
+  background:#664930!important;
+  color:#F7EDE3;
+  padding:25px 15px;
+  border-right:1px solid #7C5B42;
+}
+.sidebar .brand{padding-bottom:28px;color:#FFF9F2}
+.sidebar .brand .brand-logo{background:#FFDBBB!important}
+.sidebar .brand .brand-logo svg{fill:#664930!important}
+.sidebar .brand strong{color:#FFF9F2;letter-spacing:-.02em}
+.sidebar .brand small,.sidebar .sidebar-meta,.sidebar .sidebar-meta small{color:#E0C8B3}
+.desktop-nav{gap:6px}
+.nav-item{color:#EAD9CA;border-radius:11px;padding:12px 14px}
+.nav-item:hover{background:rgba(255,219,187,.14);color:#FFFDFB}
+.nav-item.active{background:#FFDBBB!important;color:#513923!important;box-shadow:none}
+.nav-item.active span{color:#664930}
+.user-card{background:rgba(255,219,187,.15);border:1px solid rgba(255,219,187,.06);border-radius:14px}
+.avatar,.profile-avatar,#header-avatar{background:#FFDBBB!important;color:#664930!important;box-shadow:none}
+.user-card small{color:#DFCAB7}
+.sidebar-logout{color:#F7EDE3}
+.main{background:var(--v12-bg);padding:27px 29px}
+.v12-topbar{background:var(--v12-bg);border-color:var(--line);backdrop-filter:none}
+.topbar h1{color:var(--text);letter-spacing:-.045em;font-weight:760}
+.topbar p,.topbar small{color:var(--muted)}
+.topbar .eyebrow{letter-spacing:.16em;color:var(--nw-taupe)!important}
+.theme-toggle,.notification-button,.profile-shortcut,.header-user-chip,.currency-control{
+  border-color:var(--line);background:var(--surface);color:var(--text);
+  box-shadow:none;
+}
+.profile-shortcut{border-radius:14px}
+.profile-shortcut strong{color:var(--text)}
+/* KPI cards, chart panels and secondary sections. */
+.home-kpi,.metric-card,.panel,.calculator-intro,.loan-summary-card,.feature-grid article,
+.investment-detail-card,.goals-grid>article,.connected-budget-card,.travel-plan-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:17px;
+  color:var(--text);
+  box-shadow:var(--shadow);
+}
+.home-kpi{min-height:138px;padding:23px}
+.home-kpi::after{display:none}
+.home-kpi.balance-card{background:#EADCCE;border-color:#EADCCE;color:#30251E}
+.home-kpi>span,.home-kpi>small{color:var(--muted)}
+.income-card>strong{color:var(--nw-green)}
+.expense-card>strong{color:var(--nw-red)}
+.balance-card>strong{color:var(--nw-coffee)}
+.kpi-icon{background:#F2EAE2!important;color:#997E67!important}
+.quick-entry-button,.dashboard-tool-links button,.quick-tools button{
+  background:var(--nw-soft);color:var(--nw-coffee);
+  border:1px solid var(--nw-border);box-shadow:none;
+  border-radius:13px;
+}
+.quick-entry-button:hover,.dashboard-tool-links button:hover,.quick-tools button:hover{
+  background:#EADCCE;border-color:#CCBEB1;
+}
+.quick-entry-button>span,.dashboard-tool-links span,.quick-tools button>span{
+  color:#664930!important;background:#FFDBBB!important;
+}
+.quick-entry-button strong,.dashboard-tool-links button{color:#664930}
+.quick-entry-button small{color:#87766A}
+.dashboard-account-row,.row{border-color:var(--line)}
+.dashboard-account-icon{background:#F2EAE2!important;color:#664930!important}
+.panel h2,.panel-heading h2,.calculator-intro h2,.loans-hero h2{color:var(--text)}
+.panel p,.panel-heading p,.row-subtitle,.dashboard-account-copy small{color:var(--muted)}
+.period-chip,.coming-soon-badge{background:#F3EDE7;color:#664930;border:1px solid #E8DDD2}
+.chart-card .chart-box,.chart-panel{background:transparent}
+.million-goal-card,.font-settings-card,.advanced-filter-card,.profile-panel,
+.transaction-account-summary,.health-banner,.explanation-card,.loan-breakdown-item,
+.mini-card,.investment-comparison-grid>div,.investment-edit-preview>div{
+  background:var(--surface);color:var(--text);border-color:var(--line);
+}
+.million-goal-amount,.calc-tab:not(.active),.calculator-intro{background:var(--nw-soft);color:var(--nw-ink)}
+.million-goal-amount{border-color:var(--nw-border)}
+.calc-tab.active,.transaction-type-tab input:checked+span{background:#664930;color:#FFFDFB}
+.progress{background:#EADFD5}
+.progress span,.connected-budget-card .budget-progress span{background:#997E67}
+.segmented-control{background:var(--nw-soft)}
+.segmented-control input:checked+span{color:#664930;border-radius:9px}
+/* Calculators and informational banners — consistent neutrals. */
+.hero-card,.result-card,.travel-result,.about-badge,.loans-hero{
+  background:linear-gradient(125deg,#664930,#997E67);
+  color:#FFF9F2;
+  border-color:transparent;
+  box-shadow:0 16px 30px rgba(102,73,48,.12);
+}
+.hero-card p,.result-card p,.travel-result p,.about-badge small,.about-badge span{color:#F8E7D7}
+.hero-card .secondary{color:#664930}
+.about-hero{background:var(--surface)}
+.about-badge strong{color:#FFF9F2}
+.goal-progress,.budget-progress{accent-color:#997E67}
+#toast{background:#423023;color:#FFF9F2}
+dialog{background:var(--surface);color:var(--text);box-shadow:0 25px 75px rgba(53,35,20,.2)}
+dialog::backdrop{background:rgba(36,23,16,.55)}
+dialog form{background:var(--surface)}
+.dialog-actions{background:var(--surface)}
+.mobile-nav{background:rgba(255,253,251,.98);border-color:var(--line);box-shadow:0 -10px 28px rgba(102,73,48,.07)}
+.mobile-nav button{color:#87766A}
+.mobile-nav button.active{color:#664930}
+/* Dark setting remains supported and uses chocolate tones, not old navy. */
+html[data-theme="dark"] .sidebar{background:#503724!important}
+html[data-theme="dark"] .main{background:#241B16}
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .metric-card,
+html[data-theme="dark"] .home-kpi:not(.balance-card),
+html[data-theme="dark"] .feature-grid article,
+html[data-theme="dark"] dialog,
+html[data-theme="dark"] dialog form{background:#39291F;color:#F5EDE4;border-color:#6A5240}
+html[data-theme="dark"] .home-kpi.balance-card{background:#654B37;border-color:#654B37;color:#FFF7EB}
+html[data-theme="dark"] .home-kpi.balance-card>strong{color:#FFF1DF}
+html[data-theme="dark"] .quick-entry-button,
+html[data-theme="dark"] .dashboard-tool-links button,
+html[data-theme="dark"] .quick-tools button,
+html[data-theme="dark"] .secondary,
+html[data-theme="dark"] .calc-tab:not(.active){background:#49372C;color:#FFDBBB;border-color:#6A5240}
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select{background:#39291F;color:#F5EDE4;border-color:#6A5240}
+html[data-theme="dark"] .mobile-nav{background:rgba(57,41,31,.97)}
+html[data-theme="dark"] .million-goal-card,
+html[data-theme="dark"] .font-settings-card,
+html[data-theme="dark"] .million-goal-amount{background:#49372C!important;color:#F5EDE4!important;border-color:#6A5240!important}
+html[data-theme="dark"] .auth-screen.auth-landing{background:#F8F6F3!important;color:#30251E!important}
+/* Keep mobile behavior unchanged; only adapt spacing and colors. */
+@media(max-width:900px){
+  .auth-landing .public-header,.auth-landing .public-main,.auth-landing .public-footer{width:min(100% - 38px,730px)}
+  .auth-landing .public-hero{grid-template-columns:1fr;gap:28px}
+  .auth-landing .public-hero-copy{text-align:center}
+  .auth-landing .public-hero-copy h1{margin-inline:auto}
+  .auth-landing .public-hero-copy>p{margin-inline:auto}
+  .auth-landing .public-benefits,.auth-landing .public-hero-actions{justify-content:center}
+  .auth-landing .public-preview{width:min(560px,100%);margin-inline:auto}
+  .app-shell{grid-template-columns:1fr}
+  .main{padding:18px 15px calc(90px + env(safe-area-inset-bottom))}
+}
+@media(max-width:620px){
+  .auth-landing .public-header,.auth-landing .public-main,.auth-landing .public-footer{width:calc(100% - 30px)}
+  .auth-landing .public-header{min-height:75px}
+  .auth-landing .public-main{padding:23px 0 35px}
+  .auth-landing .public-hero-copy h1{font-size:clamp(38px,10.5vw,57px);letter-spacing:-.06em}
+  .auth-landing .public-hero-copy>p{font-size:14px;line-height:1.65}
+  .auth-landing .public-hero-actions{display:grid;grid-template-columns:1fr}
+  .auth-landing .public-benefits{display:flex;justify-content:center;gap:10px 15px}
+  .auth-landing .public-benefits span{font-size:11px}
+  .auth-landing .public-preview{padding:15px 4px}
+  .auth-landing .preview-window{transform:none;padding:14px}
+  .auth-landing .preview-balance-card{padding:18px}
+  .auth-landing .preview-stat-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .auth-landing .preview-stat-grid>div{padding:11px}
+  .auth-landing .public-footer{padding:20px 0}
+  .main{padding:16px 14px calc(84px + env(safe-area-inset-bottom))}
+  .home-kpi{min-height:115px;padding:17px}
+  .dashboard-top-grid,.dashboard-content-grid,.dashboard-bottom-grid{gap:12px}
+  .panel{padding:16px}
+  .mobile-nav{background:#FFFDFB}
+  .auth-modal-card{border-radius:23px 23px 0 0}
+}
+@media(prefers-reduced-motion:reduce){
+  .primary,.secondary,.nav-item,.quick-entry-button{transition:none!important}
+}

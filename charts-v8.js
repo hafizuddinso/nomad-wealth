@@ -1,13 +1,13 @@
 const App=window.NomadApp;
 const charts=new Map();
-const palette=["#14b8a6","#2563eb","#f59e0b","#8b5cf6","#ef4444","#06b6d4","#84cc16","#f97316","#ec4899","#64748b"];
+const palette=["#664930","#CCBEB1","#997E67","#FFDBBB","#A96151","#8F9E84","#4F7258","#C5A184","#B68C86","#87766A"];
 
 function state(){return App?.getState()}
 function main(value,currency){return App.inMain(Number(value)||0,currency)}
 function monthKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`}
 function shortMonth(date){return date.toLocaleDateString(undefined,{month:"short",year:"2-digit"})}
 function textColor(){return getComputedStyle(document.documentElement).getPropertyValue("--text").trim()||"#172033"}
-function mutedColor(){return getComputedStyle(document.documentElement).getPropertyValue("--muted").trim()||"#64748b"}
+function mutedColor(){return getComputedStyle(document.documentElement).getPropertyValue("--muted").trim()||"#87766A"}
 function lineColor(){return getComputedStyle(document.documentElement).getPropertyValue("--line").trim()||"#e5e7eb"}
 function panelColor(){return getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()||"#ffffff"}
 
@@ -115,7 +115,7 @@ function renderTransactions(){
   const dates=[];const now=new Date();
   for(let i=29;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);dates.push(d.toISOString().slice(0,10))}
   const values=dates.map(date=>transactions.filter(t=>t.type==="expense"&&t.date===date).reduce((s,t)=>s+main(t.amount,t.currency),0));
-  make("transactions-daily-chart",{type:"line",data:{labels:dates.map(d=>new Date(`${d}T12:00:00`).toLocaleDateString(undefined,{month:"short",day:"numeric"})),datasets:[{label:"Daily spending",data:values,borderColor:"#14b8a6",backgroundColor:"rgba(20,184,166,.16)",fill:true,tension:.32,pointRadius:2}]},
+  make("transactions-daily-chart",{type:"line",data:{labels:dates.map(d=>new Date(`${d}T12:00:00`).toLocaleDateString(undefined,{month:"short",day:"numeric"})),datasets:[{label:"Daily spending",data:values,borderColor:"#664930",backgroundColor:"rgba(20,184,166,.16)",fill:true,tension:.32,pointRadius:2}]},
     options:baseOptions(),plugins:[emptyPlugin("No expenses during the last 30 days")]});
 }
 function renderBudgets(){
@@ -153,9 +153,9 @@ function renderInsights(){
   const income=months.map(m=>(state().transactions||[]).filter(t=>t.type==="income"&&t.date?.startsWith(monthKey(m))).reduce((s,t)=>s+main(t.amount,t.currency),0));
   const expense=months.map(m=>(state().transactions||[]).filter(t=>t.type==="expense"&&t.date?.startsWith(monthKey(m))).reduce((s,t)=>s+main(t.amount,t.currency),0));
   make("insights-monthly-chart",{type:"line",data:{labels:months.map(shortMonth),datasets:[
-    {label:"Income",data:income,borderColor:"#14b8a6",backgroundColor:"rgba(20,184,166,.11)",tension:.3,fill:false},
-    {label:"Expenses",data:expense,borderColor:"#ef4444",backgroundColor:"rgba(239,68,68,.11)",tension:.3,fill:false},
-    {label:"Net savings",data:income.map((v,i)=>v-expense[i]),borderColor:"#2563eb",backgroundColor:"rgba(37,99,235,.11)",tension:.3,fill:false}
+    {label:"Income",data:income,borderColor:"#664930",backgroundColor:"rgba(20,184,166,.11)",tension:.3,fill:false},
+    {label:"Expenses",data:expense,borderColor:"#A96151",backgroundColor:"rgba(239,68,68,.11)",tension:.3,fill:false},
+    {label:"Net savings",data:income.map((v,i)=>v-expense[i]),borderColor:"#CCBEB1",backgroundColor:"rgba(37,99,235,.11)",tension:.3,fill:false}
   ]},options:baseOptions(),plugins:[emptyPlugin("Add transactions to build financial trends")]});
 }
 function renderAll(){
