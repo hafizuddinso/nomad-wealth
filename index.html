@@ -8,18 +8,23 @@
   <meta name="author" content="Hafizuddin" />
   <title>Nomad Wealth — Your money. Anywhere.</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css?v=13.5.0" />
-  <link rel="stylesheet" href="neutral-elegance.css?v=1.0.0" />
+  <link rel="icon" type="image/svg+xml" href="nomad-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=2.0.0" />
+  <link rel="stylesheet" href="neutral-elegance.css?v=2.0.0" />
 </head>
 <body>
   <section id="auth-screen" class="auth-screen auth-landing" aria-label="Welcome to Nomad Wealth">
     <header class="public-header">
       <a class="public-brand" href="#" aria-label="Nomad Wealth home">
         <span class="brand-logo" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path d="M24 4a20 20 0 1 0 20 20A20 20 0 0 0 24 4Zm9.4 10.6-6 13a4 4 0 0 1-1.9 1.9l-13 6 6-13a4 4 0 0 1 1.9-1.9Z"/>
-            <circle cx="24" cy="24" r="3.2"/>
-          </svg>
+          <svg class="nw-logo-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13.2 20.4A25.5 25.5 0 0 1 32 6.5m19 14A25.5 25.5 0 0 1 57.5 32m-7.7 13.5A25.5 25.5 0 0 1 32 57.5m-19.5-13A25.5 25.5 0 0 1 6.5 32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M15.5 46V18h7.8l17 17.2V18h8.2v28h-7.9L23.7 28.8V46z" fill="currentColor"/>
+  <path d="M32 2 27.8 18.7 32 15.8l4.2 2.9Z" fill="currentColor"/>
+</svg>
         </span>
         <span>
           <strong>Nomad Wealth</strong>
@@ -94,10 +99,11 @@
 
         <div class="auth-modal-brand">
           <span class="brand-logo" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <path d="M24 4a20 20 0 1 0 20 20A20 20 0 0 0 24 4Zm9.4 10.6-6 13a4 4 0 0 1-1.9 1.9l-13 6 6-13a4 4 0 0 1 1.9-1.9Z"/>
-              <circle cx="24" cy="24" r="3.2"/>
-            </svg>
+            <svg class="nw-logo-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13.2 20.4A25.5 25.5 0 0 1 32 6.5m19 14A25.5 25.5 0 0 1 57.5 32m-7.7 13.5A25.5 25.5 0 0 1 32 57.5m-19.5-13A25.5 25.5 0 0 1 6.5 32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M15.5 46V18h7.8l17 17.2V18h8.2v28h-7.9L23.7 28.8V46z" fill="currentColor"/>
+  <path d="M32 2 27.8 18.7 32 15.8l4.2 2.9Z" fill="currentColor"/>
+</svg>
           </span>
           <div>
             <strong>Nomad Wealth</strong>
@@ -235,7 +241,11 @@
     <aside class="sidebar">
       <a class="brand" href="#dashboard" data-page-link="dashboard">
         <span class="brand-logo" aria-hidden="true">
-          <svg viewBox="0 0 48 48"><path d="M24 4a20 20 0 1 0 20 20A20 20 0 0 0 24 4Zm9.4 10.6-6 13a4 4 0 0 1-1.9 1.9l-13 6 6-13a4 4 0 0 1 1.9-1.9Z"/><circle cx="24" cy="24" r="3.2"/></svg>
+          <svg class="nw-logo-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13.2 20.4A25.5 25.5 0 0 1 32 6.5m19 14A25.5 25.5 0 0 1 57.5 32m-7.7 13.5A25.5 25.5 0 0 1 32 57.5m-19.5-13A25.5 25.5 0 0 1 6.5 32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M15.5 46V18h7.8l17 17.2V18h8.2v28h-7.9L23.7 28.8V46z" fill="currentColor"/>
+  <path d="M32 2 27.8 18.7 32 15.8l4.2 2.9Z" fill="currentColor"/>
+</svg>
         </span>
         <span><strong>Nomad Wealth</strong><small>Your money. Anywhere.</small></span>
       </a>
@@ -273,7 +283,7 @@
         </div>
         <div class="top-actions v12-top-actions">
           <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Change appearance">◐</button>
-          <button type="button" class="notification-button" aria-label="Notifications">♢</button>
+          <button type="button" class="notification-button" id="activity-button" aria-label="View recent transactions" title="View recent transactions">↻</button>
           <button type="button" class="header-user-chip profile-shortcut" id="profile-shortcut" aria-label="Open profile settings">
             <span id="header-avatar">U</span>
             <div><small>Profile</small><strong id="header-user-name">User</strong></div>
@@ -712,7 +722,7 @@
             <label><span data-i18n="theme">Appearance</span><select id="theme-select" name="theme">
               <option value="system" data-i18n="system">System</option><option value="light" data-i18n="light">Light</option><option value="dark" data-i18n="dark">Dark</option>
             </select></label>
-            <div class="profile-actions"><button type="submit" class="primary" data-i18n="saveProfile">Save profile</button><button type="button" class="secondary" id="profile-password-reset">Send password reset email</button></div>
+            <div class="profile-actions"><button type="submit" class="primary" data-i18n="saveProfile">Save profile</button><button type="button" class="secondary" id="profile-password-reset">Send password reset email</button><button type="button" class="secondary mobile-logout-button" id="mobile-logout-button">Log out</button></div>
           </form>
         </article>
         <div class="two-column">
@@ -753,6 +763,7 @@
           </div>
 
           <div class="font-choice-grid" id="font-choice-grid">
+            <label class="font-choice font-manrope"><input type="radio" name="app-font" value="manrope"><span><strong>Manrope</strong><small>Clean and contemporary</small></span></label>
             <label class="font-choice font-inter">
               <input type="radio" name="app-font" value="inter">
               <span><strong>Inter</strong><small>Modern and balanced</small></span>

@@ -137,8 +137,10 @@ function applyTheme(theme=currentTheme){
   localStorage.setItem("nomad_theme",theme);
   const resolved=theme==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):theme;
   document.documentElement.dataset.theme=resolved;
-  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolved==="dark"?"#07111f":"#0f766e";
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolved==="dark"?"#090909":"#664930";
   const toggle=document.querySelector("#theme-toggle");if(toggle){toggle.textContent=resolved==="dark"?"☀":"◐";toggle.title=resolved==="dark"?"Use light mode":"Use dark mode"}
+  const appearance=document.querySelector("#theme-select");if(appearance)appearance.value=currentTheme;
+  window.dispatchEvent(new CustomEvent("nomad:theme-changed",{detail:{theme:resolved}}));
 }
 function applyLanguage(lang=currentLanguage){
   if(!window.NOMAD_WEALTH_I18N?.[lang])lang="en";
@@ -230,7 +232,10 @@ function showAuth(){
   currentUser=null;
   appRoot.classList.add("hidden");
   authScreen.classList.remove("hidden");
-  setAuthView("login-view"); authModalLayer?.classList.remove("hidden");
+  setAuthView("login-view");
+  authModalLayer?.classList.add("hidden");
+  authModalLayer?.setAttribute("aria-hidden","true");
+  document.body.classList.remove("auth-modal-open");
 }
 
 document.querySelector("#show-signup")?.addEventListener("click",()=>{setAuthView("signup-view"); authModalLayer?.classList.remove("hidden");setSignupStep(1)});
@@ -347,11 +352,25 @@ document.querySelector("#reset-form")?.addEventListener("submit",async event=>{
   else{authToast("Password updated.");if(currentUser)showApp(currentUser)}
 });
 
-document.querySelector("#logout-button")?.addEventListener("click",async()=>{
-  if(supabase)await supabase.auth.signOut();
-  showAuth();
-  authToast("You have been logged out.");
-});
+async function logOutOfNomad(){
+  const buttons=["logout-button","mobile-logout-button"].map(id=>document.getElementById(id)).filter(Boolean);
+  buttons.forEach(button=>button.disabled=true);
+  try {
+    if(supabase){
+      const {error}=await supabase.auth.signOut();
+      if(error)throw error;
+    }
+    showAuth();
+    authToast("You have been logged out.");
+  } catch(error) {
+    console.error("Sign out failed:",error);
+    toast("Unable to log out. Please try again.");
+  } finally {
+    buttons.forEach(button=>button.disabled=false);
+  }
+}
+document.querySelector("#logout-button")?.addEventListener("click",logOutOfNomad);
+document.querySelector("#mobile-logout-button")?.addEventListener("click",logOutOfNomad);
 
 async function initializeAuthentication(){
   if(!isConfigured||!supabase){showAuth();return}
@@ -367,7 +386,7 @@ async function initializeAuthentication(){
 
   supabase.auth.onAuthStateChange((event,session)=>{
     if(event==="PASSWORD_RECOVERY"){
-      setAuthView("reset-view");authScreen.classList.remove("hidden");appRoot.classList.add("hidden");
+      authScreen.classList.remove("hidden");appRoot.classList.add("hidden");openAuthModal("reset-view");
     }else if(event==="SIGNED_OUT"){
       showAuth();
     }else if(session?.user&&!currentUser){
@@ -1015,6 +1034,7 @@ document.querySelector("#travel-form").addEventListener("submit",e=>{
 
 
 document.querySelector("#theme-toggle")?.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+document.querySelector("#activity-button")?.addEventListener("click",()=>showPage("transactions"));
 document.querySelector("#theme-select")?.addEventListener("change",e=>applyTheme(e.target.value));
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>{if(currentTheme==="system")applyTheme("system")});
 
@@ -1102,11 +1122,12 @@ window.NomadApp={
   toast
 };
 
-applyTheme(currentTheme);initializeAuthControls();applyLanguage(currentLanguage);initializeAuthControls();
+applyTheme(currentTheme);initializeAuthControls();applyLanguage(currentLanguage);
 
 /* V13.4 font style and million-goal preferences */
 const NOMAD_FONT_STORAGE_KEY="nomad_font_style";
 const NOMAD_FONT_OPTIONS={
+  manrope:'"Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   inter:'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   system:'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
   rounded:'"Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif',
@@ -1117,7 +1138,7 @@ const NOMAD_FONT_OPTIONS={
 function applyAppFont(font){
   const selected=Object.prototype.hasOwnProperty.call(NOMAD_FONT_OPTIONS,font)
     ?font
-    :"inter";
+    :"manrope";
 
   document.documentElement.dataset.font=selected;
   document.documentElement.style.setProperty(
@@ -1159,7 +1180,7 @@ if(millionGoalCurrency){
   updateMillionGoal();
 }
 
-applyAppFont(localStorage.getItem(NOMAD_FONT_STORAGE_KEY)||"inter");
+applyAppFont(localStorage.getItem(NOMAD_FONT_STORAGE_KEY)||"manrope");
 
 
 /* V13.5 public landing page and authentication modal */

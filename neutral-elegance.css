@@ -329,30 +329,167 @@ dialog form{background:var(--surface)}
 .mobile-nav{background:rgba(255,253,251,.98);border-color:var(--line);box-shadow:0 -10px 28px rgba(102,73,48,.07)}
 .mobile-nav button{color:#87766A}
 .mobile-nav button.active{color:#664930}
-/* Dark setting remains supported and uses chocolate tones, not old navy. */
-html[data-theme="dark"] .sidebar{background:#503724!important}
-html[data-theme="dark"] .main{background:#241B16}
-html[data-theme="dark"] .panel,
-html[data-theme="dark"] .metric-card,
-html[data-theme="dark"] .home-kpi:not(.balance-card),
-html[data-theme="dark"] .feature-grid article,
-html[data-theme="dark"] dialog,
-html[data-theme="dark"] dialog form{background:#39291F;color:#F5EDE4;border-color:#6A5240}
-html[data-theme="dark"] .home-kpi.balance-card{background:#654B37;border-color:#654B37;color:#FFF7EB}
-html[data-theme="dark"] .home-kpi.balance-card>strong{color:#FFF1DF}
-html[data-theme="dark"] .quick-entry-button,
-html[data-theme="dark"] .dashboard-tool-links button,
-html[data-theme="dark"] .quick-tools button,
-html[data-theme="dark"] .secondary,
-html[data-theme="dark"] .calc-tab:not(.active){background:#49372C;color:#FFDBBB;border-color:#6A5240}
-html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
-html[data-theme="dark"] textarea,
-html[data-theme="dark"] select{background:#39291F;color:#F5EDE4;border-color:#6A5240}
-html[data-theme="dark"] .mobile-nav{background:rgba(57,41,31,.97)}
-html[data-theme="dark"] .million-goal-card,
-html[data-theme="dark"] .font-settings-card,
-html[data-theme="dark"] .million-goal-amount{background:#49372C!important;color:#F5EDE4!important;border-color:#6A5240!important}
-html[data-theme="dark"] .auth-screen.auth-landing{background:#F8F6F3!important;color:#30251E!important}
+/* One source of truth for monochrome dark mode.
+   Legacy dark rules in styles.css have been removed. */
+html[data-theme="dark"] {
+  --nw-peach:#FFFFFF;
+  --nw-stone:#E5E5E5;
+  --nw-taupe:#B5B5B5;
+  --nw-coffee:#F5F5F5;
+  --nw-ink:#FAFAFA;
+  --nw-muted:#ADADAD;
+  --nw-bg:#090909;
+  --nw-card:#171717;
+  --nw-border:#343434;
+  --nw-soft:#222222;
+  --nw-green:#E3E3E3;
+  --nw-red:#B5B5B5;
+  --navy:#090909;
+  --teal:#F4F4F4;
+  --teal2:#CDCDCD;
+  --blue:#D5D5D5;
+  --muted:#AFAFAF;
+  --line:#343434;
+  --border:#343434;
+  --panel:#171717;
+  --background:#090909;
+  --primary:#F5F5F5;
+  --accent:#DDDDDD;
+  --soft:#222222;
+  --surface:#171717;
+  --surface-2:#222222;
+  --surface-soft:#222222;
+  --input-bg:#202020;
+  --body-bg:#090909;
+  --text:#F5F5F5;
+  --v12-bg:#090909;
+  --v12-card:#171717;
+  --v12-green:#E5E5E5;
+  --v12-red:#AFAFAF;
+  --v12-blue:#FFFFFF;
+  --v12-purple:#D9D9D9;
+  --v12-orange:#C0C0C0;
+  --sidebar-a:#050505;
+  --sidebar-b:#090909;
+  --shadow:0 12px 35px rgba(0,0,0,.24);
+  --shadow-sm:0 6px 20px rgba(0,0,0,.2);
+  color-scheme:dark;
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] .app-shell,
+html[data-theme="dark"] .main,
+html[data-theme="dark"] .main-content,
+html[data-theme="dark"] .page {background:#090909!important;color:#F5F5F5}
+html[data-theme="dark"] .sidebar{background:#050505!important;color:#F5F5F5;border-color:#343434}
+html[data-theme="dark"] .sidebar .brand,
+html[data-theme="dark"] .sidebar .brand strong,
+html[data-theme="dark"] .sidebar .sidebar-meta,
+html[data-theme="dark"] .sidebar .sidebar-meta small{color:#D9D9D9}
+html[data-theme="dark"] .nav-item{color:#D0D0D0!important}
+html[data-theme="dark"] .nav-item:hover{background:#242424!important;color:#FFFFFF!important}
+html[data-theme="dark"] .nav-item.active{background:#F5F5F5!important;color:#090909!important}
+html[data-theme="dark"] .user-card{background:#191919!important;border-color:#343434}
+html[data-theme="dark"] .user-card strong{color:#F5F5F5}
+html[data-theme="dark"] .user-card small{color:#AAAAAA}
+html[data-theme="dark"] .sidebar-logout{background:#303030;color:#F5F5F5}
+html[data-theme="dark"] .brand-logo,
+html[data-theme="dark"] .sidebar .brand .brand-logo{background:#F5F5F5!important;color:#090909!important}
+html[data-theme="dark"] .brand-logo svg,
+html[data-theme="dark"] .sidebar .brand .brand-logo svg{fill:currentColor!important;color:#090909!important}
+html[data-theme="dark"] :is(
+  .panel,.metric-card,.home-kpi,.home-kpi.balance-card,.summary-strip article,
+  .mini-card,.account-card,.goal-card,.comparison-grid article,.feature-grid article,
+  .calculator-panel,.settings-card,.loan-card,.loan-summary-card,.workspace-card,
+  .connected-budget-card,.investment-detail-card,.font-settings-card,
+  .font-choice span,.million-goal-card,.million-goal-amount,
+  .quick-tools button,.investment-comparison-grid>div,.investment-edit-preview>div,
+  .transaction-account-summary,.advanced-filter-card,.dashboard-account-row,
+  .health-banner,.empty-state,.travel-plan-card,.explanation-card,
+  .loan-live-summary>div,.loan-metric,.loan-payment-context,.loan-detail-item,
+  .loan-breakdown-item,dialog,dialog form
+) {background:#171717!important;color:#F5F5F5!important;border-color:#343434!important;box-shadow:none!important}
+html[data-theme="dark"] :is(
+  .calculator-intro,.loans-hero,.hero-card,.result-card,.travel-result,.about-badge,
+  .preview-balance-card
+){background:#202020!important;color:#F5F5F5!important;border:1px solid #343434!important;box-shadow:none!important}
+html[data-theme="dark"] :is(.v12-topbar,.topbar,.header-user-chip,.profile-shortcut,
+  .notification-button,.theme-toggle,.currency-control,.main-currency-control,
+  .icon-button,.account-more-button,.quick-entry-button,.dashboard-tool-links button,
+  .calc-tab,.secondary,.file-label,.quick-tools button,.mobile-nav,.dialog-actions,
+  .transaction-type-tab span,.transaction-account-summary,.empty-state){
+  background:#202020!important;color:#F5F5F5!important;border-color:#343434!important;box-shadow:none!important;
+}
+html[data-theme="dark"] :is(
+  .primary,button.primary,.auth-submit,.calc-tab.active,.transaction-type-tab input:checked+span,
+  .font-choice input:checked+span,.income-tab input:checked+span,.expense-tab input:checked+span
+){background:#F5F5F5!important;color:#090909!important;border-color:#F5F5F5!important;box-shadow:none!important}
+html[data-theme="dark"] :is(.danger-button,.delete-transaction){
+  background:#222222!important;color:#F5F5F5!important;border:1px solid #737373!important
+}
+html[data-theme="dark"] :is(
+  input:not([type="checkbox"]):not([type="radio"]),textarea,select,option,
+  #loan-installment[readonly]
+){background:#202020!important;color:#F5F5F5!important;border-color:#484848!important}
+html[data-theme="dark"] :is(
+  h1,h2,h3,h4,h5,h6,strong,label,.panel h2,.panel-heading h2,
+  .home-kpi>strong,.income-card>strong,.expense-card>strong,.balance-card>strong,
+  .loan-summary-card strong,.loan-live-summary strong,.row-title,
+  .dashboard-tool-links button
+){color:#F5F5F5!important}
+html[data-theme="dark"] :is(
+  small,.row-subtitle,.panel p,.panel-heading p,.topbar p,.topbar small,.home-kpi>small,
+  .home-kpi>span,.loan-summary-card span,.loan-summary-card small,.field-help,.quick-entry-button small,
+  .dashboard-account-copy small,.investment-graph-note,.loan-calculation-note
+){color:#AFAFAF!important}
+html[data-theme="dark"] :is(
+  .text-button,.eyebrow,.link-button-text,.investment-edit-label,
+  .quick-entry-button>span,.dashboard-tool-links span,.dashboard-account-icon,
+  .quick-tools button>span,.kpi-icon,.gain,.loss,.income,.expense
+){color:#F5F5F5!important}
+html[data-theme="dark"] :is(.kpi-icon,.dashboard-tool-links span,.quick-entry-button>span,
+ .dashboard-account-icon,.quick-tools button>span,.font-choice input:checked+span){
+  background:#303030!important;border-color:#777777!important
+}
+html[data-theme="dark"] .font-choice input:checked+span{color:#FFFFFF!important}
+html[data-theme="dark"] :is(.progress,.budget-progress,.connected-budget-card .budget-progress){background:#303030!important}
+html[data-theme="dark"] :is(.progress span,.budget-progress span,.connected-budget-card .budget-progress span){background:#E5E5E5!important}
+html[data-theme="dark"] :is(.home-recent-row,.transaction-item,.row,.dashboard-account-row){border-color:#343434!important}
+html[data-theme="dark"] dialog::backdrop{background:rgba(0,0,0,.78)!important}
+/* The landing page follows the selected theme too (not permanently peach). */
+html[data-theme="dark"] .auth-screen.auth-landing{background:#090909!important;color:#F5F5F5!important}
+html[data-theme="dark"] .auth-landing :is(.public-brand,.public-hero-copy h1,.public-brand strong){color:#F5F5F5!important}
+html[data-theme="dark"] .auth-landing :is(.public-hero-copy>p,.public-brand small,
+  .public-benefits span,.public-footer,.preview-list small,.preview-stat-grid small){color:#AFAFAF!important}
+html[data-theme="dark"] .auth-landing .auth-pill{color:#D1D1D1!important}
+html[data-theme="dark"] .auth-landing .auth-pill::before{background:#D1D1D1}
+html[data-theme="dark"] .auth-landing .public-login-button,
+html[data-theme="dark"] .auth-landing .hero-login-button{background:#171717!important;color:#F5F5F5!important;border:1px solid #555555!important}
+html[data-theme="dark"] .auth-landing .public-preview::before{background:#202020}
+html[data-theme="dark"] .auth-landing .public-preview::after{background:#555555}
+html[data-theme="dark"] .auth-landing .preview-window,
+html[data-theme="dark"] .auth-landing .preview-list,
+html[data-theme="dark"] .auth-landing .preview-stat-grid>div,
+html[data-theme="dark"] .auth-landing .preview-balance-card{
+  background:#171717!important;color:#F5F5F5!important;border-color:#343434!important;box-shadow:none!important
+}
+html[data-theme="dark"] .auth-landing .preview-list b,
+html[data-theme="dark"] .auth-landing .preview-balance-card strong,
+html[data-theme="dark"] .auth-landing .preview-stat-grid strong{color:#F5F5F5!important}
+html[data-theme="dark"] .auth-landing .preview-list>div{border-color:#343434}
+html[data-theme="dark"] .auth-landing .preview-list>div>span{background:#303030;color:#FFFFFF}
+html[data-theme="dark"] .auth-landing .public-footer{border-color:#343434}
+html[data-theme="dark"] .auth-modal-card{
+  background:#171717!important;color:#F5F5F5!important;border-color:#343434!important;box-shadow:0 24px 75px rgba(0,0,0,.4)!important
+}
+html[data-theme="dark"] .auth-modal-card :is(h2,.auth-form label){color:#F5F5F5!important}
+html[data-theme="dark"] .auth-modal-card :is(.auth-subtitle,.check-label,.auth-modal-brand small){color:#AFAFAF!important}
+html[data-theme="dark"] .auth-modal-card .auth-form input{
+  background:#202020!important;color:#F5F5F5!important;border-color:#484848!important
+}
+html[data-theme="dark"] .auth-modal-close{background:#262626!important;border-color:#444444!important;color:#FFFFFF!important}
+html[data-theme="dark"] .auth-modal-backdrop{background:rgba(0,0,0,.8)!important}
+html[data-theme="dark"] .public-footer{color:#B5B5B5}
+
 /* Keep mobile behavior unchanged; only adapt spacing and colors. */
 @media(max-width:900px){
   .auth-landing .public-header,.auth-landing .public-main,.auth-landing .public-footer{width:min(100% - 38px,730px)}
@@ -390,3 +527,22 @@ html[data-theme="dark"] .auth-screen.auth-landing{background:#F8F6F3!important;c
 @media(prefers-reduced-motion:reduce){
   .primary,.secondary,.nav-item,.quick-entry-button{transition:none!important}
 }
+
+/* Updated logo, type, sidebar accessibility and focus behavior */
+:root{--app-font-family:"Manrope",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.font-choice.font-manrope span{font-family:"Manrope",system-ui,sans-serif!important}
+.brand-logo svg{width:31px;height:31px;fill:currentColor!important;color:#664930!important;overflow:visible}
+.brand-logo{display:grid;place-items:center;flex-shrink:0}
+.sidebar .brand .brand-logo{color:#664930}
+.sidebar{height:100dvh;min-height:0;overflow:hidden}
+.desktop-nav{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#B6A08E transparent;padding-bottom:10px}
+.desktop-nav::-webkit-scrollbar{width:5px}
+.desktop-nav::-webkit-scrollbar-thumb{background:rgba(255,219,187,.33);border-radius:20px}
+.user-card,.sidebar-meta{flex:0 0 auto}
+.user-card{margin-top:10px}
+.sidebar-logout{display:grid;place-items:center;flex-shrink:0;min-width:38px;min-height:38px;cursor:pointer}
+.sidebar-logout:hover{background:rgba(255,255,255,.2)}
+.mobile-logout-button{display:none!important}
+@media(max-width:820px){.mobile-logout-button{display:inline-flex!important;justify-content:center;align-items:center}}
+#theme-toggle{cursor:pointer}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important}}

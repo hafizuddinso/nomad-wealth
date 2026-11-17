@@ -1,6 +1,10 @@
 const App=window.NomadApp;
 const charts=new Map();
-const palette=["#664930","#CCBEB1","#997E67","#FFDBBB","#A96151","#8F9E84","#4F7258","#C5A184","#B68C86","#87766A"];
+const paletteLight=["#664930","#CCBEB1","#997E67","#FFDBBB","#A96151","#8F9E84","#4F7258","#C5A184","#B68C86","#87766A"];
+const paletteDark=["#FFFFFF","#C9C9C9","#7D7D7D","#A0A0A0","#555555","#E3E3E3","#969696","#D1D1D1","#6E6E6E","#B9B9B9"];
+function isDark(){return document.documentElement.dataset.theme==="dark"}
+function palette(){return isDark()?paletteDark:paletteLight}
+function chartColor(light,dark){return isDark()?dark:light}
 
 function state(){return App?.getState()}
 function main(value,currency){return App.inMain(Number(value)||0,currency)}
@@ -91,31 +95,31 @@ function renderDashboard(){
   const income=months.map(m=>(state().transactions||[]).filter(t=>t.date?.startsWith(monthKey(m))&&t.type==="income").reduce((s,t)=>s+main(t.amount,t.currency),0));
   const expense=months.map(m=>(state().transactions||[]).filter(t=>t.date?.startsWith(monthKey(m))&&t.type==="expense").reduce((s,t)=>s+main(t.amount,t.currency),0));
   make("dashboard-cashflow-chart",{type:"bar",data:{labels:months.map(shortMonth),datasets:[
-    {label:"Income",data:income,backgroundColor:"rgba(20,184,166,.78)",borderRadius:7},
-    {label:"Expenses",data:expense,backgroundColor:"rgba(239,68,68,.72)",borderRadius:7}
+    {label:"Income",data:income,backgroundColor:chartColor("rgba(102,73,48,.78)","rgba(238,238,238,.85)"),borderRadius:7},
+    {label:"Expenses",data:expense,backgroundColor:chartColor("rgba(169,97,81,.72)","rgba(145,145,145,.9)"),borderRadius:7}
   ]},options:baseOptions(),plugins:[emptyPlugin("Add transactions to see monthly cash flow")]});
   const now=monthKey(new Date()),cats=categoryTotals((state().transactions||[]).filter(t=>t.date?.startsWith(now))).slice(0,8);
-  make("dashboard-category-chart",{type:"doughnut",data:{labels:cats.map(x=>x[0]),datasets:[{data:cats.map(x=>x[1]),backgroundColor:palette,borderColor:panelColor(),borderWidth:3}]},
+  make("dashboard-category-chart",{type:"doughnut",data:{labels:cats.map(x=>x[0]),datasets:[{data:cats.map(x=>x[1]),backgroundColor:palette(),borderColor:panelColor(),borderWidth:3}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:"58%",plugins:{legend:{position:"bottom",labels:{color:textColor(),usePointStyle:true}},tooltip:{callbacks:{label:c=>`${c.label}: ${App.money(c.raw)}`}}}},plugins:[emptyPlugin("No expenses recorded this month")]});
 }
 function renderAccounts(){
   const accounts=(state().accounts||[]).filter(a=>a.type!=="Debt");
-  make("accounts-balance-chart",{type:"bar",data:{labels:accounts.map(a=>a.name),datasets:[{label:"Balance",data:accounts.map(a=>main(accountBalance(a),a.currency)),backgroundColor:palette,borderRadius:8}]},
+  make("accounts-balance-chart",{type:"bar",data:{labels:accounts.map(a=>a.name),datasets:[{label:"Balance",data:accounts.map(a=>main(accountBalance(a),a.currency)),backgroundColor:palette(),borderRadius:8}]},
     options:baseOptions({indexAxis:accounts.length>5?"y":"x"}),plugins:[emptyPlugin("Add an account to see balances")]});
   const exposure={};accounts.forEach(a=>exposure[a.currency]=(exposure[a.currency]||0)+Math.max(0,main(accountBalance(a),a.currency)));
   const rows=Object.entries(exposure).sort((a,b)=>b[1]-a[1]);
-  make("accounts-currency-chart",{type:"doughnut",data:{labels:rows.map(x=>x[0]),datasets:[{data:rows.map(x=>x[1]),backgroundColor:palette,borderColor:panelColor(),borderWidth:3}]},
+  make("accounts-currency-chart",{type:"doughnut",data:{labels:rows.map(x=>x[0]),datasets:[{data:rows.map(x=>x[1]),backgroundColor:palette(),borderColor:panelColor(),borderWidth:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{color:textColor(),usePointStyle:true}},tooltip:{callbacks:{label:c=>`${c.label}: ${App.money(c.raw)}`}}}},plugins:[emptyPlugin("No currency balances available")]});
 }
 function renderTransactions(){
   const transactions=filteredTransactions();
   const cats=categoryTotals(transactions).slice(0,10);
-  make("transactions-category-chart",{type:"pie",data:{labels:cats.map(x=>x[0]),datasets:[{data:cats.map(x=>x[1]),backgroundColor:palette,borderColor:panelColor(),borderWidth:2}]},
+  make("transactions-category-chart",{type:"pie",data:{labels:cats.map(x=>x[0]),datasets:[{data:cats.map(x=>x[1]),backgroundColor:palette(),borderColor:panelColor(),borderWidth:2}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{color:textColor(),usePointStyle:true}},tooltip:{callbacks:{label:c=>`${c.label}: ${App.money(c.raw)}`}}}},plugins:[emptyPlugin("No expense data matches these filters")]});
   const dates=[];const now=new Date();
   for(let i=29;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);dates.push(d.toISOString().slice(0,10))}
   const values=dates.map(date=>transactions.filter(t=>t.type==="expense"&&t.date===date).reduce((s,t)=>s+main(t.amount,t.currency),0));
-  make("transactions-daily-chart",{type:"line",data:{labels:dates.map(d=>new Date(`${d}T12:00:00`).toLocaleDateString(undefined,{month:"short",day:"numeric"})),datasets:[{label:"Daily spending",data:values,borderColor:"#664930",backgroundColor:"rgba(20,184,166,.16)",fill:true,tension:.32,pointRadius:2}]},
+  make("transactions-daily-chart",{type:"line",data:{labels:dates.map(d=>new Date(`${d}T12:00:00`).toLocaleDateString(undefined,{month:"short",day:"numeric"})),datasets:[{label:"Daily spending",data:values,borderColor:chartColor("#664930","#F5F5F5"),backgroundColor:chartColor("rgba(102,73,48,.16)","rgba(238,238,238,.12)"),fill:true,tension:.32,pointRadius:2}]},
     options:baseOptions(),plugins:[emptyPlugin("No expenses during the last 30 days")]});
 }
 function renderBudgets(){
@@ -127,25 +131,25 @@ function renderBudgets(){
     labels.push(b.category);used.push(Math.min(spent,limit));remaining.push(Math.max(0,limit-spent));
   });
   make("budget-progress-chart",{type:"bar",data:{labels,datasets:[
-    {label:"Used",data:used,backgroundColor:"rgba(239,68,68,.78)",borderRadius:6},
-    {label:"Remaining",data:remaining,backgroundColor:"rgba(20,184,166,.72)",borderRadius:6}
+    {label:"Used",data:used,backgroundColor:chartColor("rgba(169,97,81,.78)","rgba(145,145,145,.9)"),borderRadius:6},
+    {label:"Remaining",data:remaining,backgroundColor:chartColor("rgba(102,73,48,.72)","rgba(238,238,238,.85)"),borderRadius:6}
   ]},options:baseOptions({indexAxis:"y",scales:{x:{stacked:true,ticks:{color:mutedColor(),callback:moneyTick},grid:{color:lineColor()}},y:{stacked:true,ticks:{color:mutedColor()},grid:{display:false}}}}),plugins:[emptyPlugin("Create a budget to see progress")]});
 }
 function renderInvestments(){
   const items=state().investments||[];
   make("investments-performance-chart",{type:"bar",data:{labels:items.map(i=>i.name),datasets:[
-    {label:"Invested cost",data:items.map(i=>main(i.cost,i.currency)),backgroundColor:"rgba(100,116,139,.65)",borderRadius:7},
-    {label:"Current value",data:items.map(i=>main(i.value,i.currency)),backgroundColor:"rgba(37,99,235,.78)",borderRadius:7}
+    {label:"Invested cost",data:items.map(i=>main(i.cost,i.currency)),backgroundColor:chartColor("rgba(153,126,103,.65)","rgba(145,145,145,.9)"),borderRadius:7},
+    {label:"Current value",data:items.map(i=>main(i.value,i.currency)),backgroundColor:chartColor("rgba(102,73,48,.78)","rgba(238,238,238,.85)"),borderRadius:7}
   ]},options:baseOptions(),plugins:[emptyPlugin("Add an investment to compare performance")]});
   const allocation=items.map(i=>[i.name,main(i.value,i.currency)]).filter(x=>x[1]>0);
-  make("investments-allocation-chart",{type:"doughnut",data:{labels:allocation.map(x=>x[0]),datasets:[{data:allocation.map(x=>x[1]),backgroundColor:palette,borderColor:panelColor(),borderWidth:3}]},
+  make("investments-allocation-chart",{type:"doughnut",data:{labels:allocation.map(x=>x[0]),datasets:[{data:allocation.map(x=>x[1]),backgroundColor:palette(),borderColor:panelColor(),borderWidth:3}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:"55%",plugins:{legend:{position:"bottom",labels:{color:textColor(),usePointStyle:true}},tooltip:{callbacks:{label:c=>`${c.label}: ${App.money(c.raw)}`}}}},plugins:[emptyPlugin("No investment allocation available")]});
 }
 function renderGoals(){
   const goals=state().goals||[];
   make("goals-progress-chart",{type:"bar",data:{labels:goals.map(g=>g.name),datasets:[
-    {label:"Saved",data:goals.map(g=>main(g.current,g.currency)),backgroundColor:"rgba(20,184,166,.78)",borderRadius:6},
-    {label:"Remaining",data:goals.map(g=>Math.max(0,main(g.target-g.current,g.currency))),backgroundColor:"rgba(37,99,235,.24)",borderRadius:6}
+    {label:"Saved",data:goals.map(g=>main(g.current,g.currency)),backgroundColor:chartColor("rgba(102,73,48,.78)","rgba(238,238,238,.85)"),borderRadius:6},
+    {label:"Remaining",data:goals.map(g=>Math.max(0,main(g.target-g.current,g.currency))),backgroundColor:chartColor("rgba(153,126,103,.24)","rgba(183,183,183,.26)"),borderRadius:6}
   ]},options:baseOptions({indexAxis:"y",scales:{x:{stacked:true,ticks:{color:mutedColor(),callback:moneyTick},grid:{color:lineColor()}},y:{stacked:true,ticks:{color:mutedColor()},grid:{display:false}}}}),plugins:[emptyPlugin("Create a savings goal to see progress")]});
 }
 function renderInsights(){
@@ -153,14 +157,14 @@ function renderInsights(){
   const income=months.map(m=>(state().transactions||[]).filter(t=>t.type==="income"&&t.date?.startsWith(monthKey(m))).reduce((s,t)=>s+main(t.amount,t.currency),0));
   const expense=months.map(m=>(state().transactions||[]).filter(t=>t.type==="expense"&&t.date?.startsWith(monthKey(m))).reduce((s,t)=>s+main(t.amount,t.currency),0));
   make("insights-monthly-chart",{type:"line",data:{labels:months.map(shortMonth),datasets:[
-    {label:"Income",data:income,borderColor:"#664930",backgroundColor:"rgba(20,184,166,.11)",tension:.3,fill:false},
-    {label:"Expenses",data:expense,borderColor:"#A96151",backgroundColor:"rgba(239,68,68,.11)",tension:.3,fill:false},
-    {label:"Net savings",data:income.map((v,i)=>v-expense[i]),borderColor:"#CCBEB1",backgroundColor:"rgba(37,99,235,.11)",tension:.3,fill:false}
+    {label:"Income",data:income,borderColor:chartColor("#664930","#F5F5F5"),backgroundColor:chartColor("rgba(102,73,48,.11)","rgba(240,240,240,.10)"),tension:.3,fill:false},
+    {label:"Expenses",data:expense,borderColor:chartColor("#A96151","#B5B5B5"),backgroundColor:chartColor("rgba(169,97,81,.11)","rgba(155,155,155,.10)"),tension:.3,fill:false},
+    {label:"Net savings",data:income.map((v,i)=>v-expense[i]),borderColor:chartColor("#CCBEB1","#858585"),backgroundColor:chartColor("rgba(153,126,103,.11)","rgba(195,195,195,.10)"),tension:.3,fill:false}
   ]},options:baseOptions(),plugins:[emptyPlugin("Add transactions to build financial trends")]});
 }
 function renderAll(){
   if(!state()||!window.Chart)return;
-  Chart.defaults.font.family='Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif';
+  Chart.defaults.font.family=getComputedStyle(document.documentElement).getPropertyValue("--app-font-family").trim()||'Manrope, system-ui, sans-serif';
   Chart.defaults.color=textColor();
   renderDashboard();renderAccounts();renderTransactions();renderBudgets();renderInvestments();renderGoals();renderInsights();
 }
@@ -170,6 +174,7 @@ window.addEventListener("nomad:user-ready",schedule);
 window.addEventListener("nomad:state-saved",schedule);
 window.addEventListener("nomad:state-replaced",schedule);
 window.addEventListener("nomad:transactions-rendered",schedule);
+window.addEventListener("nomad:theme-changed",schedule);
 window.addEventListener("resize",schedule);
 document.addEventListener("change",event=>{if(event.target.closest(".transaction-filter-control"))schedule()});
 document.addEventListener("input",event=>{if(event.target.closest(".transaction-filter-control"))schedule()});
