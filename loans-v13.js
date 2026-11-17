@@ -67,7 +67,7 @@
     }
   }
 
-  function money(value,currency){return App()?.money(value,currency)||`${currency||''} ${num(value).toFixed(2)}`}
+  function money(value,currency){return App()?.displayMoney(value,currency)||`${currency||''} ${num(value).toFixed(2)}`}
   function state(){return App()?.getState()}
   function ensure(){
     const s=state(); if(!s)return null;

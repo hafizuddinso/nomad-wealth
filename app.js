@@ -477,6 +477,13 @@ function inMain(amount,currency){return convert(amount,currency,state.mainCurren
 function money(value,currency=state.mainCurrency){
   return new Intl.NumberFormat(undefined,{style:"currency",currency,maximumFractionDigits:2}).format(Number(value)||0);
 }
+function displayMoney(value,currency=state.mainCurrency){
+  const source=currency||state.mainCurrency;
+  return money(source===state.mainCurrency?Number(value)||0:convert(value,source,state.mainCurrency),state.mainCurrency);
+}
+function fxStatus(){
+  return state?.ratesUpdatedAt?"Rates updated "+new Date(state.ratesUpdatedAt).toLocaleDateString()+" (EUR base)":"Saved reference rates (not current). Select Refresh rates for new conversions.";
+}
 function accountBalance(account){
   return account.openingBalance+state.transactions.filter(t=>t.accountId===account.id).reduce((sum,t)=>sum+(t.type==="income"?t.amount:-t.amount),0);
 }
@@ -499,6 +506,7 @@ function render(){
   if(mainCurrency)mainCurrency.value=state.mainCurrency;
 
   const currentLocation=document.querySelector("#current-location");
+  const rateLabel=document.querySelector("#display-rate-status");if(rateLabel)rateLabel.textContent=fxStatus();
   if(currentLocation)currentLocation.textContent=`Current country: ${countryName(state.currentCountry)}`;
 
   const income=state.transactions
@@ -526,6 +534,7 @@ function render(){
   renderInvestments();
   populateSelects();
   renderCurrencyConverter();
+  window.dispatchEvent(new CustomEvent("nomad:currency-rendered",{detail:{currency:state.mainCurrency}}));
 
   window.dispatchEvent(new CustomEvent("nomad:state-rendered",{
     detail:{income,expenses,balance:income-expenses,budgetTotal}
@@ -543,9 +552,7 @@ function renderAccounts(){
   const countryAccounts=document.querySelector("#country-accounts");
   if(countryAccounts){
     countryAccounts.innerHTML=Object.entries(groups).map(([country,items])=>{
-      const original=items
-        .map(account=>`${money(accountBalance(account),account.currency)} ${account.currency}`)
-        .join(" · ");
+      const original=items.map(account=>`${esc(account.name)} (${esc(account.currency)})`).join(" · ");
 
       const converted=items.reduce(
         (sum,account)=>sum+inMain(accountBalance(account),account.currency),
@@ -568,7 +575,7 @@ function renderAccounts(){
     accountList.innerHTML=state.accounts.map(account=>`
       <article class="mini-card" data-id="${account.id}">
         <small>${esc(countryName(account.country))} · ${esc(account.type)}</small>
-        <strong>${money(accountBalance(account),account.currency)}</strong>
+        <strong>${displayMoney(accountBalance(account),account.currency)}</strong>
         <span>${esc(account.name)}</span>
         <div class="row-subtitle">
           ${esc(account.institution||"No bank specified")} ·
@@ -588,7 +595,7 @@ function renderAccounts(){
           <small>${esc(account.type)} · ${esc(account.currency)}</small>
         </span>
         <span class="dashboard-account-value">
-          <strong>${money(accountBalance(account),account.currency)}</strong>
+          <strong>${displayMoney(accountBalance(account),account.currency)}</strong>
           <small>${esc(account.institution||"Account")}</small>
         </span>
         <span class="dashboard-account-menu">⋮</span>
@@ -656,7 +663,7 @@ function transactionHTML(items,deletable=false){
 
       <div class="transaction-value">
         <strong class="amount ${transaction.type}">
-          ${sign}${money(transaction.amount,transaction.currency)}
+          ${sign}${displayMoney(transaction.amount,transaction.currency)}
         </strong>
         <small>${esc(transaction.currency)} · ${esc(account?.name||"No account")}</small>
       </div>
@@ -709,7 +716,7 @@ function renderBudgets(expenses,budgetTotal){
           <strong>${esc(budget.group)} · ${esc(budget.category)}</strong>
           <small>${esc(countryName(budget.country||state.currentCountry))} · ${currency}</small>
         </div>
-        <span>${money(spentInBudget,currency)} / ${money(limit,currency)}</span>
+        <span>${displayMoney(spentInBudget,currency)} / ${displayMoney(limit,currency)}</span>
       </div>
       <div class="progress ${over?"over":""}">
         <span style="width:${percentage}%"></span>
@@ -745,10 +752,10 @@ function renderInvestments(){
 
     return `<article class="mini-card">
       <small>${esc(investment.type)} · ${esc(investment.currency)}</small>
-      <strong>${money(investment.value,investment.currency)}</strong>
+      <strong>${displayMoney(investment.value,investment.currency)}</strong>
       <span>${esc(investment.name)}</span>
       <div class="${gain>=0?"gain":"loss"}">
-        ${gain>=0?"+":""}${money(gain,investment.currency)} (${percentage.toFixed(1)}%)
+        ${gain>=0?"+":""}${displayMoney(gain,investment.currency)} (${percentage.toFixed(1)}%)
       </div>
     </article>`;
   }).join("")||empty("No investments yet.","Add your first investment");
@@ -898,7 +905,12 @@ function openCalc(name){
 }
 
 document.querySelector("#transaction-account")?.addEventListener("change",()=>window.NomadTransactionUI?.syncAccount?.());
-document.querySelector("#main-currency")?.addEventListener("change",e=>{state.mainCurrency=e.target.value;save("Main currency updated")});
+document.querySelector("#main-currency")?.addEventListener("change",e=>{
+  if(!currencies.includes(e.target.value))return;
+  state.mainCurrency=e.target.value;
+  save("Display currency updated");
+  window.dispatchEvent(new CustomEvent("nomad:currency-changed",{detail:{currency:state.mainCurrency}}));
+});
 document.querySelectorAll(".transaction-filter-control").forEach(control=>{
   control.addEventListener(control.type==="search"||control.type==="number"?"input":"change",renderTransactions);
 });
@@ -993,14 +1005,14 @@ document.querySelector("#refresh-rates")?.addEventListener("click",async()=>{
     if(!response.ok)throw new Error("Rate service unavailable");
     const data=await response.json();
     if(data.result!=="success"||!data.rates)throw new Error("Invalid rate response");
-    currencies.forEach(code=>{if(Number(data.rates[code]))state.rates[code]=Number(data.rates[code])});
-    state.rates.EUR=1;
+    currencies.forEach(code=>{if(Number(data.rates[code])>0)state.rates[code]=Number(data.rates[code])});
+    state.rates.EUR=1;state.ratesUpdatedAt=data.time_last_update_utc||new Date().toISOString();
     save();
     calculateCurrencyConversion();
-    status.textContent=`Rates refreshed ${new Date().toLocaleString()}.`;
+    status.textContent=fxStatus();
     toast("Currency rates refreshed");
   }catch(error){
-    status.textContent="Could not refresh rates. Saved reference rates are still available.";
+    status.textContent="Rate update failed. Cached reference rates may be old.";
     toast("Could not refresh exchange rates");
   }finally{
     button.disabled=false;button.textContent="Refresh rates";
@@ -1105,7 +1117,7 @@ window.NomadApp={
   getUser:()=>currentUser,
   getSupabase:()=>supabase,
   getMainCurrency:()=>state?.mainCurrency||"EUR",
-  money,
+  money,displayMoney,
   convert,
   inMain,
   countryName,

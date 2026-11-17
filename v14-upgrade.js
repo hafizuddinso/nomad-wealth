@@ -5,7 +5,7 @@ const CATEGORIES=['Housing','Groceries','Food & Dining','Transport','Travel','Ut
 const $=s=>document.querySelector(s); const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const workspace=()=>window.NomadCloud?.getWorkspaceId?.();
 const state=()=>App?.getState?.();
-const money=(n,c)=>new Intl.NumberFormat(undefined,{style:'currency',currency:c||state()?.mainCurrency||'EUR'}).format(Number(n)||0);
+const money=(n,c)=>App?.displayMoney?.(n,c)||new Intl.NumberFormat(undefined,{style:'currency',currency:c||'EUR'}).format(Number(n)||0);
 const toast=(m,e=false)=>App?.toast?.(m,e);
 let rules=new Map(), loans=[], repayments=[], travelPlans=[];
 

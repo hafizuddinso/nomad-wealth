@@ -2,7 +2,7 @@ const App=window.NomadApp;
 let recurringProcessing=false;
 
 function state(){return App?.getState()}
-function money(v,c){return App.money(v,c)}
+function money(v,c){return App.displayMoney(v,c)}
 function mainAmount(t){return Math.abs(App.inMain(t.amount,t.currency))}
 function isoDate(date){return date.toISOString().slice(0,10)}
 function monthKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`}

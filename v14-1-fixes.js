@@ -5,7 +5,7 @@ const $=selector=>document.querySelector(selector);
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
 }[char]));
-const money=(value,currency)=>new Intl.NumberFormat(undefined,{
+const money=(value,currency)=>App?.displayMoney?.(value,currency)||new Intl.NumberFormat(undefined,{
   style:'currency',
   currency:currency||App?.getMainCurrency?.()||'EUR'
 }).format(Number(value)||0);
