@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=2.0.0" />
-  <link rel="stylesheet" href="neutral-elegance.css?v=2.0.0" />
+  <link rel="stylesheet" href="neutral-elegance.css?v=2.1.0" />
 </head>
 <body>
   <section id="auth-screen" class="auth-screen auth-landing" aria-label="Welcome to Nomad Wealth">
@@ -32,7 +32,7 @@
         </span>
       </a>
 
-      <div class="public-header-actions">
+      <div class="public-header-actions"><button type="button" id="public-theme-toggle" class="public-theme-switch" aria-label="Switch color theme">◐ <span>Dark mode</span></button>
         <button type="button" class="public-login-button" data-auth-open="login-view">Log in</button>
         <button type="button" class="primary public-signup-button" data-auth-open="signup-view">Create account</button>
       </div>
@@ -281,7 +281,7 @@
           <h1 id="page-title">Dashboard</h1>
           <p id="today-label"></p>
         </div>
-        <div class="top-actions v12-top-actions">
+        <div class="top-actions v12-top-actions"><span class="top-actions-label">YOUR WORKSPACE</span>
           <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Change appearance">◐</button>
           <button type="button" class="notification-button" id="activity-button" aria-label="View recent transactions" title="View recent transactions">↻</button>
           <button type="button" class="header-user-chip profile-shortcut" id="profile-shortcut" aria-label="Open profile settings">
@@ -496,7 +496,7 @@
               <label>Loan term (years)<input name="years" type="number" min="1" step="1" value="20" required></label>
               <button class="primary" type="submit">Calculate loan</button>
             </form>
-            <div class="result-card" id="loan-result"></div>
+            <div class="result-card" id="loan-result"><div class="calc-placeholder"><h3>Loan estimate</h3><p>Enter a loan amount, interest rate, and term to see repayment details.</p></div></div>
           </article>
         </div>
 
@@ -510,7 +510,7 @@
               <label>Monthly contribution<input name="monthly" type="number" min="0" value="100"></label>
               <button class="primary" type="submit">Calculate growth</button>
             </form>
-            <div class="result-card" id="investment-result"></div>
+            <div class="result-card" id="investment-result"><div class="calc-placeholder"><h3>Investment projection</h3><p>Use your assumptions to estimate investment growth.</p></div></div>
           </article>
         </div>
 
@@ -518,13 +518,13 @@
           <article class="panel calculator-layout">
             <form id="stock-form" class="calc-form">
               <div><h2>Stock profit calculator</h2><p>See your estimated gain, loss and break-even price.</p></div>
-              <label>Buy price per share<input name="buy" type="number" min="0" step="0.01" value="25" required></label>
+              <label>Stock symbol (optional)<input id="stock-calc-symbol" list="market-symbol-list" placeholder="Ticker, e.g. AAPL"></label><label>Buy price per share<input name="buy" type="number" min="0" step="0.01" value="25" required></label>
               <label>Sell price per share<input name="sell" type="number" min="0" step="0.01" value="32" required></label>
               <label>Number of shares<input name="shares" type="number" min="1" value="100" required></label>
               <label>Total fees<input name="fees" type="number" min="0" step="0.01" value="20"></label>
               <button class="primary" type="submit">Calculate profit</button>
             </form>
-            <div class="result-card" id="stock-result"></div>
+            <div class="result-card" id="stock-result"><div class="calc-placeholder"><h3>Stock profit estimate</h3><p>Enter share prices and fees to calculate your estimated return.</p></div></div>
           </article>
         </div>
 
@@ -539,12 +539,16 @@
               <label>Annual fund fee (%)<input name="fee" type="number" min="0" step="0.01" value="1"></label>
               <button class="primary" type="submit">Calculate fund</button>
             </form>
-            <div class="result-card" id="fund-result"></div>
+            <div class="result-card" id="fund-result"><div class="calc-placeholder"><h3>Mutual fund projection</h3><p>See a projection based on the values you enter.</p></div></div>
           </article>
         </div>
       </section>
 
-      <section class="page" id="investments">
+      <section class="page" id="investments"><article class="panel market-panel"><div class="panel-heading"><div><span class="eyebrow">MARKET RESEARCH</span><h2>Nasdaq stocks & gold</h2><p>Search Nasdaq-listed companies and check available market prices.</p></div></div>
+<div class="market-search-grid"><label>Company or ticker<input type="search" id="stock-search" placeholder="Search company or ticker"></label><label>Stock symbol<input id="market-selected-symbol" maxlength="12" placeholder="AAPL"></label><button type="button" class="primary" id="market-quote-button">Check quote</button></div>
+<datalist id="market-symbol-list"></datalist><div class="market-results" id="stock-search-results" aria-live="polite">Start typing to search Nasdaq listings.</div>
+<div class="market-quote-grid"><div class="market-quote-card" id="stock-quote-result"><strong>Stock quote</strong><p>Enter a ticker to look up a quote.</p></div><div class="market-quote-card" id="gold-quote-result"><strong>Gold · XAU/USD</strong><p>Checking spot price…</p><button class="secondary" type="button" id="gold-refresh">Refresh</button></div></div>
+<p class="market-disclaimer">Listings come from Nasdaq Trader. Quotes may be delayed or unavailable. No prices are estimated. Market information is not investment advice.</p></article>
         <div class="page-chart-grid">
           <article class="panel chart-card">
             <div class="panel-heading"><div><h2>Cost versus current value</h2><p>Performance of each holding</p></div></div>
@@ -573,7 +577,7 @@
               <button class="primary" type="submit">Update travel plan</button>
             </form>
           </article>
-          <article class="panel travel-result" id="travel-result"></article>
+          <article class="panel travel-result" id="travel-result"><div class="travel-empty"><h3>Your travel plans</h3><p>Save a trip to see its spending and remaining budget here.</p></div></article>
         </div>
       </section>
 
@@ -1049,17 +1053,18 @@
   </script>
   <script src="config.js?v=13.5.0"></script>
   <script src="countries.js?v=13.5.0"></script>
-  <script src="banks.js?v=13.5.0"></script>
+  <script src="banks.js?v=2.1.0"></script>
   <script src="i18n.js?v=13.5.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="app.js?v=13.5.0"></script>
+  <script type="module" src="app.js?v=2.1.0"></script>
   <script type="module" src="features.js?v=13.5.0"></script>
   <script type="module" src="cloud-sync.js?v=13.5.0"></script>
   <script type="module" src="charts-v8.js?v=13.5.0"></script>
   <script type="module" src="v9-clean.js?v=13.5.0"></script>
   <script src="loans-v13.js?v=13.5.0"></script>
-<script type="module" src="v14-upgrade.js?v=14.2.0"></script>
+<script type="module" src="v14-upgrade.js?v=2.1.0"></script>
 <script type="module" src="v14-1-fixes.js?v=14.2.0"></script>
+<script type="module" src="market.js?v=1.0.0"></script>
 </body>
 </html>

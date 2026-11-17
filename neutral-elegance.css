@@ -546,3 +546,33 @@ html[data-theme="dark"] .public-footer{color:#B5B5B5}
 @media(max-width:820px){.mobile-logout-button{display:inline-flex!important;justify-content:center;align-items:center}}
 #theme-toggle{cursor:pointer}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important}}
+
+/* Layout improvements */
+@media(min-width:821px){.sidebar{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;scrollbar-width:thin}.desktop-nav{overflow:visible!important;flex:0 0 auto!important;min-height:auto!important}.user-card{margin-top:auto;min-height:62px}.sidebar-meta{padding-bottom:14px}}
+.public-theme-switch{display:inline-flex;align-items:center;gap:7px;padding:10px 12px;border:1px solid #CCBEB1;background:transparent;color:#664930;border-radius:11px;font-weight:750;cursor:pointer}
+html[data-theme="dark"] .public-theme-switch{background:#202020;color:#F5F5F5;border-color:#555}
+.top-actions-label{font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--muted);white-space:nowrap}
+.v12-top-actions{align-items:center;justify-content:flex-end;gap:9px;min-width:0}
+.profile-shortcut{display:flex;align-items:center;gap:9px;max-width:230px;min-width:164px;padding:8px 12px!important}
+.profile-shortcut #header-avatar{width:36px;height:36px;flex-shrink:0;display:grid;place-items:center}
+.profile-shortcut>div{min-width:0;flex:1}.profile-shortcut strong{max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dashboard-top-grid{gap:13px}.dashboard-top-grid .home-kpi{border-radius:20px;padding:23px}
+.dashboard-content-grid{grid-template-columns:185px minmax(0,1fr) minmax(0,1fr);align-items:start;gap:13px}
+.dashboard-content-grid .dashboard-chart-card{min-width:0;border-radius:20px}.dashboard-chart-card .chart-box{height:235px}
+#travel .two-column{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+#travel .travel-result{min-height:0!important;height:auto!important;align-self:start;padding:20px;border-radius:18px}
+#travel .travel-result:not(:has(.travel-plan-card)){background:var(--surface);color:var(--text);border:1px solid var(--line)}
+#travel .travel-empty{padding:10px 0}.travel-empty h3{margin:6px 0 9px;font-size:21px}.travel-empty p{line-height:1.7;font-size:13px}
+#travel .travel-plan-card{background:var(--surface);border-color:var(--line);border-radius:14px}
+.calculator-panel .calculator-layout{align-items:start;gap:16px}.calculator-panel .result-card{min-height:170px;padding:21px;border-radius:17px}
+.calc-placeholder{min-height:125px;display:flex;flex-direction:column;justify-content:center;gap:10px}.calc-placeholder h3{margin:0;font-size:21px}.calc-placeholder p{margin:0;font-size:13px;line-height:1.65}
+.market-panel{margin-bottom:20px;padding:24px}.market-search-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(120px,1fr) auto;gap:12px;align-items:end}.market-search-grid button{min-height:45px}
+.market-results{max-height:240px;overflow:auto;display:grid;gap:6px;padding:10px 0;color:var(--muted);font-size:12px}
+.market-result-button{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--line);color:var(--text);border-radius:11px;cursor:pointer}.market-result-button small{color:var(--muted)}
+.market-quote-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.market-quote-card{background:var(--surface-2);border:1px solid var(--line);border-radius:15px;padding:18px;display:grid;align-content:start;gap:10px;min-height:120px}
+.market-quote-card p{margin:0;font-size:12px;color:var(--muted);line-height:1.65}.market-quote-card .market-price{font-size:24px;font-weight:850}.market-disclaimer{font-size:11px;line-height:1.65;color:var(--muted)}
+html[data-theme="dark"] :is(.market-quote-card,.market-result-button){background:#202020;color:#F5F5F5;border-color:#484848}
+@media(max-width:1080px){.top-actions-label{display:none}.dashboard-content-grid{grid-template-columns:150px 1fr 1fr}.market-search-grid{grid-template-columns:1fr 1fr}.market-search-grid button{grid-column:1/-1}}
+@media(max-width:940px){.dashboard-content-grid{grid-template-columns:1fr 1fr}.quick-entry-panel{grid-column:1/-1;grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.v12-top-actions{display:flex!important;gap:7px}.dashboard-content-grid,.market-quote-grid{grid-template-columns:1fr}.quick-entry-panel{grid-column:auto}.profile-shortcut{max-width:54px;min-width:54px;width:54px}}
+@media(max-width:620px){.public-theme-switch span{display:none}.market-search-grid{grid-template-columns:1fr}.market-search-grid button{grid-column:auto}.market-panel{padding:16px}}

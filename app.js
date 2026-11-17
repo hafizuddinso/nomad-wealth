@@ -140,6 +140,7 @@ function applyTheme(theme=currentTheme){
   const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolved==="dark"?"#090909":"#664930";
   const toggle=document.querySelector("#theme-toggle");if(toggle){toggle.textContent=resolved==="dark"?"☀":"◐";toggle.title=resolved==="dark"?"Use light mode":"Use dark mode"}
   const appearance=document.querySelector("#theme-select");if(appearance)appearance.value=currentTheme;
+  const publicToggle=document.querySelector("#public-theme-toggle");if(publicToggle){const label=resolved==="dark"?"Light mode":"Dark mode";publicToggle.querySelector("span").textContent=label;publicToggle.setAttribute("aria-label","Switch to "+label.toLowerCase());}
   window.dispatchEvent(new CustomEvent("nomad:theme-changed",{detail:{theme:resolved}}));
 }
 function applyLanguage(lang=currentLanguage){
@@ -859,6 +860,7 @@ function updateBankOptions(country){
   const code=normalizeCountryCode(country);
   const banks=[...(window.NOMAD_WEALTH_BANKS?.[code]||[]),...(window.NOMAD_WEALTH_UNIVERSAL_BANKS||[])];
   list.innerHTML=[...new Set(banks)].map(b=>`<option value="${esc(b)}"></option>`).join("");
+  const hint=document.querySelector("#bank-search-hint");if(hint)hint.textContent=`${banks.length} suggested institutions. You may enter any bank name.`;
 }
 document.addEventListener("change",e=>{
   if(e.target&&e.target.id==="account-country"){
@@ -1034,6 +1036,7 @@ document.querySelector("#travel-form").addEventListener("submit",e=>{
 
 
 document.querySelector("#theme-toggle")?.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+document.querySelector("#public-theme-toggle")?.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
 document.querySelector("#activity-button")?.addEventListener("click",()=>showPage("transactions"));
 document.querySelector("#theme-select")?.addEventListener("change",e=>applyTheme(e.target.value));
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>{if(currentTheme==="system")applyTheme("system")});
