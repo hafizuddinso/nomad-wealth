@@ -1,0 +1,47 @@
+/* Nomad Wealth pageflow: calm, readable one- or two-stage navigation. */
+.main{min-width:0}
+.page.active{display:block;height:calc(100dvh - 153px);min-height:360px;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;scroll-snap-type:y proximity;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent;padding:0 2px 26px}
+.page-slide{scroll-snap-align:start;min-height:calc(100dvh - 190px);padding:4px 0 22px;display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.page-slide-secondary{border-top:1px solid var(--line);padding-top:23px}
+.page-slide-single{min-height:auto}
+.slide-eyebrow{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.105em;padding:5px 1px 0}
+.slide-eyebrow span{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:var(--soft);font-size:11px;color:var(--text);letter-spacing:0}
+.page-slide>.dashboard-top-grid{margin-bottom:0!important}
+.page-slide>.dashboard-content-grid{margin-bottom:0!important}
+.page-slide>.dashboard-bottom-grid{margin-bottom:0!important}
+.page-slide>.dashboard-tool-links{margin-top:4px!important}
+.page-slide .page-chart-grid,.page-slide .two-column{margin-bottom:0}
+.page-slide-secondary .panel,.page-slide-secondary .two-column,.page-slide-secondary .feature-grid{min-width:0}
+.page-slide .loan-list{min-height:0}
+.dashboard-related{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:2px}
+.dashboard-related button{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--text);padding:15px;text-align:left;cursor:pointer;display:grid;gap:5px;min-height:79px}
+.dashboard-related button:hover{background:var(--surface-2);border-color:var(--nw-stone)}
+.dashboard-related span{font-weight:800;font-size:13px}.dashboard-related small{color:var(--muted);font-size:11px}
+.v12-topbar{z-index:10}
+.profile-shortcut #header-avatar{display:none!important}
+.profile-shortcut{min-width:138px;gap:6px;justify-content:flex-start}
+.profile-shortcut>div{padding:2px 3px}
+.profile-shortcut-arrow{display:none!important}
+.fx-source{font-size:10px;line-height:1.35;color:var(--muted);max-width:145px;text-align:right}
+.currency-rate-caption{font-size:10px;color:var(--muted);max-width:420px}
+.display-currency-control{display:flex;flex-direction:column;gap:3px;min-width:112px;font-weight:700}
+.display-currency-control span{font-size:9px;letter-spacing:.04em;color:var(--muted)}
+.display-currency-control select{min-height:35px;max-width:140px;padding:7px 8px;font-size:12px;font-weight:750;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:9px}
+html[data-theme="dark"] .dashboard-related button{background:#171717;border-color:#343434;color:#F5F5F5}
+html[data-theme="dark"] .dashboard-related button:hover{background:#242424}
+@media(max-width:1000px){
+ .page-slide{min-height:auto}
+ .dashboard-related{grid-template-columns:1fr 1fr}
+ .page.active{height:auto;min-height:0;overflow:visible;scroll-snap-type:none}
+ .page-slide-secondary{margin-top:10px}
+}
+@media(max-width:680px){
+ .dashboard-related{grid-template-columns:1fr}
+ .page-slide{gap:12px}
+ .slide-eyebrow{font-size:10px}
+ .page-slide-secondary{padding-top:16px}
+ .display-currency-control{min-width:85px}
+ .display-currency-control select{max-width:110px}
+ .fx-source{display:none}
+}
+@media(prefers-reduced-motion:reduce){.page.active{scroll-behavior:auto}}

@@ -14,6 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=2.0.0" />
   <link rel="stylesheet" href="neutral-elegance.css?v=2.1.0" />
+  <link rel="stylesheet" href="pageflow.css?v=1.0.0" />
 </head>
 <body>
   <section id="auth-screen" class="auth-screen auth-landing" aria-label="Welcome to Nomad Wealth">
@@ -285,14 +286,17 @@
           <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Change appearance">◐</button>
           <button type="button" class="notification-button" id="activity-button" aria-label="View recent transactions" title="View recent transactions">↻</button>
           <button type="button" class="header-user-chip profile-shortcut" id="profile-shortcut" aria-label="Open profile settings">
-            <span id="header-avatar">U</span>
+            <span id="header-avatar" aria-hidden="true">U</span>
             <div><small>Profile</small><strong id="header-user-name">User</strong></div>
-            <span class="profile-shortcut-arrow">⌄</span>
+            
           </button>
         </div>
       </header>
 
       <section class="page active" id="dashboard">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Monthly overview">
+<div class="slide-eyebrow"><span>01</span>Monthly overview</div>
+
         <div class="dashboard-top-grid">
           <article class="home-kpi income-card">
             <div class="kpi-icon income-icon">↗</div>
@@ -341,7 +345,16 @@
           </article>
         </div>
 
-        <div class="dashboard-bottom-grid">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="Your financial workspace">
+<div class="slide-eyebrow"><span>02</span>Your financial workspace</div>
+<div class="dashboard-related">
+ <button type="button" data-page-target="loans"><span>Loan tracker</span><small>Repayments & balances</small></button>
+ <button type="button" data-page-target="investments"><span>Investments & stocks</span><small>Global markets & portfolio</small></button>
+ <button type="button" data-page-target="calculators" data-open-calc="fund"><span>Mutual funds</span><small>Plan long-term growth</small></button>
+ </div>
+<div class="dashboard-bottom-grid">
           <article class="panel recent-panel">
             <div class="panel-heading">
               <div><h2>Recent transactions</h2><p>Your latest activity</p></div>
@@ -384,7 +397,12 @@
             <span class="coming-soon-badge">Coming Soon</span>
           </div>
         </article>
-      </section><section class="page" id="accounts">
+      
+</div>
+</section><section class="page" id="accounts">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Account overview">
+<div class="slide-eyebrow"><span>01</span>Account overview</div>
+
         <div class="page-chart-grid">
           <article class="panel chart-card">
             <div class="panel-heading"><div><h2>Balances by account</h2><p>Converted to your main currency</p></div></div>
@@ -395,13 +413,22 @@
             <div class="chart-box"><canvas id="accounts-currency-chart"></canvas></div>
           </article>
         </div>
-        <article class="panel">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="Your accounts">
+<div class="slide-eyebrow"><span>02</span>Your accounts</div>
+<article class="panel">
           <div class="panel-heading"><div><h2>Your accounts</h2><p>Bank, cash, savings, wallets and debt</p></div><button type="button" class="primary compact-button" data-open-dialog="account-dialog">+ Add account</button></div>
           <div id="account-list" class="card-list"></div>
         </article>
-      </section>
+      
+</div>
+</section>
 
       <section class="page" id="transactions">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Transaction insights">
+<div class="slide-eyebrow"><span>01</span>Transaction insights</div>
+
         <div class="page-chart-grid">
           <article class="panel chart-card">
             <div class="panel-heading"><div><h2>Expense categories</h2><p>Filtered transaction view</p></div></div>
@@ -412,7 +439,11 @@
             <div class="chart-box"><canvas id="transactions-daily-chart"></canvas></div>
           </article>
         </div>
-        <article class="panel">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="Transaction history">
+<div class="slide-eyebrow"><span>02</span>Transaction history</div>
+<article class="panel">
           <div class="panel-heading"><div><h2>Transactions</h2><p>Income and expenses across countries</p></div><div class="split-entry-actions compact"><button type="button" class="secondary expense-action" data-open-entry="expense">− Expense</button><button type="button" class="secondary income-action" data-open-entry="income">+ Income</button></div></div>
           <div class="advanced-filter-card">
             <div class="filter-grid">
@@ -439,16 +470,25 @@
           </div>
           <div id="transaction-list"></div>
         </article>
-      </section>
+      
+</div>
+</section>
 
       <section class="page" id="budget">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Budget overview">
+<div class="slide-eyebrow"><span>01</span>Budget overview</div>
+
         <div class="page-chart-grid">
           <article class="panel chart-card span-2">
             <div class="panel-heading"><div><h2>Budget usage</h2><p>Used versus remaining for every category</p></div></div>
             <div class="chart-box chart-box-tall"><canvas id="budget-progress-chart"></canvas></div>
           </article>
         </div>
-        <div class="two-column">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="Your plans">
+<div class="slide-eyebrow"><span>02</span>Your plans</div>
+<div class="two-column">
           <article class="panel">
             <div class="panel-heading"><div><h2>Monthly budget</h2><p>Plan money in simple groups</p></div><button type="button" class="secondary" data-open-dialog="budget-dialog">+ Add budget</button></div>
             <div id="budget-list"></div>
@@ -458,9 +498,14 @@
             <div id="budget-explanation"></div>
           </article>
         </div>
-      </section>
+      
+</div>
+</section>
 
       <section class="page" id="loans">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Loan overview">
+<div class="slide-eyebrow"><span>01</span>Loan overview</div>
+
         <div class="loans-hero">
           <div><span class="eyebrow">DEBT TRACKING</span><h2>Loans and repayment progress</h2><p>Track every installment, principal, interest and remaining balance.</p></div>
           <button class="primary" type="button" data-open-dialog="loan-tracker-dialog">+ Add loan</button>
@@ -473,10 +518,18 @@
           <article class="loan-summary-card"><span>Next installment</span><strong id="loans-next-payment">0</strong><small id="loans-next-date">No upcoming payment</small></article>
         </div>
 
-        <div id="loan-list" class="loan-list"></div>
-      </section>
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="Loan details">
+<div class="slide-eyebrow"><span>02</span>Loan details</div>
+<div id="loan-list" class="loan-list"></div>
+      
+</div>
+</section>
 
       <section class="page" id="calculators">
+<div class="page-slide page-slide-primary page-slide-single" data-slide="1">
+
         <article class="calculator-intro">
           <div><span class="eyebrow">SMART TOOLS</span><h2>Simple calculators with clear results</h2><p>Enter a few numbers and get an understandable estimate.</p></div>
         </article>
@@ -542,14 +595,23 @@
             <div class="result-card" id="fund-result"><div class="calc-placeholder"><h3>Mutual fund projection</h3><p>See a projection based on the values you enter.</p></div></div>
           </article>
         </div>
-      </section>
+      
+</div>
+</section>
 
-      <section class="page" id="investments"><article class="panel market-panel"><div class="panel-heading"><div><span class="eyebrow">MARKET RESEARCH</span><h2>Nasdaq stocks & gold</h2><p>Search Nasdaq-listed companies and check available market prices.</p></div></div>
+      <section class="page" id="investments">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Global market research">
+<div class="slide-eyebrow"><span>01</span>Global market research</div>
+<article class="panel market-panel"><div class="panel-heading"><div><span class="eyebrow">MARKET RESEARCH</span><h2>Nasdaq stocks & gold</h2><p>Search Nasdaq-listed companies and check available market prices.</p></div></div>
 <div class="market-search-grid"><label>Company or ticker<input type="search" id="stock-search" placeholder="Search company or ticker"></label><label>Stock symbol<input id="market-selected-symbol" maxlength="12" placeholder="AAPL"></label><button type="button" class="primary" id="market-quote-button">Check quote</button></div>
 <datalist id="market-symbol-list"></datalist><div class="market-results" id="stock-search-results" aria-live="polite">Start typing to search Nasdaq listings.</div>
 <div class="market-quote-grid"><div class="market-quote-card" id="stock-quote-result"><strong>Stock quote</strong><p>Enter a ticker to look up a quote.</p></div><div class="market-quote-card" id="gold-quote-result"><strong>Gold · XAU/USD</strong><p>Checking spot price…</p><button class="secondary" type="button" id="gold-refresh">Refresh</button></div></div>
 <p class="market-disclaimer">Listings come from Nasdaq Trader. Quotes may be delayed or unavailable. No prices are estimated. Market information is not investment advice.</p></article>
-        <div class="page-chart-grid">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="Your investments">
+<div class="slide-eyebrow"><span>02</span>Your investments</div>
+<div class="page-chart-grid">
           <article class="panel chart-card">
             <div class="panel-heading"><div><h2>Cost versus current value</h2><p>Performance of each holding</p></div></div>
             <div class="chart-box"><canvas id="investments-performance-chart"></canvas></div>
@@ -563,9 +625,13 @@
           <div class="panel-heading"><div><h2>Investments</h2><p>Manual holdings and performance</p></div><button type="button" class="secondary" data-open-dialog="investment-dialog">+ Add investment</button></div>
           <div id="investment-list" class="card-list"></div>
         </article>
-      </section>
+      
+</div>
+</section>
 
       <section class="page" id="travel">
+<div class="page-slide page-slide-primary page-slide-single" data-slide="1">
+
         <div class="two-column">
           <article class="panel">
             <div class="panel-heading"><div><h2>Travel mode</h2><p>Plan a trip and calculate safe daily spending</p></div></div>
@@ -579,10 +645,15 @@
           </article>
           <article class="panel travel-result" id="travel-result"><div class="travel-empty"><h3>Your travel plans</h3><p>Save a trip to see its spending and remaining budget here.</p></div></article>
         </div>
-      </section>
+      
+</div>
+</section>
 
 
       <section class="page" id="insights">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Financial trends">
+<div class="slide-eyebrow"><span>01</span>Financial trends</div>
+
         <div class="insights-header">
           <div><span class="eyebrow">REPORTS & TRENDS</span><h2>Financial insights</h2><p>Understand where your money goes and how your wealth changes.</p></div>
           <div class="export-actions">
@@ -596,7 +667,11 @@
             <div class="chart-box"><canvas id="insights-monthly-chart"></canvas></div>
           </article>
         </div>
-        <div class="insights-grid">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="More insights">
+<div class="slide-eyebrow"><span>02</span>More insights</div>
+<div class="insights-grid">
           <article class="panel chart-panel">
             <div class="panel-heading"><div><h2>Spending by category</h2><p>Current month</p></div></div>
             <canvas id="category-chart" width="520" height="320"></canvas>
@@ -616,7 +691,9 @@
             <div id="upcoming-recurring"></div>
           </article>
         </div>
-      </section>
+      
+</div>
+</section>
 
       <section class="page" id="goals">
         <div class="page-chart-grid">
@@ -684,6 +761,9 @@
       </section>
 
       <section class="page" id="about">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="About Nomad Wealth">
+<div class="slide-eyebrow"><span>01</span>About Nomad Wealth</div>
+
         <article class="about-hero panel">
           <div>
             <span class="eyebrow">PORTFOLIO PROJECT</span>
@@ -696,7 +776,11 @@
           </div>
           <div class="about-badge"><span>Designed & developed by</span><strong>Hafizuddin</strong><small>Frontend portfolio application</small></div>
         </article>
-        <div class="feature-grid">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="What you can do">
+<div class="slide-eyebrow"><span>02</span>What you can do</div>
+<div class="feature-grid">
           <article><strong>Multi-currency</strong><span>EUR, USD, GBP, RUB and BDT conversion.</span></article>
           <article><strong>Responsive UX</strong><span>Optimized for desktop, tablet and mobile.</span></article>
           <article><strong>Financial tools</strong><span>Loan, stock, investment and mutual fund calculators.</span></article>
@@ -704,9 +788,14 @@
           <article><strong>Local data</strong><span>Browser storage and JSON backup for the prototype.</span></article>
           <article><strong>Portfolio-ready</strong><span>GitHub and Vercel configuration included.</span></article>
         </div>
-      </section>
+      
+</div>
+</section>
 
       <section class="page" id="settings">
+<div class="page-slide page-slide-primary" data-slide="1" aria-label="Profile">
+<div class="slide-eyebrow"><span>01</span>Profile</div>
+
         <article class="panel profile-panel">
           <div class="panel-heading"><div><h2 data-i18n="profile">Profile</h2><p>Your account and preferences</p></div></div>
           <form id="profile-form" class="profile-form">
@@ -729,7 +818,11 @@
             <div class="profile-actions"><button type="submit" class="primary" data-i18n="saveProfile">Save profile</button><button type="button" class="secondary" id="profile-password-reset">Send password reset email</button><button type="button" class="secondary mobile-logout-button" id="mobile-logout-button">Log out</button></div>
           </form>
         </article>
-        <div class="two-column">
+        
+</div>
+<div class="page-slide page-slide-secondary" data-slide="2" aria-label="Preferences and backup">
+<div class="slide-eyebrow"><span>02</span>Preferences and backup</div>
+<div class="two-column">
           <article class="panel">
             <div class="panel-heading"><div><h2>Currency converter</h2><p>Convert between any two supported currencies</p></div><button type="button" class="text-button" id="refresh-rates">Refresh rates</button></div>
             <form id="currency-converter-form" class="converter-form">
@@ -794,6 +887,8 @@
             </label>
           </div>
         </article>
+
+</div>
 </section>
 
       <footer class="app-footer">Nomad Wealth · Developed by Hafizuddin · v14.1 Connected Finance</footer>
@@ -1066,5 +1161,6 @@
 <script type="module" src="v14-upgrade.js?v=2.1.0"></script>
 <script type="module" src="v14-1-fixes.js?v=14.2.0"></script>
 <script type="module" src="market.js?v=1.0.0"></script>
+<script defer src="pageflow.js?v=1.0.0"></script>
 </body>
 </html>
