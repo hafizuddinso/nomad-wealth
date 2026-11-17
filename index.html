@@ -8,13 +8,13 @@
   <meta name="author" content="Hafizuddin" />
   <title>Nomad Wealth — Your money. Anywhere.</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="nomad-icon.svg" />
+  <link rel="icon" type="image/svg+xml" href="nomad-favicon.svg?v=2" sizes="any" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=2.0.0" />
   <link rel="stylesheet" href="neutral-elegance.css?v=2.1.0" />
-  <link rel="stylesheet" href="pageflow.css?v=1.0.0" />
+  <link rel="stylesheet" href="pageflow.css?v=2.0.0" />
 </head>
 <body>
   <section id="auth-screen" class="auth-screen auth-landing" aria-label="Welcome to Nomad Wealth">
@@ -252,16 +252,16 @@
       </a>
 
       <nav class="desktop-nav" aria-label="Primary navigation">
-        <button class="nav-item active" data-page="dashboard"><span>⌂</span><b data-i18n="dashboard">Dashboard</b></button>
-        <button class="nav-item" data-page="accounts"><span>▣</span><b data-i18n="accounts">Accounts</b></button>
-        <button class="nav-item" data-page="transactions"><span>⇄</span><b data-i18n="transactions">Transactions</b></button>
-        <button class="nav-item" data-page="budget"><span>◫</span><b data-i18n="budget">Budget</b></button>
-        <button class="nav-item" data-page="loans"><span>▥</span><b>Loans</b></button>
-        <button class="nav-item" data-page="calculators"><span>∑</span><b data-i18n="calculators">Calculators</b></button>
-        <button class="nav-item" data-page="investments"><span>↗</span><b data-i18n="investments">Investments</b></button>
-        <button class="nav-item" data-page="travel"><span>✈</span><b data-i18n="travel">Travel Mode</b></button>
-        <button class="nav-item" data-page="about"><span>◉</span>About Project</button>
-        <button class="nav-item" data-page="settings"><span>⚙</span>Settings</button>
+        <button class="nav-item active" data-page="dashboard"><b data-i18n="dashboard">Dashboard</b></button>
+        <button class="nav-item" data-page="accounts"><b data-i18n="accounts">Accounts</b></button>
+        <button class="nav-item" data-page="transactions"><b data-i18n="transactions">Transactions</b></button>
+        <button class="nav-item" data-page="budget"><b data-i18n="budget">Budget</b></button>
+        <button class="nav-item" data-page="loans"><b>Loans</b></button>
+        <button class="nav-item" data-page="calculators"><b data-i18n="calculators">Calculators</b></button>
+        <button class="nav-item" data-page="investments"><b data-i18n="investments">Investments</b></button>
+        <button class="nav-item" data-page="travel"><b data-i18n="travel">Travel Mode</b></button>
+        <button class="nav-item" data-page="about">About Project</button>
+        <button class="nav-item" data-page="settings">Settings</button>
       </nav>
 
       <div class="user-card">
@@ -278,16 +278,14 @@
     <main class="main">
       <header class="topbar v12-topbar">
         <div class="page-heading">
-          <p class="eyebrow" id="greeting">Good afternoon</p>
           <h1 id="page-title">Dashboard</h1>
-          <p id="today-label"></p><p id="display-rate-status" class="currency-rate-caption" aria-live="polite">Saved exchange rates</p>
+          <p id="today-label" class="header-date"></p>
         </div>
-        <div class="top-actions v12-top-actions"><label class="display-currency-control" for="main-currency"><span>Display currency</span><select id="main-currency" aria-label="Display all amounts in this currency"><option value="EUR">EUR</option><option value="BDT">BDT</option></select></label><span class="top-actions-label">YOUR WORKSPACE</span>
+        <div class="top-actions v12-top-actions">
           <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Change appearance">◐</button>
           <button type="button" class="notification-button" id="activity-button" aria-label="View recent transactions" title="View recent transactions">↻</button>
           <button type="button" class="header-user-chip profile-shortcut" id="profile-shortcut" aria-label="Open profile settings">
-            <span id="header-avatar" aria-hidden="true">U</span>
-            <div><small>Profile</small><strong id="header-user-name">User</strong></div>
+            <div class="profile-shortcut-name"><strong id="header-user-name">User</strong></div>
             
           </button>
         </div>
@@ -896,11 +894,11 @@
   </div>
 
   <nav class="mobile-nav" aria-label="Mobile navigation">
-    <button data-page="dashboard" class="active"><span>⌂</span>Home</button>
-    <button data-page="transactions"><span>⇄</span>Transactions</button>
-    <button data-page="budget"><span>◫</span>Budget</button>
-    <button data-page="accounts"><span>▣</span>Accounts</button>
-    <button data-page="calculators"><span>∑</span>More</button>
+    <button data-page="dashboard" class="active">Home</button>
+    <button data-page="transactions">Transactions</button>
+    <button data-page="budget">Budget</button>
+    <button data-page="accounts">Accounts</button>
+    <button data-page="calculators">More</button>
   </nav>
 
   <dialog id="loan-tracker-dialog" class="loan-dialog">

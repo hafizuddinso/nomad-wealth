@@ -856,7 +856,7 @@ function showPage(id){
   document.querySelectorAll(".page,.nav-item,.mobile-nav button").forEach(x=>x.classList.remove("active"));
   document.querySelector("#"+id)?.classList.add("active");
   document.querySelectorAll(`[data-page="${id}"]`).forEach(x=>x.classList.add("active"));
-  const title=document.querySelector(`.nav-item[data-page="${id}"]`)?.textContent.trim()||id;
+  const title=document.querySelector(`.nav-item[data-page="${id}"] b`)?.textContent.trim()||document.querySelector(`.nav-item[data-page="${id}"]`)?.textContent.trim()||id;
   document.querySelector("#page-title").textContent=title;
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -912,8 +912,8 @@ document.addEventListener("change",e=>{
 
 function closeDialog(dialog){if(dialog?.open)dialog.close()}
 
-document.querySelector("#today-label").textContent=new Intl.DateTimeFormat(undefined,{dateStyle:"full"}).format(new Date());
-const hour=new Date().getHours();document.querySelector("#greeting").textContent=hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";
+const headerDate=document.querySelector("#today-label");
+if(headerDate)headerDate.textContent=new Intl.DateTimeFormat(undefined,{day:"numeric",month:"short",year:"numeric"}).format(new Date());
 document.querySelectorAll("[data-page]").forEach(el=>el.addEventListener("click",()=>showPage(el.dataset.page)));
 document.querySelectorAll("[data-page-link]").forEach(el=>el.addEventListener("click",e=>{e.preventDefault();showPage(el.dataset.pageLink)}));
 document.querySelectorAll("[data-open-dialog]").forEach(el=>el.addEventListener("click",()=>openDialog(el.dataset.openDialog)));

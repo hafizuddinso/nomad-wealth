@@ -8,10 +8,10 @@
   "theme_color": "#664930",
   "icons": [
     {
-      "src": "nomad-icon.svg",
+      "src": "nomad-favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
