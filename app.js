@@ -199,7 +199,9 @@ function updateUserInterface(user){
   document.querySelector("#sidebar-user-email").title=email;
   document.querySelector("#sidebar-user-name").title=name;
   document.querySelector("#user-avatar").textContent=initial;
-  document.querySelector("#header-avatar").textContent=initial;
+  // The compact header no longer includes an avatar; keep login compatible.
+  const headerAvatar=document.querySelector("#header-avatar");
+  if(headerAvatar)headerAvatar.textContent=initial;
   document.querySelector("#header-user-name").textContent=name;
   const pn=document.querySelector("#profile-name");if(pn)pn.textContent=name;
   const pe=document.querySelector("#profile-email");if(pe)pe.textContent=email;
