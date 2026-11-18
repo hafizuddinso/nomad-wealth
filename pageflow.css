@@ -135,3 +135,22 @@ html[data-theme="dark"] .v12-topbar{background:#171717!important;border-color:#3
   .auth-landing .public-header-actions{gap:4px!important}
   .auth-landing .public-header-actions :is(.public-theme-switch,.public-login-button,.public-signup-button){padding:6px 8px!important;min-height:33px!important;height:33px!important;font-size:11px!important}
 }
+
+/* Brand reference: warm palette in light mode, pure black/white in dark mode. */
+.brand-logo,
+.auth-landing .public-brand .brand-logo,
+.auth-modal-brand .brand-logo,
+.sidebar .brand .brand-logo,
+.mobile-auth-brand .brand-logo{
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.brand-logo .nw-brand-image{width:100%!important;height:100%!important;object-fit:contain!important}
+html:not([data-theme="dark"]) .brand-logo .nw-brand-dark{display:none!important}
+html:not([data-theme="dark"]) .brand-logo .nw-brand-light{display:block!important}
+html[data-theme="dark"] .brand-logo .nw-brand-light{display:none!important}
+html[data-theme="dark"] .brand-logo .nw-brand-dark{display:block!important}
+html[data-theme="dark"] .brand-logo,
+html[data-theme="dark"] .sidebar .brand .brand-logo,
+html[data-theme="dark"] .auth-modal-brand .brand-logo{background:transparent!important}

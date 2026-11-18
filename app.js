@@ -137,6 +137,11 @@ function applyTheme(theme=currentTheme){
   localStorage.setItem("nomad_theme",theme);
   const resolved=theme==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):theme;
   document.documentElement.dataset.theme=resolved;
+  const favicon=document.querySelector("#site-favicon");
+  if(favicon){
+    const logo=resolved==="dark"?"nomad-compass-dark.svg?v=4":"nomad-compass-light.svg?v=4";
+    if(favicon.getAttribute("href")!==logo)favicon.setAttribute("href",logo);
+  }
   const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=resolved==="dark"?"#090909":"#664930";
   const toggle=document.querySelector("#theme-toggle");if(toggle){toggle.textContent=resolved==="dark"?"☀":"◐";toggle.title=resolved==="dark"?"Use light mode":"Use dark mode"}
   const appearance=document.querySelector("#theme-select");if(appearance)appearance.value=currentTheme;

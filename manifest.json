@@ -8,7 +8,7 @@
   "theme_color": "#664930",
   "icons": [
     {
-      "src": "nomad-mark-v3.svg",
+      "src": "nomad-compass-light.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

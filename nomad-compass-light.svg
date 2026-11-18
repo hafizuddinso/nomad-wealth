@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Nomad Wealth compass N">
+  <rect width="64" height="64" rx="12" fill="#F8F6F3"/>
+  <g fill="none" stroke="#E8AC82" stroke-width="1.6" stroke-linecap="round">
+    <path d="M14 18.3C18.1 15 22.2 12.7 27.3 11.8"/>
+    <path d="M36.7 11.8C41.7 12.6 45.9 14.9 50 18.3"/>
+    <path d="M14 45.7C18.1 49.1 22.2 51.3 27.3 52.2"/>
+    <path d="M36.7 52.2C41.8 51.3 46 49.1 50 45.7"/>
+  </g>
+  <path d="M7 49V16.5L25.1 28.6L23.2 38L15.1 32.6V43.1Z" fill="#664930"/>
+  <path d="M57 15.7V49L38.8 37L40.9 28.6L48.9 34V22.1Z" fill="#664930"/>
+  <path d="M32 5.4 27.9 32 32 58.6 35.9 32Z" fill="#997E67"/>
+  <path d="M32 5.4 27.9 32 32 58.6Z" fill="#664930"/>
+  <circle cx="32" cy="32" r="2.3" fill="#F8F6F3"/>
+</svg>
