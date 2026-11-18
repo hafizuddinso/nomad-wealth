@@ -113,3 +113,25 @@ html[data-theme="dark"] .v12-topbar{background:#171717!important;border-color:#3
   .v12-top-actions .profile-shortcut{max-width:74px!important}
   .profile-shortcut .profile-shortcut-name strong{max-width:60px}
 }
+
+/* Stable, matching logo for browser tab and all public/auth branding. */
+.brand-logo{display:grid!important;place-items:center!important;overflow:hidden!important;flex-shrink:0!important}
+.brand-logo .nw-brand-image{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;flex:none!important;opacity:1!important;visibility:visible!important}
+.auth-landing .public-header{min-height:64px!important;padding-block:8px!important;gap:14px!important}
+.auth-landing .public-brand{gap:9px!important;min-width:0}
+.auth-landing .public-brand .brand-logo{width:32px!important;height:32px!important;border-radius:9px!important;background:transparent!important;box-shadow:none!important}
+.auth-landing .public-brand strong{font-size:16px!important;line-height:1.2!important;letter-spacing:-.03em}
+.auth-landing .public-brand small{font-size:10px!important;line-height:1.25!important;margin-top:2px!important}
+.auth-landing .public-header-actions{gap:7px!important}
+.auth-landing .public-header-actions :is(.public-theme-switch,.public-login-button,.public-signup-button){min-height:35px!important;height:35px!important;padding:7px 12px!important;border-radius:9px!important;font-size:12px!important}
+.auth-landing .public-header-actions .public-theme-switch{font-weight:650!important}
+.auth-modal-brand .brand-logo{width:36px!important;height:36px!important;background:transparent!important}
+.sidebar .brand .brand-logo{background:transparent!important;width:35px!important;height:35px!important}
+@media(max-width:620px){
+  .auth-landing .public-header{min-height:58px!important;padding-block:7px!important}
+  .auth-landing .public-brand .brand-logo{width:30px!important;height:30px!important}
+  .auth-landing .public-brand strong{font-size:14px!important}
+  .auth-landing .public-brand small{display:none!important}
+  .auth-landing .public-header-actions{gap:4px!important}
+  .auth-landing .public-header-actions :is(.public-theme-switch,.public-login-button,.public-signup-button){padding:6px 8px!important;min-height:33px!important;height:33px!important;font-size:11px!important}
+}
